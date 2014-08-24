@@ -1,0 +1,84 @@
+body, button {
+/* 	font-family: "微软雅黑", Microsoft YaHei, WenQuanYi MicroHei, "文泉驿微米黑", "宋体", sans-serif; */
+}
+
+a {color: #0c3463;}
+a:hover {color: #0088cc; text-decoration: none;}
+.label-info a, .badge-info a, .btn-primary a, .btn-info a{color: white;}
+.clear { background-color:#F9F9F9 }
+
+.user_specificator, .user_specificator + dd {
+	margin-top: 16px;
+	margin-right: 14px;
+	font-size: 16px;
+}
+
+.user_specificator + dd span {
+	font-size: 16px;
+}
+
+.mail_content {
+	background-color: #FCFBFE;
+}
+
+.overlay {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: -1000;
+	opacity: 0;
+	background-color: #000;
+	display: none;
+}
+
+#navigation {
+	position: relative;
+	width: 100px;
+}
+
+.sidebar-nav #username, .sidebar-nav #logout {
+	float: left;
+	margin: 5px 8px;
+	font-size: 1.2em;
+	color: navy;
+}
+
+#copyleft{
+	text-align: center;
+	margin: auto;
+}
+
+#settings .control-label { width: 75px; }
+#settings .controls { margin-left: 85px; }
+
+/* dataconf */
+.datacase {
+	border-color: gray;
+	margin-left: 5px;
+	width: 240px;
+	float:left;
+}
+
+.holder {
+	min-height: 100px;
+	width:100%;
+}
+
+.datatest {
+	border-style: ridge;
+	margin-top: 5px;
+	background-color:#f7f9ff;
+}
+
+.datarow {vertical-align:middle; height: 25px;}
+
+.case_close {
+	float:right;
+	cursor:pointer;
+}
+
+.filter .tooltip-inner {
+	background-color: transparent;
+}
