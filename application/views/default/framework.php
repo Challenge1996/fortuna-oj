@@ -92,9 +92,10 @@
 		<!-- footer -->
 		<div class="row-fluid">
 			<div class="span12" id="copyleft">
-				<p>Project fortuna-oj hosting on <a href="http://code.google.com/p/fortuna-oj/">Google Code</a>.
+				<p>Project fortuna-oj hosting on <a href="http://github.com/roastduck/fortuna-oj">Github</a>.
 				Powered by Codeigniter / Bootstrap<br />
-				Author: moreD (<?=safe_mailto('moreDatPublic@gmail.com', 'Contact me');?>)</p>
+				Author: moreD (<?=safe_mailto('moreDatPublic@gmail.com', 'Contact me');?>)<br />
+				Collaborator: RD</p>
 				<label id="server_time"></label>
 			</div>
 		</div>

@@ -32,7 +32,7 @@ class Submission extends CI_Model{
 	}
 	
 	function change_access($sid){
-		if ($this->db->query("SELECT sid FROM Submission WHERE sid=? AND cid IS NULL", array($sid))->num_rows() == 0)
+		if ($this->db->query("SELECT sid FROM Submission WHERE sid=?", array($sid))->num_rows() == 0)
 			return;
 		$this->db->query("UPDATE Submission SET private=1-private WHERE sid=?", array($sid));
 	}
