@@ -1,3 +1,5 @@
+var status_open_all=false;
+
 function upd_bookmark(pid)
 {
 	$.post("index.php/main/upd_bookmark/"+pid.toString(), {
@@ -28,11 +30,36 @@ function open_note(pid)
 function close_note(pid)
 {
 	upd_bookmark(pid);
-	if ($("#note_textarea_"+pid.toString()).val()!='')
-		$("#note_icon_"+pid.toString()).removeClass("icon-white");
+	pid=pid.toString();
+	if ($("#note_textarea_"+pid).val()!='')
+	{
+		$("#note_icon_"+pid).removeClass("icon-white");
+		$(".note_text_tr_"+pid).addClass("note_text_tr_nonempty");
+	}
 	else
-		$("#note_icon_"+pid.toString()).addClass("icon-white");
-	$(".note_text_tr_"+pid.toString()).slideUp('fast');
+	{
+		$("#note_icon_"+pid).addClass("icon-white");
+		$(".note_text_tr_"+pid).removeClass("note_text_tr_nonempty");
+	}
+	if (status_open_all) return;
+	$(".note_text_tr_"+pid).slideUp('fast');
+}
+
+function toggle_open_all()
+{
+	if (status_open_all)
+	{
+		$("#open_all_icon").removeClass("icon-resize-small");
+		$("#open_all_icon").addClass("icon-resize-full");
+		$(".note_text_tr").slideUp('fast');
+		status_open_all=false;
+	} else
+	{
+		$("#open_all_icon").removeClass("icon-resize-full");
+		$("#open_all_icon").addClass("icon-resize-small");
+		$(".note_text_tr_nonempty").slideDown('fast');
+		status_open_all=true;
+	}
 }
 
 $(document).ready(function(){

@@ -41,8 +41,11 @@
 </form>
 
 <div class="problemset_table"><table class="table table-bordered table-striped table-condensed table-hover">
-	<thead><tr>
-		<th>&nbsp;<i class="icon-info-sign" title="private bookmarks"></i>&nbsp;</th>
+	<thead style="background-color:#89cff0"><tr>
+		<th>
+			<i class="icon-info-sign" title="private bookmarks"></i>
+			<i class="icon-resize-full" id="open_all_icon" title="open all notes" onclick="toggle_open_all();"></i>
+		</th>
 		<th class="status"><?=lang('status')?></th>
 		<th class="pid"><?=lang('problem_id')?></th>
 		<th class="title"><?=lang('title')?></th>
@@ -60,7 +63,7 @@
 			$pid = $row->pid;
 	?>
 			<tr>
-				<td>
+				<td style="background-color:#e8e8e8">
 					<?php if (isset($row->bookmark) && $row->bookmark->note): ?>
 						<i class="icon-tags" title="add notes" id="note_icon_<?=$row->pid?>" onclick="open_note(<?=$row->pid?>);"></i>
 					<?php else: ?>
@@ -107,14 +110,19 @@
 					<span class="badge badge-info"><?=$row->average?> pts</span>
 				</td>
 			</tr>
-			<tr class="note_text_tr_<?=$row->pid?>" style="display:none"><td colspan="8">
-				<div class="note_text_tr_<?=$row->pid?>" style="display:none">
+			<tr class="note_text_tr note_text_tr_<?=$row->pid?>" style="display:none"><td colspan="8">
+				<div class="note_text_tr note_text_tr_<?=$row->pid?>" style="display:none">
 					<input style="width:98%" \
 placeholder="Put your private note for this problem here." \
 maxlength="255" id="note_textarea_<?=$row->pid?>" \
 onblur="close_note(<?=$row->pid?>);" \
 value='<?php if (isset($row->bookmark) && ($row->bookmark->note)) echo $row->bookmark->note; ?>' \
 ></input>
+					<?php if (isset($row->bookmark) && ($row->bookmark->note)): ?>
+						<script type="text/javascript">
+							$(".note_text_tr_<?=$row->pid?>").addClass("note_text_tr_nonempty");
+						</script>
+					<?php endif ?>
 				</div>
 			</td></tr>
 			<script type="text/javascript">
