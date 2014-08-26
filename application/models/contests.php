@@ -309,7 +309,10 @@ class Contests extends CI_Model{
 			foreach ($result_pids as $pid) $pids[] = $pid['pid'];
 			if (!$pids) return NULL;
 			$pids = implode(',', $pids);
-			$data = $this->db->query("SELECT sid, uid, name, pid, score, status, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
+			if ($this->session->userdata('priviledge') == 'admin')
+				$data = $this->db->query("SELECT sid, uid, name, pid, score, status, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
+			else
+				$data = $this->db->query("SELECT sid, uid, name, pid, score, status, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
 			foreach ($data as $row){
 				if ( ! isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
@@ -381,7 +384,10 @@ class Contests extends CI_Model{
 			$pids = array();
 			foreach ($result_pids as $pid) $pids[] = $pid['pid'];
 			$pids = implode(',', $pids);
-			$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
+			if ($this->session->userdata('priviledge') == 'admin')
+				$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
+			else
+				$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
 			foreach ($data as $row){
 				if ( ! isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;

@@ -155,13 +155,13 @@ class Submission extends CI_Model{
 	}
 	
 	function load_code($sid){
-		$result = $this->db->query("SELECT uid, pid, code, language, private FROM Submission WHERE sid=?", array($sid));
+		$result = $this->db->query("SELECT uid, pid, code, language, private, isShowed FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
 		$uid = $this->session->userdata('uid');
 		$accepted = $this->db->query("SELECT * FROM Submission WHERE pid=? AND uid=? AND status=0", array($result->pid, $uid))->num_rows() > 0;
 		if ($this->db->query("SELECT pid FROM ProblemSet WHERE pid=? AND isShowed=1", array($result->pid))->num_rows() == 0)
 			$accepted = FALSE;
-		if ($result->uid == $uid || $this->session->userdata('priviledge') == 'admin' || $result->private == 0 || $accepted) 
+		if ($result->uid == $uid || $this->session->userdata('priviledge') == 'admin' || $result->private == 0 && $result->isShowed == 1 || $accepted) 
 			return $result;
 		return FALSE;
 	}
