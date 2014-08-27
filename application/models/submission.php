@@ -7,15 +7,15 @@ class Submission extends CI_Model{
 	}
 	
 	function rejudge($sid){
-		$data = $this->db->query("SELECT pid, uid, status, score FROM Submission WHERE sid=?",
+		$data = $this->db->query("SELECT cid, pid, uid, status, score FROM Submission WHERE sid=?",
 									array($sid))->row();
 									
-		if ($data->status != -1) {
+		if ($data->status != -1 && is_null($data->cid)) {
 			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum-? WHERE pid=?",
 				array($data->score, $data->pid));
 		}
 	
-		if ($data->status == 0){
+		if ($data->status == 0 && is_null($data->cid)){
 			$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount-1 WHERE pid=?",
 								array($data->pid));
 		
@@ -155,13 +155,13 @@ class Submission extends CI_Model{
 	}
 	
 	function load_code($sid){
-		$result = $this->db->query("SELECT uid, pid, code, language, private, isShowed FROM Submission WHERE sid=?", array($sid));
+		$result = $this->db->query("SELECT uid, pid, code, language, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
 		$uid = $this->session->userdata('uid');
 		$accepted = $this->db->query("SELECT * FROM Submission WHERE pid=? AND uid=? AND status=0", array($result->pid, $uid))->num_rows() > 0;
 		if ($this->db->query("SELECT pid FROM ProblemSet WHERE pid=? AND isShowed=1", array($result->pid))->num_rows() == 0)
 			$accepted = FALSE;
-		if ($result->uid == $uid || $this->session->userdata('priviledge') == 'admin' || $result->private == 0 && $result->isShowed == 1 || $accepted) 
+		if ($result->uid == $uid || $this->session->userdata('priviledge') == 'admin' || $result->private == 0 || $accepted) 
 			return $result;
 		return FALSE;
 	}

@@ -172,7 +172,7 @@ class Problems extends CI_Model{
 	}
 	
 	function load_problem_submission($pid){
-		return $this->db->query("SELECT sid FROM Submission WHERE pid=?", array($pid))->result();
+		return $this->db->query("SELECT sid, cid FROM Submission WHERE pid=?", array($pid))->result();
 	}
 	
 	function add_solution($pid, $filename) {
