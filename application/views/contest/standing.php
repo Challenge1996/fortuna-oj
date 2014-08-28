@@ -6,7 +6,7 @@
 			exit('<div class="alert"><strong>THERE IS NO SUBMISSION</strong></div>');
 	?>
 
-	<button onclick="download_result()" class="btn btn-small pull-right"><strong>export</strong></button>
+		<button onclick="download_result(<?=$info->cid?>)" class="btn btn-small pull-right"><strong>export</strong></button>
 	<?php if (isset($startTime)): ?>
 		<button onclick="toggle_previous()" class="btn btn-small pull-right" id="sps_button"><strong>show previous submissions</strong></button>
 	<?php endif ?>
