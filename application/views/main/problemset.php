@@ -14,7 +14,7 @@
 	</div>
 	
 	<div id="div_search" class="control-group input-append">
-		<input type="text" id="search_content" class="input-medium" placeholder="Title or Source..." value="<?=$keyword?>"/>
+		<input type="text" id="search_content" class="input-long" placeholder="Use '|' to split multiple keywords" value="<?=$keyword?>"/>
 		<button id="search_button" class="btn"><?=lang('search')?></button>
 	</div>
 	

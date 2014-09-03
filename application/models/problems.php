@@ -88,7 +88,7 @@ class Problems extends CI_Model{
 	function search_count($keyword){
 		$key=array();
 		$pattern='';
-		$keyword=mb_split('\s',$keyword);
+		$keyword=mb_split('\|',$keyword);
 		foreach ($keyword as $word)
 		{
 			$key[]="%$word%";
@@ -103,7 +103,7 @@ class Problems extends CI_Model{
 	function load_search_problemset($keyword, $row_begin, $count){
 		$key=array();
 		$pattern='';
-		$keyword=mb_split('\s',$keyword);
+		$keyword=mb_split('\|',$keyword);
 		foreach ($keyword as $word)
 		{
 			$key[]="%$word%";
