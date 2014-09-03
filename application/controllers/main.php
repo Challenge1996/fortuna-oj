@@ -136,8 +136,6 @@ class Main extends CI_Controller {
 		} else if ($page == 0) $page = 1;
 
 		if ($keyword){
-			$keyword = "%" . $keyword . "%";
-			
 			$count = $this->problems->search_count($keyword);
 			if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
 				$page = ($count + $problems_per_page - 1) / $problems_per_page;

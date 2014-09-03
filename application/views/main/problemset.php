@@ -14,7 +14,7 @@
 	</div>
 	
 	<div id="div_search" class="control-group input-append">
-		<input type="text" id="search_content" class="input-medium" placeholder="Title or Source..." />
+		<input type="text" id="search_content" class="input-medium" placeholder="Title or Source..." value="<?=$keyword?>"/>
 		<button id="search_button" class="btn"><?=lang('search')?></button>
 	</div>
 	

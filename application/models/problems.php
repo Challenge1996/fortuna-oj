@@ -86,14 +86,34 @@ class Problems extends CI_Model{
 	}
 	
 	function search_count($keyword){
+		$key=array();
+		$pattern='';
+		$keyword=mb_split('\s',$keyword);
+		foreach ($keyword as $word)
+		{
+			$key[]="%$word%";
+			$key[]="%$word%";
+			if ($pattern) $pattern .= ' OR ';
+			$pattern .= ' title LIKE ? OR source LIKE ? ';
+		}
 		return $this->db->query("SELECT COUNT(*) AS count FROM ProblemSet
-								WHERE (title LIKE ? OR source LIKE ?) AND isShowed=1", array($keyword, $keyword))->row()->count;
+								WHERE ($pattern) AND isShowed=1", $key)->row()->count;
 	}
 	
 	function load_search_problemset($keyword, $row_begin, $count){
+		$key=array();
+		$pattern='';
+		$keyword=mb_split('\s',$keyword);
+		foreach ($keyword as $word)
+		{
+			$key[]="%$word%";
+			$key[]="%$word%";
+			if ($pattern) $pattern .= ' OR ';
+			$pattern .= ' title LIKE ? OR source LIKE ? ';
+		}
 		return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed FROM ProblemSet
-								WHERE (title LIKE ? OR source LIKE ?) AND isShowed=1 LIMIT ?, ?", 
-								array($keyword, $keyword, $row_begin, $count))->result();
+								WHERE ($pattern) AND isShowed=1 LIMIT ?, ?", 
+								array_merge($key,array($row_begin, $count)))->result();
 	}
 	
 	function load_search_problemset_status($uid, $keyword){
