@@ -16,7 +16,8 @@
 //problemset
 	$lang['problem_id'] = '题目编号';
 	$lang['go'] = '前往';
-	$lang['search'] = '搜索标题和来源';
+	$lang['search'] = '搜索';
+	$lang['search_title_and_source'] = '搜索标题和来源';
 	$lang['filter'] = '过滤';
 	$lang['page'] = '页面';
 	$lang['title'] = '标题';

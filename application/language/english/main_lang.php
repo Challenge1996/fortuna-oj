@@ -16,7 +16,8 @@
 //problemset
 	$lang['problem_id'] = 'Problem ID';
 	$lang['go'] = 'Go';
-	$lang['search'] = 'Search titles and sources';
+	$lang['search'] = 'Search';
+	$lang['search_title_and_source'] = 'Search titles and sources';
 	$lang['filter'] = 'Filter';
 	$lang['page'] = 'Page';
 	$lang['title'] = 'Title';

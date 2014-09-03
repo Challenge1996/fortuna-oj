@@ -15,7 +15,10 @@
 	
 	<div id="div_search" class="control-group input-append">
 		<input type="text" id="search_content" class="input-long" placeholder="Use '|' to split multiple keywords" value="<?=$keyword?>"/>
-		<button id="search_button" class="btn"><?=lang('search')?></button>
+		<button id="search_button" class="btn" data-toggle="tooltip" data-placement="bottom" title="<?=lang('search_title_and_source')?>"><?=lang('search')?></button>
+		<script type="text/javascript">
+			$("#search_button").tooltip();
+		</script>
 	</div>
 	
 	<div id="div_filter" class="control-group input-append">
@@ -63,7 +66,7 @@
 			$pid = $row->pid;
 	?>
 			<tr>
-				<td style="background-color:#e8e8e8">
+				<td style="white-space:nowrap;background-color:#e8e8e8">
 					<?php if (isset($row->bookmark) && $row->bookmark->note): ?>
 						<i class="icon-tags" title="add notes" id="note_icon_<?=$row->pid?>" onclick="open_note(<?=$row->pid?>);"></i>
 					<?php else: ?>
@@ -95,7 +98,7 @@
 					} 
 				?>
 				</td>
-				<td class="source"><?=strtrim($row->source)?></td>
+				<td style="white-space:nowrap" class="source"><?=strtrim($row->source)?></td>
 				<td>
 					<a href="#main/statistic/<?=$pid?>">
 						<span class="badge badge-info"><?=$row->solvedCount?></span>
