@@ -128,11 +128,13 @@ class Problems extends CI_Model{
 
 	function load_status($uid, $pids)
 	{
+		if ($pids=='()') return NULL;
 		return $this->db->query("SELECT min(status) AS status, pid FROM Submission WHERE uid=? AND pid in $pids AND isShowed=1 AND status>-4 GROUP BY pid", array($uid))->result();
 	}
 
 	function load_bookmark($uid, $pids)
 	{
+		if ($pids=='()') return NULL;
 		return $this->db->query("SELECT pid, starred, note FROM Bookmark WHERE uid=? AND pid in $pids", array($uid))->result();
 	}
 	

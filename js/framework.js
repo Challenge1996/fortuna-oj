@@ -41,7 +41,7 @@ function showMailNotification() {
 
 var firstNotification = true;
 function getServerPushData() {
-	url = "index.php/background/push";
+	var url = "index.php/background/push";
 	if (firstNotification) url += '/1';
 	$.ajax({
 		type:"POST",
