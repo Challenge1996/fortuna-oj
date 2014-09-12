@@ -174,7 +174,8 @@
 				echo "<a href=\"#main/result/$row->sid\"> $sname </a>";
 				if ($row->sim != NULL && $row->sim != '') {
 					$sim = json_decode($row->sim);
-					echo "<a class='sim' href=\"#main/code/$sim->sid\" data-original-title='$sim->name: $sim->sid'>($sim->similarity%)</a>";
+					if ($sim->similarity>50)
+						echo "<a class='sim' href=\"#main/code/$sim->sid\" data-original-title='$sim->name: $sim->sid'>($sim->similarity%)</a>";
 				}
 			}
 			echo '</td>';
