@@ -2,8 +2,8 @@
 /*
  * CKFinder
  * ========
- * http://ckfinder.com
- * Copyright (C) 2007-2012, CKSource - Frederico Knabben. All rights reserved.
+ * http://cksource.com/ckfinder
+ * Copyright (C) 2007-2014, CKSource - Frederico Knabben. All rights reserved.
  *
  * The software, this file and its contents are subject to the CKFinder
  * License. Please read the license.txt file before using, installing, copying,
@@ -25,6 +25,14 @@ if (!defined('IN_CKFINDER')) exit;
  */
 class CKFinder_Connector_Utils_FileSystem
 {
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function trimPathTrailingSlashes($path)
+    {
+        return rtrim($path, DIRECTORY_SEPARATOR . '/\\');
+    }
 
     /**
      * This function behaves similar to System.IO.Path.Combine in C#, the only diffrenece is that it also accepts null values and treat them as empty string
@@ -180,16 +188,17 @@ class CKFinder_Connector_Utils_FileSystem
     }
 
     /**
-     * Return file name without extension (without dot & last part after dot)
+     * Return file name without extension
      *
      * @static
      * @access public
      * @param string $fileName
+     * @param boolean $shortExtensionMode If set to false, extension is everything after a first dot
      * @return string
      */
-    public static function getFileNameWithoutExtension($fileName)
+    public static function getFileNameWithoutExtension($fileName, $shortExtensionMode = TRUE)
     {
-        $dotPos = strrpos( $fileName, '.' );
+        $dotPos = $shortExtensionMode ? strrpos( $fileName, '.' ) : strpos( $fileName, '.' );
         if (false === $dotPos) {
             return $fileName;
         }
@@ -198,21 +207,22 @@ class CKFinder_Connector_Utils_FileSystem
     }
 
     /**
-     * Get file extension (only last part - e.g. extension of file.foo.bar.jpg = jpg)
+     * Get file extension
      *
      * @static
      * @access public
      * @param string $fileName
+     * @param boolean $shortExtensionMode If set to false, extension is everything after a first dot
      * @return string
      */
-    public static function getExtension( $fileName )
+    public static function getExtension( $fileName, $shortExtensionMode = TRUE )
     {
-        $dotPos = strrpos( $fileName, '.' );
+        $dotPos = $shortExtensionMode ? strrpos( $fileName, '.' ) : strpos( $fileName, '.' );
         if (false === $dotPos) {
             return "";
         }
 
-        return substr( $fileName, strrpos( $fileName, '.' ) +1 ) ;
+        return substr( $fileName, $dotPos + 1 );
     }
 
     /**
@@ -436,8 +446,10 @@ class CKFinder_Connector_Utils_FileSystem
             /**
              * realpath — Returns canonicalized absolute pathname
              */
-            $sRealPath = realpath( './' ) ;
+            $sRealPath = realpath('.') ;
         }
+
+        $sRealPath = $this->trimPathTrailingSlashes($sRealPath);
 
         /**
          * The filename of the currently executing script, relative to the document root.
@@ -445,8 +457,9 @@ class CKFinder_Connector_Utils_FileSystem
          * would be /test.php/foo.bar.
          */
         $sSelfPath = dirname($_SERVER['PHP_SELF']);
+        $sSelfPath = $this->trimPathTrailingSlashes($sSelfPath);
 
-        return substr($sRealPath, 0, strlen($sRealPath) - strlen($sSelfPath));
+        return $this->trimPathTrailingSlashes(substr($sRealPath, 0, strlen($sRealPath) - strlen($sSelfPath)));
     }
 
     /**
@@ -695,15 +708,16 @@ class CKFinder_Connector_Utils_FileSystem
      * @param string $fileName
      * @param string $sFileNameOrginal
      */
-    public static function autoRename( $filePath, $fileName, $sFileNameOrginal )
+    public static function autoRename( $filePath, $fileName )
     {
+      $sFileNameOrginal = $fileName;
       $iCounter = 0;
       while (true)
       {
         $sFilePath = CKFinder_Connector_Utils_FileSystem::combinePaths($filePath, $fileName);
         if ( file_exists($sFilePath) ){
           $iCounter++;
-          $fileName = CKFinder_Connector_Utils_FileSystem::getFileNameWithoutExtension($sFileNameOrginal) . "(" . $iCounter . ")" . "." .CKFinder_Connector_Utils_FileSystem::getExtension($sFileNameOrginal);
+          $fileName = CKFinder_Connector_Utils_FileSystem::getFileNameWithoutExtension($sFileNameOrginal, false) . "(" . $iCounter . ")" . "." .CKFinder_Connector_Utils_FileSystem::getExtension($sFileNameOrginal, false);
         }
         else
         {

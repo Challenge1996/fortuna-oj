@@ -183,6 +183,12 @@ maxSize is defined in bytes, but shorthand notation may be also used.
 Available options are: G, M, K (case insensitive).
 1M equals 1048576 bytes (one Megabyte), 1K equals 1024 bytes (one Kilobyte), 1G equals one Gigabyte.
 Example: 'maxSize' => "8M",
+
+==============================================================================
+ATTENTION: Flash files with `swf' extension, just like HTML files, can be used
+to execute JavaScript code and to e.g. perform an XSS attack. Grant permission
+to upload `.swf` files only if you understand and can accept this risk.
+==============================================================================
 */
 $config['DefaultResourceTypes'] = '';
 
@@ -273,6 +279,7 @@ $config['HtmlExtensions'] = array('html', 'htm', 'xml', 'js');
 Folders to not display in CKFinder, no matter their location.
 No paths are accepted, only the folder name.
 The * and ? wildcards are accepted.
+".*" disallows the creation of folders starting with a dot character.
 */
 $config['HideFolders'] = Array(".svn", "CVS");
 
