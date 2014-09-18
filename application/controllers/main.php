@@ -127,48 +127,23 @@ class Main extends CI_Controller {
 		$this->load->model('user');
 		$this->load->model('problems');
 		$this->load->model('misc');
-		
-		if (! ($keyword = $this->input->get('search', TRUE))){
-			if (! ($filter = $this->input->get('filter', TRUE))){
-				if ($page == 0) $page = $this->user->load_last_page($uid);
-				else $this->user->save_last_page($uid, $page);
-			} else if ($page == 0) $page = 1;
-		} else if ($page == 0) $page = 1;
 
-		if ($keyword){
-			$count = $this->problems->search_count($keyword);
-			if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
-				$page = ($count + $problems_per_page - 1) / $problems_per_page;
-				
-			$row_begin = ($page - 1) * $problems_per_page;
-			$data = $this->problems->load_search_problemset($keyword, $row_begin, $problems_per_page);
-	
-			//$result = $this->problems->load_search_problemset_status($uid, $keyword);
-			
-		} else if ($filter) {
-			$count = $this->problems->filter_count($filter);
-			if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
-				$page = ($count + $problems_per_page - 1) / $problems_per_page;
-				
-			$row_begin = ($page - 1) * $problems_per_page;
-			$data = $this->problems->load_filter_problemset($filter, $row_begin, $problems_per_page);
-	
-			//$result = $this->problems->load_filter_problemset_status($uid, $filter);
-			
-		} else {
-			$count = $this->problems->count();
-			if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
-				$page = ($count + $problems_per_page - 1) / $problems_per_page;
-				
-			$row_begin = ($page - 1) * $problems_per_page;
-			$data = $this->problems->load_problemset($row_begin, $problems_per_page);
-			
-			/*if (count($data) != 0) {
-				$start = $data[0]->pid;
-				$end = $data[count($data) - 1]->pid;
-				$result = $this->problems->load_problemset_status($uid, $start, $end);
-			}*/
-		}
+		$keyword = $this->input->get('search',TRUE);
+		$filter = $this->input->get('filter',TRUE);
+		
+		if (!$keyword && !$filter)
+			if ($page == 0)
+				$page = $this->user->load_last_page($uid);
+			else
+				$this->user->save_last_page($uid, $page);
+		else if ($page == 0)
+			$page = 1;
+
+		$count = $this->problems->count(FALSE, FALSE, $keyword, $filter);
+		if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
+			$page = ($count + $problems_per_page - 1) / $problems_per_page;
+		$row_begin = ($page - 1) * $problems_per_page;
+		$data = $this->problems->load_problemset($row_begin, $problems_per_page, FALSE, FALSE, FALSE, $keyword, $filter);
 		
 		$pids='';
 		foreach ($data as $row)
@@ -179,8 +154,6 @@ class Main extends CI_Controller {
 		$status_result=$this->problems->load_status($uid,$pids);
 		$bookmark_result=$this->problems->load_bookmark($uid,$pids);
 		
-		if ( ! isset($filter)) $filter = false;
-
 		if (isset($status_result)) {
 			foreach ($status_result as $row)
 				$status["$row->pid"] = $row->status;

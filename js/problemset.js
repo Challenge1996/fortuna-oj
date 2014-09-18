@@ -71,9 +71,13 @@ $(document).ready(function(){
 	}),
 
 	$('#search_button').live('click', function(){
-		var content = $('#search_content').val();
-		content=encodeURIComponent(content);
-		if (content != '') load_page("main/problemset?search=" + content);
+		var keyword = $('#search_content').val();
+		var filter = $('#filter_content').val();
+		keyword = encodeURIComponent(keyword);
+		if (keyword != '') keyword = 'search=' + keyword;
+		if (filter != 0) filter = 'filter=' + filter; else filter = '';
+		if (keyword != '' && filter != '') filter = '&' + filter;
+		load_page("main/problemset?" + keyword + filter);
 		return false;
 	}),
 

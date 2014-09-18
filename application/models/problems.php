@@ -13,61 +13,69 @@ class Problems extends CI_Model{
 	function uid($pid){
 		return $this->db->query("SELECT uid FROM ProblemSet WHERE pid=?", array($pid))->row()->uid;
 	}
-	
-	function count($uid = FALSE, $admin = FALSE){
-		if ($admin) {
-			if ( ! $uid)
-				return $this->db->query("SELECT COUNT(*) AS count FROM ProblemSet")->row()->count;
-			else
-				return $this->db->query("SELECT COUNT(*) AS count FROM ProblemSet WHERE uid=?", array($uid))->row()->count;
-		} else {
-			if ( ! $uid)
-				return $this->db->query("SELECT COUNT(*) AS count FROM ProblemSet WHERE isShowed=1")->row()->count;
-			else
-				return $this->db->query("SELECT COUNT(*) AS count FROM ProblemSet WHERE uid=? AND isShowed=1", array($uid))->row()->count;
+
+	function gen_keyword_lim($keyword)
+	{
+		if (!$keyword) return 'TRUE';
+		$pattern='';
+		$keyword=mb_split('\|',$keyword);
+		foreach ($keyword as $word)
+		{
+			$_word = $this->db->escape_like_str($word);
+			if ($pattern) $pattern .= ' OR ';
+			$pattern .= " title LIKE '%$_word%' OR source LIKE '%$_word%' ";
 		}
+		return $pattern;
+	}
+
+	function gen_filter_lim($filter)
+	{
+		if (!$filter) return 'TRUE';
+		$filter = $this->db->escape($filter);
+		return "pid in (SELECT pid FROM Categorization WHERE idCategory=$filter)";
+	}
+
+	function gen_uid_lim($uid)
+	{
+		if (!$uid) return 'TRUE';
+		$uid = $this->db->escape($uid);
+		return "uid=$uid";
+	}
+
+	function gen_admin_lim($admin)
+	{
+		if ($admin)
+			return 'TRUE';
+		else
+			return 'isShowed=1';
 	}
 	
-	function load_problemset($row_begin, $count, $rev = FALSE, $uid = FALSE, $admin = FALSE){
-		if ($admin) {
-			if ( ! $uid){
-				if ($rev)
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet ORDER BY pid DESC LIMIT ?, ?", array($row_begin, $count))->result();
-				else
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet LIMIT ?, ?", array($row_begin, $count))->result();
-			} else {
-				if ($rev)
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet WHERE uid=? ORDER BY pid DESC LIMIT ?, ?", array($uid, $row_begin, $count))->result();
-				else
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet WHERE uid=? LIMIT ?, ?", array($uid, $row_begin, $count))->result();
-			}
-		} else {
-			if ( ! $uid){
-				if ($rev)
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet WHERE isShowed=1 ORDER BY pid DESC LIMIT ?, ?", array($row_begin, $count))->result();
-				else
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet WHERE isShowed=1 LIMIT ?, ?", array($row_begin, $count))->result();
-			} else {
-				if ($rev)
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet WHERE uid=? AND isShowed=1 ORDER BY pid DESC LIMIT ?, ?", array($uid, $row_begin, $count))->result();
-				else
-					return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-											FROM ProblemSet WHERE uid=? AND isShowed=1 LIMIT ?, ?", array($uid, $row_begin, $count))->result();
-			}
-		}
+	function count($uid = FALSE, $admin = FALSE, $keyword = FALSE, $filter = FALSE)
+	{
+		$keyword_lim = $this->gen_keyword_lim($keyword);
+		$filter_lim = $this->gen_filter_lim($filter);
+		$uid_lim = $this->gen_uid_lim($uid);
+		$admin_lim = $this->gen_admin_lim($admin);
+
+		return $this->db->query("
+			SELECT COUNT(*) AS count FROM ProblemSet
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($uid_lim) AND ($admin_lim)
+			")->row()->count;
 	}
-	
-	function load_problemset_status($uid, $start, $end){
-		return $this->db->query("SELECT min(status) AS status, pid FROM Submission 
-									WHERE uid=? AND pid>=? AND pid<=? AND status>-4 AND isShowed=1
-									GROUP BY pid", array($uid, $start, $end))->result();
+
+	function load_problemset($row_begin, $count, $rev = FALSE, $uid = FALSE, $admin = FALSE, $keyword = FALSE, $filter = FALSE)
+	{
+		$keyword_lim = $this->gen_keyword_lim($keyword);
+		$filter_lim = $this->gen_filter_lim($filter);
+		$uid_lim = $this->gen_uid_lim($uid);
+		$admin_lim = $this->gen_admin_lim($admin);
+		$rev_str = ($rev?"DESC":"");
+
+		return $this->db->query("
+			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed FROM ProblemSet
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($uid_lim) AND ($admin_lim)
+			ORDER BY pid $rev_str LIMIT ?, ?
+			", array($row_begin, $count))->result();
 	}
 	
 	function load_dataconf($pid){
@@ -85,67 +93,6 @@ class Problems extends CI_Model{
 		return $result->row()->codeSizeLimit;
 	}
 	
-	function search_count($keyword){
-		$key=array();
-		$pattern='';
-		$keyword=mb_split('\|',$keyword);
-		foreach ($keyword as $word)
-		{
-			$key[]="%$word%";
-			$key[]="%$word%";
-			if ($pattern) $pattern .= ' OR ';
-			$pattern .= ' title LIKE ? OR source LIKE ? ';
-		}
-		return $this->db->query("SELECT COUNT(*) AS count FROM ProblemSet
-								WHERE ($pattern) AND isShowed=1", $key)->row()->count;
-	}
-	
-	function load_search_problemset($keyword, $row_begin, $count){
-		$key=array();
-		$pattern='';
-		$keyword=mb_split('\|',$keyword);
-		foreach ($keyword as $word)
-		{
-			$key[]="%$word%";
-			$key[]="%$word%";
-			if ($pattern) $pattern .= ' OR ';
-			$pattern .= ' title LIKE ? OR source LIKE ? ';
-		}
-		return $this->db->query("SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed FROM ProblemSet
-								WHERE ($pattern) AND isShowed=1 LIMIT ?, ?", 
-								array_merge($key,array($row_begin, $count)))->result();
-	}
-	
-	function load_search_problemset_status($uid, $keyword){
-		return $this->db->query("SELECT min(status) AS status, pid FROM Submission WHERE uid=? AND
-								pid in (SELECT pid FROM ProblemSet WHERE (title LIKE ? OR source LIKE ?) AND isShowed=1) AND isShowed=1 AND status>-4
-								GROUP BY pid", array($uid, $keyword, $keyword))->result();
-	}
-	
-	function filter_count($filter){
-		return $this->db->query("SELECT COUNT(*) AS count FROM 
-							((SELECT pid FROM Categorization WHERE idCategory=?)A
-						INNER JOIN
-							(SELECT pid FROM ProblemSet WHERE isShowed=1)B
-						ON A.pid=B.pid)", 
-					array($filter))->row()->count;
-	}
-	
-	function load_filter_problemset($filter, $row_begin, $count){
-		return $this->db->query("SELECT ProblemSet.pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed
-								FROM (ProblemSet INNER JOIN
-									(SELECT pid FROM Categorization WHERE idCategory=?)Res
-									ON ProblemSet.pid=Res.pid) 
-								WHERE isShowed=1 LIMIT ?, ?", 
-								array($filter, $row_begin, $count))->result();
-	}
-	
-	function load_filter_problemset_status($uid, $filter){
-		return $this->db->query("SELECT min(status) AS status, pid FROM Submission WHERE uid=? AND
-								pid in (SELECT pid FROM Categorization WHERE idCategory=?) AND isShowed=1 AND status>-4 
-								GROUP BY pid", array($uid, $filter))->result();
-	}
-
 	function load_status($uid, $pids)
 	{
 		if ($pids=='()') return NULL;

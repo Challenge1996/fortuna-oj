@@ -6,22 +6,15 @@
 	
 <script type="text/javascript" src="js/problemset.js"></script>
 
-<form class="form-inline form-search" id="action_form" style="margin-left:10px; margin-right:10px">
+<form class="form-inline" id="action_form" style="margin-left:10px; margin-right:10px">
 	<div id="div_goto_pid" class="control-group input-prepend input-append">
 		<span class="add-on"><?=lang('problem_id')?></span>
 		<input type="number" min="1000" id="goto_pid" class="input-mini" />
 		<button id="goto_button" class="btn"><?=lang('go')?></button>
 	</div>
-	
+
 	<div id="div_search" class="control-group input-append">
 		<input type="text" id="search_content" class="input-long" placeholder="Use '|' to split multiple keywords" value="<?=$keyword?>"/>
-		<button id="search_button" class="btn" data-toggle="tooltip" data-placement="bottom" title="<?=lang('search_title_and_source')?>"><?=lang('search')?></button>
-		<script type="text/javascript">
-			$("#search_button").tooltip();
-		</script>
-	</div>
-	
-	<div id="div_filter" class="control-group input-append">
 		<select id="filter_content" style="width:140px">
 			<option value="0">All</option>
 		<?php
@@ -33,7 +26,10 @@
 			}
 		?>
 		</select>
-		<button id="filter_button" class="btn"><?=lang('filter')?></button>
+		<button id="search_button" class="btn" data-toggle="tooltip" data-placement="bottom" title="<?=lang('search_title_and_source')?>"><?=lang('search')?></button>
+		<script type="text/javascript">
+			$("#search_button").tooltip();
+		</script>
 	</div>
 	
 	<div id="div_goto_page" class="control-group input-prepend input-append pull-right">
