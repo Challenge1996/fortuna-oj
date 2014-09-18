@@ -135,7 +135,7 @@
 	if ( typeof (Highcharts) == 'undefined') {
 		$.getScript("js/highcharts.js", function(script, textStatus, jqXHR) {
 			$.getScript("js/exporting.js", function(script, textStatus, jqXHR) {
-				initialize()
+				initialize_chart()
 				render_pie('#chart-container', 'Verdicts Chart', verdicts)
 			})
 		})

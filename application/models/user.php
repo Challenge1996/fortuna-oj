@@ -199,17 +199,39 @@ class User extends CI_Model{
 	}
 	
 	function load_accepted($uid){
-		return $this->db->query("SELECT DISTINCT pid FROM Submission
-								WHERE uid=? AND status=0",
-								array($uid))->result();
+		if ($this->is_admin())
+			return $this->db->query("
+			SELECT DISTINCT pid FROM Submission 
+			WHERE uid=? AND status=0
+			",array($uid))->result();
+		else
+			return $this->db->query("
+			SELECT DISTINCT pid FROM Submission 
+			WHERE uid=? AND status=0 AND cid NOT IN (
+				SELECT cid FROM Contest WHERE endTime>NOW()
+			)
+			",array($uid))->result();
 	}
 	
 	function load_unaccepted($uid){
-		return $this->db->query("SELECT pid FROM 
-									(SELECT min(status) AS verdict, pid FROM Submission
-									WHERE status>=0 AND uid=? GROUP BY pid)T
-								WHERE verdict>0",
-								array($uid))->result();
+		if ($this->is_admin())
+			return $this->db->query("
+			SELECT pid FROM (
+				SELECT min(status) AS verdict, pid FROM Submission
+				WHERE status>=0 AND uid=? GROUP BY pid
+			)T
+			WHERE verdict>0
+			",array($uid))->result();
+		else
+			return $this->db->query("
+			SELECT pid FROM (
+				SELECT min(status) AS verdict, pid, cid FROM Submission
+				WHERE status>=0 AND uid=? GROUP BY pid
+			)T
+			WHERE verdict>0 AND cid NOT IN (
+				SELECT cid FROM Contest WHERE endTime>NOW()
+			)
+			",array($uid))->result();
 	}
 	
 	function load_rank($uid){
