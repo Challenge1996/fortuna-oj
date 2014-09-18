@@ -67,6 +67,7 @@
 					<li>The last file you have uploaded will be kept.</li>
 					<li>Use standard IO.</li>
 					<li>16M size limit.</li>
+					<li><strong>Try using file when CustomTest differs from actual judgement!</strong></li>
 				</ul>
 			</div>
 		</div>
