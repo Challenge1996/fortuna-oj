@@ -35,6 +35,16 @@ class Problems extends CI_Model{
 		return "pid in (SELECT pid FROM Categorization WHERE idCategory=$filter)";
 	}
 
+	function gen_bookmark_lim($show_starred, $show_note, $search_note)
+	{
+		$s = ($show_starred ? 'starred=1' : '');
+		$s .= ($show_note ? ($s?' AND ':'') ."note!=''" : '');
+		$word = $this->db->escape_like_str($search_note);
+		$s .= ($word ? ($s?' AND ':'') ."note LIKE '%$word%'" : '');
+		$uid = $this->session->userdata('uid');
+		return ( $s ? "pid in (SELECT pid FROM Bookmark WHERE uid=$uid AND $s)" : 'TRUE');
+	}
+
 	function gen_uid_lim($uid)
 	{
 		if (!$uid) return 'TRUE';
@@ -50,30 +60,32 @@ class Problems extends CI_Model{
 			return 'isShowed=1';
 	}
 	
-	function count($uid = FALSE, $admin = FALSE, $keyword = FALSE, $filter = FALSE)
+	function count($uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
 	{
 		$keyword_lim = $this->gen_keyword_lim($keyword);
 		$filter_lim = $this->gen_filter_lim($filter);
+		$bookmark_lim = $this->gen_bookmark_lim($show_starred, $show_note, $search_note);
 		$uid_lim = $this->gen_uid_lim($uid);
 		$admin_lim = $this->gen_admin_lim($admin);
 
 		return $this->db->query("
 			SELECT COUNT(*) AS count FROM ProblemSet
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($uid_lim) AND ($admin_lim)
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim)
 			")->row()->count;
 	}
 
-	function load_problemset($row_begin, $count, $rev = FALSE, $uid = FALSE, $admin = FALSE, $keyword = FALSE, $filter = FALSE)
+	function load_problemset($row_begin, $count, $rev=FALSE, $uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
 	{
 		$keyword_lim = $this->gen_keyword_lim($keyword);
 		$filter_lim = $this->gen_filter_lim($filter);
+		$bookmark_lim = $this->gen_bookmark_lim($show_starred, $show_note, $search_note);
 		$uid_lim = $this->gen_uid_lim($uid);
 		$admin_lim = $this->gen_admin_lim($admin);
 		$rev_str = ($rev?"DESC":"");
 
 		return $this->db->query("
 			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed FROM ProblemSet
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($uid_lim) AND ($admin_lim)
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim)
 			ORDER BY pid $rev_str LIMIT ?, ?
 			", array($row_begin, $count))->result();
 	}

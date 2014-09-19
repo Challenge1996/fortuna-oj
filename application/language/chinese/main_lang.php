@@ -14,6 +14,7 @@
 	$lang['administer'] = '管理';
 	
 //problemset
+	$lang['p_advanced'] = '高级…';
 	$lang['problem_id'] = '题目编号';
 	$lang['go'] = '前往';
 	$lang['search'] = '搜索';

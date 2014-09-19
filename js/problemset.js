@@ -1,4 +1,7 @@
 var status_open_all=false;
+var show_note = 0;
+var show_starred = 0;
+var search_note = false;
 
 function upd_bookmark(pid)
 {
@@ -63,38 +66,32 @@ function toggle_open_all()
 }
 
 $(document).ready(function(){
-	$('#goto_button').live('click', function(){
+	$('#goto_button').bind('click', function(){
 		var pid = $('#goto_pid').val();
 		if (pid != '')
 		load_page('main/show/' + pid);
-	return false;
-	}),
-
-	$('#search_button').live('click', function(){
-		var keyword = $('#search_content').val();
-		var filter = $('#filter_content').val();
-		keyword = encodeURIComponent(keyword);
-		if (keyword != '') keyword = 'search=' + keyword;
-		if (filter != 0) filter = 'filter=' + filter; else filter = '';
-		if (keyword != '' && filter != '') filter = '&' + filter;
-		load_page("main/problemset?" + keyword + filter);
 		return false;
-	}),
+	});
 
-	$('#filter_button').live('click', function(){
-		var content = $('#filter_content').val();
-		if (content == 0) load_page('main/problemset/1');
-		else if (content != '') load_page("main/problemset?filter=" + content);
+	$('#search_button').bind('click', function(){
+		var query = {};
+		if ($('#search_content').val()) query['search'] = encodeURIComponent($('#search_content').val());
+		if ($('#filter_content').val()!='0') query['filter'] = $('#filter_content').val();
+		if (show_starred) query['show_starred'] = show_starred;
+		if (show_note) query['show_note'] = show_note;
+		if (search_note) query['search_note'] = search_note;
+		if (!query) return false;
+		load_page("main/problemset?" + $.param(query));
 		return false;
-	}),
+	});
 
-	$('#btn_goto_page').live('click', function(){
+	$('#btn_goto_page').bind('click', function(){
 		var page = $('#goto_page').val();
 		load_page("main/problemset/" + page);
 		return false;
-	}),
+	});
 
-	$('#goto_pid').live('focus', function(){
+	$('#goto_pid').bind('focus', function(){
 		$('#action_form').die();
 		$('#action_form').live('keypress', function(event){
 			if (event.keyCode == 13 && $('#goto_pid').val() != ''){
@@ -102,19 +99,29 @@ $(document).ready(function(){
 				return false;
 			}
 		})
-	}),
+	});
 
-	$('#search_content').live('focus', function(){
+	$('#search_content').bind('focus', function(){
 		$('#action_form').die();
 		$('#action_form').live('keypress', function(event){
-			if (event.keyCode == 13 && $('#search_content').val() != ''){
+			if (event.keyCode == 13){
 				$('#search_button').click();
 				return false;
 			}
 		})
-	}),
-
-	$('#goto_page').live('focus', function(){
+	});
+	
+	$('#filter_content').bind('focus', function(){
+		$('#action_form').die();
+		$('#action_form').live('keypress', function(event){
+			if (event.keyCode == 13){
+				$('#search_button').click();
+				return false;
+			}
+		})
+	});
+	
+	$('#goto_page').bind('focus', function(){
 		$('#action_form').die();
 		$('#action_form').live('keypress', function(event){
 			if (event.keyCode == 13 && $('#goto_page').val() != ''){
@@ -122,5 +129,45 @@ $(document).ready(function(){
 				return false;
 			}
 		})
-	})
+	});
+	
+	$("#search_button").popover({
+		html: true,
+		trigger: 'manual',
+		placement: 'bottom',
+		title:'\
+			<strong>Advanced Searching</strong> \
+			<span id="close_popover" class="close pull-right">&times;</span>',
+		content:'\
+			<div> \
+				<label for="show_starred_content">Only what I starred</label> \
+				<input id="show_starred_content" class="pull-right" type="checkbox" onclick="show_starred=1-show_starred"></input> \
+			</div> \
+			<div> \
+				<label for="show_note_content">Only where I have notes</label> \
+				<input id="show_note_content" class="pull-right" type="checkbox" onclick="show_note=1-show_note"></input> \
+			</div> \
+			<div> \
+				<label for="search_note_content">Match what I wrote in notes</label> \
+				<input id="search_note_content" style="width:100%" onkeydown="search_note=$(this).val()"></input> \
+			</div>'
+	});
+	
+	$("#adv_button").bind('click',function(){
+		$("#search_button").popover('toggle');
+		$('#action_form').die();
+		$('#action_form').live('keypress', function(event){
+			if (event.keyCode == 13){
+				$('#search_button').click();
+				return false;
+			}
+		})
+		return false;
+	});
+	
+	$("#close_popover").die();
+	$("#close_popover").live('click',function(){
+		$("#search_button").popover('hide');
+		return false;
+	});
 });

@@ -14,6 +14,7 @@
 	$lang['administer'] = 'Administer';
 
 //problemset
+	$lang['p_advanced'] = 'Advanced...';
 	$lang['problem_id'] = 'Problem ID';
 	$lang['go'] = 'Go';
 	$lang['search'] = 'Search';

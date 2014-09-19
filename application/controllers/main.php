@@ -130,8 +130,11 @@ class Main extends CI_Controller {
 
 		$keyword = $this->input->get('search',TRUE);
 		$filter = $this->input->get('filter',TRUE);
-		
-		if (!$keyword && !$filter)
+		$show_starred = $this->input->get('show_starred',TRUE);
+		$show_note = $this->input->get('show_note',TRUE);
+		$search_note = $this->input->get('search_note',TRUE);
+
+		if (count($this->input->get(NULL,TRUE))==1)
 			if ($page == 0)
 				$page = $this->user->load_last_page($uid);
 			else
@@ -139,11 +142,13 @@ class Main extends CI_Controller {
 		else if ($page == 0)
 			$page = 1;
 
-		$count = $this->problems->count(FALSE, FALSE, $keyword, $filter);
+		$count = $this->problems->count(FALSE, FALSE,
+		    	$keyword, $filter, $show_starred, $show_note, $search_note);
 		if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
 			$page = ($count + $problems_per_page - 1) / $problems_per_page;
 		$row_begin = ($page - 1) * $problems_per_page;
-		$data = $this->problems->load_problemset($row_begin, $problems_per_page, FALSE, FALSE, FALSE, $keyword, $filter);
+		$data = $this->problems->load_problemset($row_begin, $problems_per_page, FALSE, FALSE, FALSE, 
+			$keyword, $filter, $show_starred, $show_note, $search_note);
 		
 		$pids='';
 		foreach ($data as $row)
