@@ -552,8 +552,9 @@ class Contests extends CI_Model{
 				$problem['id'] = $now;
 
 				$sql = $this->db->insert_string('Contest_has_ProblemSet', $problem);
-				$this->db->query($sql);	
-				$this->db->query("UPDATE ProblemSet SET isShowed=0 WHERE pid=?", array($pid));
+				$this->db->query($sql);
+				if (strtotime($data['endTime'])>strtotime('now'))
+					$this->db->query("UPDATE ProblemSet SET isShowed=0 WHERE pid=?", array($pid));
 			}
 		}
 	}

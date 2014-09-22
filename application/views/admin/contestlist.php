@@ -44,6 +44,7 @@
 		<p>Are you sure to delete contest: </p>
 		<h3><div class="info"></div></h3>
 		<p>All data related to this contest including <strong>submissions</strong> will be lost!</p>
+		<p>Please set the problems to <span class="label label-success">Showed</span> manually</p>
 	</div>
 	<div class="modal-footer">
 		<a class="btn" data-dismiss="modal">Close</a>

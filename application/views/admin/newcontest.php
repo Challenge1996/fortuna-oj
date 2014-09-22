@@ -90,12 +90,14 @@
 				<label class="checkbox inline">
 					<input type="checkbox" name="languages[]" value="Pascal" <?=set_checkbox('languages[]', 'Pascal', isset($languages) ? in_array('Pascal', $languages) : TRUE)?> />Pascal
 				</label>
+				<!--
 				<label class="checkbox inline">
 					<input type="checkbox" name="languages[]" value="Java" <?=set_checkbox('languages[]', 'Java', isset($languages) ? in_array('Java', $languages) : FALSE)?> />Java
 				</label>
 				<label class="checkbox inline">
 					<input type="checkbox" name="languages[]" value="Python" <?=set_checkbox('languages[]', 'Python', isset($languages) ? in_array('Python', $languages) : FALSE)?> />Python
 				</label>
+				-->
 			</div>
 			
 			<label class="control-label">Problems</label>
