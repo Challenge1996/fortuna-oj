@@ -31,6 +31,7 @@
 	<table class="table table-condensed table-striped table-bordered">
 		<thead><tr>
 			<th>Problem ID</th>
+			<th>Author</th>
 			<th>Title</th>
 			<th>Source</th>
 			<th>Status</th>
@@ -43,6 +44,7 @@
 		foreach ($data as $row){
 			$pid = $row->pid;
 			echo "<tr><td><a href='#main/show/$pid'>$row->pid</a></td>";
+			echo "<td><span class='label label-info'>$row->author</span></td>";
 			echo "<td><a class='title' href='#main/show/$pid'>$row->title</a></td>";
 			echo '<td>' . strtrim($row->source) . '</td>';
 			echo "<td><a onclick=\"access_page('#admin/change_problem_status/$pid')\">$row->isShowed</a></td>";
