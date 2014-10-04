@@ -526,10 +526,8 @@ class Admin extends CI_Controller {
 				$this->submission->rejudge($data['id']);
 			}else{
 				$data = $this->problems->load_problem_submission($data['id']);
-				foreach ($data as $row) {
-					if (is_null($row->cid))
-						$this->submission->rejudge($row->sid);
-				}
+				foreach ($data as $row)
+					$this->submission->rejudge($row->sid);
 			}
 			$this->load->view('success');
 		}
