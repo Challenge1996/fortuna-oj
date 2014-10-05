@@ -202,14 +202,14 @@ class User extends CI_Model{
 		if ($this->is_admin())
 			return $this->db->query("
 			SELECT DISTINCT pid FROM Submission 
-			WHERE uid=? AND status=0
+			WHERE uid=? AND status=0 ORDER BY pid
 			",array($uid))->result();
 		else
 			return $this->db->query("
 			SELECT DISTINCT pid FROM Submission 
-			WHERE uid=? AND status=0 AND cid NOT IN (
+			WHERE uid=? AND status=0 AND (ISNULL(cid) OR cid NOT IN (
 				SELECT cid FROM Contest WHERE endTime>NOW()
-			)
+			)) ORDER BY pid
 			",array($uid))->result();
 	}
 	
@@ -228,9 +228,9 @@ class User extends CI_Model{
 				SELECT min(status) AS verdict, pid, cid FROM Submission
 				WHERE status>=0 AND uid=? GROUP BY pid
 			)T
-			WHERE verdict>0 AND cid NOT IN (
+			WHERE verdict>0 AND (ISNULL(cid) OR cid NOT IN (
 				SELECT cid FROM Contest WHERE endTime>NOW()
-			)
+			))
 			",array($uid))->result();
 	}
 	
@@ -295,8 +295,14 @@ class User extends CI_Model{
 	}
 	
 	function load_statistic($uid) {
-		$result = $this->db->query("SELECT status, COUNT(*) AS count FROM Submission 
+		if ($this->is_admin())
+			$result = $this->db->query("SELECT status, COUNT(*) AS count FROM Submission 
 									WHERE uid=? GROUP BY status",
+									array($uid))->result();
+		else
+			$result = $this->db->query("SELECT status, COUNT(*) AS count FROM Submission
+									WHERE uid=? AND (ISNULL(cid) OR cid NOT IN (SELECT cid FROM Contest WHERE endTime>NOW()))
+									GROUP BY status",
 									array($uid))->result();
 		for ($i = -2; $i <= 9; $i++) $data[$i] = 0;
 		foreach ($result as $row) $data[$row->status] = $row->count;
