@@ -148,8 +148,10 @@ class Submission extends CI_Model{
 	function load_status($row_begin, $count, $filter = NULL){
 		$conditions = self::filter_to_string($filter);
 		$result = $this->db->query("SELECT sid, uid, gid, tid, name, pid, status, score, time, memory,
-							codeLength, submitTime, language, isShowed, private, sim 
-						FROM Submission WHERE cid IS NULL $conditions ORDER BY sid DESC LIMIT ?, ?",
+							codeLength, submitTime, language, isShowed, private, sim FROM Submission
+							WHERE (cid IS NULL OR cid IN
+							(SELECT cid FROM Contest WHERE UNIX_TIMESTAMP(endTime)<UNIX_TIMESTAMP()))
+							$conditions ORDER BY sid DESC LIMIT ?, ?",
 					array($row_begin, $count));
 		return $result->result();
 	}
