@@ -64,12 +64,8 @@ class Customtest extends CI_Controller {
 			$code = html_entity_decode($this->input->post('texteditor'));	
 			$input_text = $this->input->post('input_text');
 			
-			$cmd = 'mkdir /tmp/foj/customtest > /dev/null';
-			system($cmd);
-			
 			$path = '/tmp/foj/customtest/run' . rand();
-			$cmd = 'mkdir ' . $path . ' > /dev/null';
-			system($cmd);
+			mkdir($path, 0777, true);
 			
 			$cmd = 'cp /usr/bin/judge_core ' . $path . ' > /dev/null';
 			system($cmd);
