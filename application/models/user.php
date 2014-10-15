@@ -7,10 +7,15 @@ class User extends CI_Model{
 	}
 	
 	function is_logged_in(){
-		if ($this->session->userdata('uid') != FALSE) return TRUE;
+		if ($this->session->userdata('uid') != FALSE)
+		{
+			if (!self::uid_check($this->session->userdata('uid'))) return FALSE;
+			return TRUE;
+		}
 		if ($this->input->cookie('identifier') != FALSE){
 			$identifier = $this->input->cookie('identifier', TRUE);
 			if (($username = self::identifier_check($identifier)) != FALSE){
+				if (!self::username_check($username)) return FALSE;
 				self::login_success(array('username' => $username, 'remember' => 1));
 				return TRUE;
 			}
@@ -60,6 +65,15 @@ class User extends CI_Model{
 		$permission = json_encode($permission);
 		$this->db->query("UPDATE User SET permission=? WHERE uid=?",
 				array($permission, $uid));
+	}
+
+	function uid_check($uid){
+		$result = $this->db->query("SELECT isEnabled FROM User
+									WHERE uid=?",
+									array($uid));
+								
+		if ($result->num_rows() == 0 || ! $result->row()->isEnabled) return FALSE;
+		return TRUE;
 	}
 	
 	function username_check($username){
