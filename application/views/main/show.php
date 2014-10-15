@@ -134,13 +134,14 @@
 				
 				<div><?php
 					if ($data->solutions) {
-					foreach ($data->solutions as $solution) {
-						$allowed_download .= "|$solution->filename";
-						echo "<a href='index.php/main/download/$data->pid/$solution->filename/solution'>$solution->filename</a>";
-						if ($this->user->uid() == $solution->uid || $this->user->is_admin())
-							echo "<a class='pull-right' onclick='delete_solution($solution->idSolution)'>&times;</a>";
-						echo '<br />';
-					}
+						foreach ($data->solutions as $solution) {
+							$encoded_filename = urlencode(rawurlencode($solution->filename));
+							$allowed_download .= "|$solution->filename";
+							echo "<a href='index.php/main/download/$data->pid/$encoded_filename/solution'>$solution->filename</a>";
+							if ($this->user->uid() == $solution->uid || $this->user->is_admin())
+								echo "<a class='pull-right' onclick='delete_solution($solution->idSolution)'>&times;</a>";
+							echo '<br />';
+						}
 					}
 				?></div>
 			</fieldset>

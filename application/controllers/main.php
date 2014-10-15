@@ -252,7 +252,7 @@ class Main extends CI_Controller {
 	}
 	
 	public function download($pid, $filename = 'data.zip', $dir = '') {
-		$filename = rawurldecode($filename);
+		$filename = rawurldecode(urldecode($filename));
 		$file = $this->config->item('data_path') . $pid . "/$dir/$filename";
 		
 		if (! strstr($this->session->userdata('download'), $filename))
