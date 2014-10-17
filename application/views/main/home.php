@@ -17,6 +17,8 @@
 			<h4>Changelog</h4>
 <!-- 			Jan.13 2013:	现在管理员可以在Group页面看到Task的统计信息。 -->
 				<dl style="text-align: left" class="dl-horizontal">
+					<dt>Oct.17 2014</dt>
+					<dd>现在可以通过邮件重置密码，没有填写邮箱地址的可以在用户设置中填写，地址不被公开</dd>
 					<dt>Aug.23 2014</dt>
 					<dd>支持添加书签</dd>
 					<dd>支持在statistic选择是否加载比赛前的提交（题目相当多时动画会相当卡）</dd>

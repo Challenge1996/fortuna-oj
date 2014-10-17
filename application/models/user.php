@@ -427,4 +427,11 @@ class User extends CI_Model{
 		return $this->db->query("SELECT COUNT(*) AS count FROM Contest
 					WHERE unix_timestamp(startTime)<=unix_timestamp() AND unix_timestamp(endTime)>=unix_timestamp()")->row()->count;
 	}
+
+	function load_email($name)
+	{
+		$ret = $this->db->query("SELECT email FROM User WHERE name=?", array($name));
+		if (!$ret->num_rows()) return FALSE;
+		return $ret->row()->email;
+	}
 }
