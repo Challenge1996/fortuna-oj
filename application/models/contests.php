@@ -86,6 +86,21 @@ class Contests extends CI_Model{
 								->row()->count;
 	}
 	
+	function load_contest_title($cid)
+	{
+		return $this->db->query("SELECT title FROM Contest WHERE cid=?", array($cid))->row()->title;
+	}
+	
+	function load_problems_in_contests($problems)
+	{
+		$arr = array();
+		foreach ($problems as $row) $arr[]=$row->pid;
+		$this->db->select('cid, pid');
+		$this->db->order_by('cid desc, id asc');
+		$this->db->where_in('pid',$arr);
+		return $this->db->get('Contest_has_ProblemSet')->result();
+	}
+	
 	function load_contest_problemset($cid){
 		return $this->db->query("SELECT * FROM Contest_has_ProblemSet
 								WHERE cid=? ORDER BY id",

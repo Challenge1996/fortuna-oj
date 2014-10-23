@@ -78,6 +78,7 @@ class Users extends CI_Controller {
 	}
 	
 	function statistic($user) {
+		$this->load->model('contests');
 		$this->load->model('misc');
 		$this->load->model('submission');
 		
@@ -88,6 +89,8 @@ class Users extends CI_Controller {
 		$statistic->categories = $this->user->load_categories_statistic($user->uid);
 		$statistic->accepted = $this->user->load_accepted($user->uid);
 		$statistic->unaccepted = $this->user->load_unaccepted($user->uid);
+		$statistic->accepted_in_contests = $this->contests->load_problems_in_contests($statistic->accepted);
+		$statistic->unaccepted_in_contests = $this->contests->load_problems_in_contests($statistic->unaccepted);
 		
 		$this->load->view('user/statistic', array('categorization' => $categorization, 'statistic' => $statistic));
 	}

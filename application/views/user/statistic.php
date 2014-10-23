@@ -1,3 +1,5 @@
+<?php $this->load->model('contests'); ?>
+
 <fieldset>
 <legend><strong>Statistic</strong></legend>
 
@@ -20,9 +22,22 @@
 			<div id="category_chart"></div>-->
 		</div>
 	</div>
-		
+	<br />
+	<div class="row-fluid">
+	<span class="span3 offset9">
+		Ordered By
+		<span class="btn-group" data-toggle="buttons-radio">
+			<button type="button" class="btn active" onclick="$('.by_contest').hide();$('.individual').show();">
+				pid
+			</button>
+			<button type="button" class="btn" onclick="$('.individual').hide();$('.by_contest').show();">
+				contest
+			</button>
+		</span>
+	</span>
+
 	<div class="span11 accordion" id="problems">
-	
+
 		<div class="accordion-group">
 			<div class="accordion-heading">
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#problems" data-target="#accepted">
@@ -32,11 +47,33 @@
 			
 			<div id="accepted" class="accordion-body collapse">
 				<div class="accordion-inner">
-					<?php foreach ($statistic->accepted as $row) {?>
-						<span class="badge badge-info">
-							<a href="#main/show/<?=$row->pid?>"><?=$row->pid?></a>
-						</span>
-					<?php } ?>
+					<div class="individual">
+						<?php foreach ($statistic->accepted as $row) {?>
+							<span class="badge badge-info">
+								<a href="#main/show/<?=$row->pid?>"><?=$row->pid?></a>
+							</span>
+						<?php } ?>
+					</div>
+					<div class="by_contest" style="display:none">
+						<table class="table table-hover">
+							<tr><th>cid</th><th>Contest</th><th>Problems</th></tr>
+							<?php
+								$current = -1;
+								foreach ($statistic->accepted_in_contests as $row)
+								{
+									if ($row->cid != $current)
+									{
+										if ($current > -1) echo "</td>\n</tr>\n";
+										$title = $this->contests->load_contest_title($row->cid);
+										echo "<tr>\n<td>$row->cid</td><td><a href='#contest/home/$row->cid'>$title</a></td>\n<td>";
+										$current = $row->cid;
+									}
+									echo "<span class='badge badge-info'><a href='#main/show/$row->pid'>$row->pid</a></span>\n";
+								}
+								if ($current > -1) echo "</td>\n</tr>\n";
+							?>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -50,15 +87,38 @@
 			
 			<div id="unaccepted" class="accordion-body collapse">
 				<div class="accordion-inner">
-					<?php foreach ($statistic->unaccepted as $row) {?>
-						<span class="badge badge-info">
-							<a href="#main/show/<?=$row->pid?>"><?=$row->pid?></a>
-						</span>
-					<?php } ?>
+					<div class="individual">
+						<?php foreach ($statistic->unaccepted as $row) {?>
+							<span class="badge badge-info">
+								<a href="#main/show/<?=$row->pid?>"><?=$row->pid?></a>
+							</span>
+						<?php } ?>
+					</div>
+					<div class="by_contest" style="display:none">
+						<table class="table table-hover">
+							<tr><th>cid</th><th>Contest</th><th>Problems</th></tr>
+							<?php
+								$current = -1;
+								foreach ($statistic->unaccepted_in_contests as $row)
+								{
+									if ($row->cid != $current)
+									{
+										if ($current > -1) echo "</td>\n</tr>\n";
+										$title = $this->contests->load_contest_title($row->cid);
+										echo "<tr>\n<td>$row->cid</td><td><a href='#contest/home/$row->cid'>$title</a></td>\n<td>";
+										$current = $row->cid;
+									}
+									echo "<span class='badge badge-info'><a href='#main/show/$row->pid'>$row->pid</a></span>\n";
+								}
+								if ($current > -1) echo "</td>\n</tr>\n";
+							?>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
 		
+	</div>
 	</div>
 </fieldset>
 
