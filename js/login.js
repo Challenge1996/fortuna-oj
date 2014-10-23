@@ -31,7 +31,10 @@ function send_reset()
 	function(data, status)
 	{
 		if (status=="success")
+		{
 			alert(data);
+			hide_forget();
+		}
 		else
 			alert("An Error Occured. Try Again.");
 	});
