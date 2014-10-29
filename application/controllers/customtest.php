@@ -82,11 +82,11 @@ class Customtest extends CI_Controller {
 					$source = 'Main.cpp';
 					break;
 				case 'C++11':
-					$cmd = 'g++ Main.code --std=c++11 -o Main -O2 -DONLINE_JUDGE >data.out 2>&1';
+					$cmd = 'g++ Main.cpp --std=c++11 -o Main -O2 -DONLINE_JUDGE >data.out 2>&1';
 					$source = 'Main.cpp';
 					break;
 				case 'Pascal':
-					$cmd = 'fpc Main.pas -oMain -O2 -Co -Ci >data.out';
+					$cmd = 'fpc Main.pas -oMain -O2 -Co -Ci >data.out 2>&1';
 					$source = 'Main.pas';
 					break;
 			}
