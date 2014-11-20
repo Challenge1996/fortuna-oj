@@ -87,7 +87,7 @@ class Problems extends CI_Model{
 			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, uname AS author
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
 			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim)
-			ORDER BY pid $rev_str LIMIT ?, ?
+			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?
 			", array($row_begin, $count))->result();
 	}
 	
