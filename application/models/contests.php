@@ -500,17 +500,26 @@ class Contests extends CI_Model{
 	}
 	
 	function load_declaration_list($cid){
-		return $this->db->query('SELECT idDeclaration, title, pid FROM Declaration
+		return $this->db->query('SELECT cid, idDeclaration, title, pid, postTime FROM Declaration
 								WHERE cid=?',
 								array($cid))
 								->result();
 	}
 	
-	function load_declaration($id){
+	function load_declaration($cid, $id){
 		return $this->db->query('SELECT * FROM Declaration
-								WHERE idDeclaration=?',
-								array($id))
-								->result();
+								WHERE cid=? AND idDeclaration=?',
+								array($cid, $id))
+								->row();
+	}
+
+	function add_declaration($cid, $pid, $title, $decl)
+	{
+		$cnt = $this->db->query("SELECT MAX(idDeclaration) AS cnt FROM Declaration")->row()->cnt+1;
+		$this->db->query(
+			"INSERT INTO Declaration VALUES (?,?,?,?,?,NOW())",
+			array($cnt, $cid, $pid, $title, $decl)
+		);
 	}
 	
 	function load_contest_configuration($cid){
@@ -598,7 +607,14 @@ class Contests extends CI_Model{
 			$sql = $this->db->insert_string('Task_has_ProblemSet', $row);
 			$this->db->query($sql);
 		}
-		
+	}
+
+	function id_in_contest_to_pid($cid, $id)
+	{
+		return $this->db->query(
+			"SELECT pid FROM Contest_has_ProblemSet WHERE cid=? AND id=?",
+			array($cid,$id)
+		)->row()->pid;
 	}
 
 }

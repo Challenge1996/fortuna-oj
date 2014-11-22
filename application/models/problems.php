@@ -202,4 +202,9 @@ class Problems extends CI_Model{
 		if ($star || $note)
 			$this->db->query("INSERT INTO Bookmark (pid,uid,starred,note) VALUES (?,?,?,?)", array($pid,$uid,$star,$note));
 	}
+
+	function load_title($pid)
+	{
+		return $this->db->query("SELECT title FROM ProblemSet WHERE pid=?", array($pid))->row()->title;
+	}
 }

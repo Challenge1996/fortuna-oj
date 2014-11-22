@@ -11,6 +11,7 @@ class Contest extends CI_Controller {
 
 	public function _remap($method, $params = array()){
 		$this->load->model('user');
+		$this->load->model('problems');
 		$this->load->model('contests');
 		
 		if ($this->user->is_logged_in()){
@@ -231,6 +232,8 @@ class Contest extends CI_Controller {
 	public function declaration_list($cid){
 		$info = $this->contests->load_contest_status($cid);
 		$data = $this->contests->load_declaration_list($cid);
+		foreach ($data as $row)
+			$row->prob = $this->problems->load_title($row->pid);
 		if ($info->contestMode == 'ACM'){
 			foreach ($data as $row) $row->id += 1000;
 		}
@@ -238,12 +241,21 @@ class Contest extends CI_Controller {
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
 		else
-			$this->load->view('contest/declaration_list', array('data' => $data));
+			$this->load->view('contest/declaration_list', array('data' => $data, 'cid' => $cid));
 	}
 	
-	public function declaration($id){
-		$data = $this->contests->load_declaration($id);
+	public function declaration($cid, $id){
+		$data = $this->contests->load_declaration($cid, $id);
 		$this->load->view('contest/declaration', array('data' => $data));
+	}
+
+	public function add_declaration($cid)
+	{
+		$title = $this->input->post('title');
+		$prob = $this->input->post('prob');
+		$decl = $this->input->post('declaration');
+		$pid = $this->contests->id_in_contest_to_pid($cid, $prob);
+		$this->contests->add_declaration($cid, $pid, $title, $decl);
 	}
 	
 	public function result($cid){
