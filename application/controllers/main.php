@@ -251,22 +251,26 @@ class Main extends CI_Controller {
 			$this->load->view('main/show', array('data' => $data, 'category' => $categorization));
 	}
 	
-	public function download($pid, $filename = 'data.zip', $dir = '') {
+	public function download($pid, $filename = 'data.zip', $filetypeflag = 0, $dir = '') {
+		//filetypeflag: 0 -> auto detect, 1 -> application/octet-stream
 		$filename = rawurldecode(urldecode($filename));
 		$file = $this->config->item('data_path') . $pid . "/$dir/$filename";
+  		$filetype = mime_content_type($file);
+  		if ($filetype == 'image/x-portable-bitmap') $filetype = 'text/plain';
+		if ($filetypeflag == 1) $filetype = 'application/octet-stream';
 		
 		if (! strstr($this->session->userdata('download'), $filename))
 			$this->load->view('error', array('message' => 'You are not allowed to download this file!'));
 		else if ( ! is_file($file))
 			$this->load->view('error', array('message' => 'File Not Found!'));
 		else if ($dir != 'submission')
-			$this->load->view('main/download', array('file' => $file, 'filename' => $filename));
+			$this->load->view('main/download', array('file' => $file, 'filename' => $filename, 'filetype' => $filetype));
 		else {
 			$filename = str_replace('compressed', '', $filename);
 			$type = system("type.sh $file");
 			$filename .= $type;
 			
-			$this->load->view('main/download', array('file' => $file, 'filename' => $filename));
+			$this->load->view('main/download', array('file' => $file, 'filename' => $filename, 'filetype' => $filetype));
 		}
 	}
 

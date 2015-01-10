@@ -19,7 +19,7 @@
 			echo lang('time_memory_limit');
 		} else {
 			$this->session->set_userdata('download', 'data.zip');
-			echo "<a href='/index.php/main/download/$data->pid' target='_blank'>Download Input</a>";
+			echo "<a href='index.php/main/download/$data->pid' target='_blank'>Download Input</a>";
 		}
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#main/limits/$data->pid\" style=\"text-align:left\">";
