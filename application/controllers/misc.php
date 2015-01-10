@@ -103,7 +103,7 @@ class Misc extends CI_Controller {
 			$command = "zip /tmp/$pid.zip $path/$pid/* -9 -j -D > /dev/null 2>&1";
 			system($command);
 
-			$this->load->view('main/download', array('file' => "/tmp/$pid.zip", 'filename' => "$pid.zip"));
+			$this->load->view('main/download', array('file' => "/tmp/$pid.zip", 'filename' => "$pid.zip", 'filetype' => 'application/zip'));
 
 			$command = "rm /tmp/$pid.zip > /dev/null 2>&1";
 			system($command);

@@ -40,8 +40,8 @@
 
 				 $this->session->set_userdata('download', $infile . '|' . $outfile);
 
-				 echo "<a href='index.php/main/download/$pid/$infile' target='_blank'>Input</a> ";
-				 echo "<a href='index.php/main/download/$pid/$outfile' target='_blank'>Output</a> ";
+				 echo "<a href='index.php/main/download/$pid/$infile/1/' target='_blank'>Input</a> ";
+				 echo "<a href='index.php/main/download/$pid/$outfile/1/' target='_blank'>Output</a> ";
 
 				 $ok = false;
 			 }

@@ -195,7 +195,7 @@
 			} else {
 				echo '<td>---</td><td>---</td>';
 				if ($row->uid == $this->user->uid() || $this->user->is_admin() || ! $row->private) {
-					echo "<td>File <a href='/index.php/main/download/$row->pid/$row->sid.compressed/submission' target='_blank'>
+					echo "<td>File <a href='index.php/main/download/$row->pid/$row->sid.compressed/1/submission' target='_blank'>
 						<i class='icon-download-alt'></i></a></td>";
 					$allowed_download .= "$row->sid.compressed";
 				} else echo '<td>---</td>';

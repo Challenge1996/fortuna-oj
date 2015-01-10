@@ -25,7 +25,7 @@
 			echo lang('time_memory_limit');
 		} else {
 			$allowed_download .= '|data.zip';
-			echo "<a href='/index.php/main/download/$data->pid' target='_blank'>Download Input</a>";
+			echo "<a href='index.php/main/download/$data->pid' target='_blank'>Download Input</a>";
 		}
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#main/limits/$data->pid\" style=\"text-align:left\">";
@@ -137,7 +137,7 @@
 						foreach ($data->solutions as $solution) {
 							$encoded_filename = urlencode(rawurlencode($solution->filename));
 							$allowed_download .= "|$solution->filename";
-							echo "<a href='index.php/main/download/$data->pid/$encoded_filename/solution'>$solution->filename</a>";
+							echo "<a href='index.php/main/download/$data->pid/$encoded_filename/0/solution'>$solution->filename</a>";
 							if ($this->user->uid() == $solution->uid || $this->user->is_admin())
 								echo "<a class='pull-right' onclick='delete_solution($solution->idSolution)'>&times;</a>";
 							echo '<br />';
