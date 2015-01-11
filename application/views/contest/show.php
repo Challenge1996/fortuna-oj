@@ -77,12 +77,12 @@
 			<div>
 				<div class="span6 well"><fieldset>
 					<legend><h4><?=lang('sample_input')?></h4></legend>
-					<div class="content"><?=nl2br($data->inputSample)?></div>
+					<div class="content"><pre style='border:none'><?=nl2br($data->inputSample)?></pre></div>
 				</fieldset></div>
 			
 				<div class="span6 well"><fieldset>
 					<legend><h4><?=lang('sample_output')?></h4></legend>
-					<div class="content"><?=nl2br($data->outputSample)?></div>
+					<div class="content"><pre style='border:none'><?=nl2br($data->outputSample)?></pre></div>
 				</fieldset></div>
 			</div>
 			<div class="clearfix"></div>
