@@ -78,10 +78,6 @@
 				<input type="text" id="source" name="source"  class="input-xxlarge" value="<?=set_value('source', isset($source) ? $source : '', false)?>"/>
 			</div>
 			
-			<label for="codeSizeLimit" class="control-label">Source Code Limit (KB)</label>
-			<div class="controls controls-row">
-				<input type="text" class="input-mini" id="codeSizeLimit" name="codeSizeLimit" value="<?=set_value('codeSizeLimit', isset($codeSizeLimit) ? $codeSizeLimit : '')?>"/>
-			</div>
 		<div>
 		
 		<button type="submit" class="btn btn-primary pull-right" onclick="return add_problem()">Save</button>

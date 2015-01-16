@@ -92,11 +92,11 @@ class Problems extends CI_Model{
 	}
 	
 	function load_dataconf($pid){
-		return $this->db->query("SELECT title, dataConfiguration FROM ProblemSet WHERE pid=?", array($pid))->row();
+		return $this->db->query("SELECT title, dataConfiguration, dataGroup, confCache FROM ProblemSet WHERE pid=?", array($pid))->row();
 	}
 	
-	function save_dataconf($pid, $data){
-		$sql = $this->db->update_string('ProblemSet', array('dataConfiguration' => $data), "pid=$pid");
+	function save_dataconf($pid, $traditional, $dataGroup, $confCache){
+		$sql = $this->db->update_string('ProblemSet', array('dataConfiguration'=>$traditional, 'dataGroup'=>$dataGroup, 'confCache'=>$confCache), "pid=$pid");
 		$this->db->query($sql);
 	}
 	
@@ -122,13 +122,6 @@ class Problems extends CI_Model{
 		$result = $this->db->query("SELECT * from ProblemSet WHERE pid=?", array($pid));
 		if ($result->num_rows() == 0) return FALSE;
 		return $result->row();
-	}
-	
-	function load_limits($pid){
-		$result = $this->db->query("SELECT pid, title, dataConfiguration, isShowed from ProblemSet WHERE pid=?", array($pid));
-		if ($result->num_rows() == 0) return FALSE;
-		if ($this->user->is_admin() || $result->row()->isShowed == 1) return $result->row();
-		else return FALSE;
 	}
 	
 	function add($data, $pid = 0){
@@ -186,13 +179,6 @@ class Problems extends CI_Model{
 								array($idSolution))->row()->uid;
 	}
 
-	function load_IO_mode($pid)
-	{
-		$dataConfigStr=$this->db->query("SELECT dataConfiguration FROM ProblemSet where pid=?",array($pid))->row()->dataConfiguration;
-		$dataConfig=json_decode($dataConfigStr);
-		return $dataConfig->IOMode;
-	}
-
 	function update_bookmark($pid)
 	{
 		$star=($this->input->post('star')=='true'?1:0);
@@ -206,5 +192,45 @@ class Problems extends CI_Model{
 	function load_title($pid)
 	{
 		return $this->db->query("SELECT title FROM ProblemSet WHERE pid=?", array($pid))->row()->title;
+	}
+
+	function load_pushed($pid)
+	{
+		$ret = json_decode($this->db->query('SELECT pushedServer FROM ProblemSet WHERE pid=?', array($pid))->row()->pushedServer,true);
+		if (!isset($ret)) $ret = array();
+		return $ret;
+	}
+
+	function save_pushed($pid, $s)
+	{
+		$this->db->query('UPDATE ProblemSet SET pushedServer=? WHERE pid=?', array(json_encode($s), $pid));
+	}
+	
+	function is_allowed($pid)
+	{
+		$this->load->model('user');
+		$this->load->model('contests');
+		if ($this->user->is_admin()) return true;
+		if ($this->db->query('SELECT isShowed FROM ProblemSet WHERE pid=?',array($pid))->row()->isShowed==1) return true;
+		$data = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
+		$now = strtotime('now');
+		foreach ($data as $row)
+		{
+			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
+			if (strtotime($res->startTime)<=now && strtotime($res->endTime)>=now) return true;
+		}
+		return false;
+	}
+
+	function mark_update($pid)
+	{
+		$pushed = $this->problems->load_pushed($pid);
+		$pushed['version'] = date('Y-M-d H:i:s');
+		$this->problems->save_pushed($pid,$pushed);
+		$handle = curl_init('http://127.0.0.1/' . $this->config->item('oj_name') . "/index.php/misc/push_data/$pid");
+		curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($handle, CURLOPT_TIMEOUT_MS, 1000);
+		curl_exec($handle);
+		curl_close($handle);
 	}
 }

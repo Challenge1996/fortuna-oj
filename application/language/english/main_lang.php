@@ -30,7 +30,7 @@
 //show
 	$lang['time_limit'] = 'Time Limits';
 	$lang['memory_limit'] = 'Memory Limits';
-	$lang['time_memory_limit'] = 'Time & Memory Limits';
+	$lang['detailed_limit'] = 'Detailed Limits';
 	$lang['description'] = 'Description';
 	$lang['input'] = 'Input';
 	$lang['output'] = 'Output';

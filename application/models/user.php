@@ -177,12 +177,6 @@ class User extends CI_Model{
 		$this->session->unset_userdata('push');
 	}
 	
-	function submit(){
-		$this->db->query("UPDATE User SET submitCount=submitCount+1
-						WHERE uid=?",
-						array($this->session->userdata('uid')));
-	}
-
 	function load_last_page($uid){
 		return $this->db->query("SELECT lastPage FROM User
 								WHERE uid=?",

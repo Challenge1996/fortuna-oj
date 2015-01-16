@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+class MyException extends Exception {}
+
 class Admin extends CI_Controller {
 
 	private function _redirect_page($method, $params = array()){
@@ -90,12 +92,11 @@ class Admin extends CI_Controller {
 			$this->load->view("admin/addproblem", $data);
 		}else{
 			$data = $this->input->post(NULL);
-			$data['codeSizeLimit'] = (int)$data['codeSizeLimit'];
 			//$data['isShowed'] = 0;
 			if ($pid == 0){
 				$new = TRUE;
 				$pid = $this->problems->add($data);
-				$this->problems->save_dataconf($pid, '{IOMode:0, cases:[]}');
+				$this->problems->save_dataconf($pid, '{IOMode:0, cases:[]}', null, null);
 			}else{
 				$new = FALSE;
 				$this->problems->add($data, $pid);
@@ -149,115 +150,119 @@ class Admin extends CI_Controller {
 		$this->load->model('problems');
 		$this->form_validation->set_error_delimiters('<div class="alert">', '</div>');
 		
-		$this->form_validation->set_rules('pid', 'pid', 'required');
+		$this->form_validation->set_rules('script-init', 'Initialization Part', 'required');
+		$this->form_validation->set_rules('script-run', 'Running Part', 'required');
+		$this->form_validation->set_rules('group', 'Manual Setting of Data Grouping', 'required');
 		
-		if ($this->form_validation->run() == FALSE){
-			$data = $this->problems->load_dataconf($pid);
-			$title = $data->title;
-			$data = $data->dataConfiguration;
+		$datapath = $this->config->item('data_path').$pid;
+		
+		try
+		{
+			if ($this->form_validation->run() == FALSE) throw new MyException();
 
-			$this->load->view('admin/dataconf', array('data' => $data, 'pid' => $pid, 'title' => $title));
-		} else {
-			$post = $this->input->post(NULL, TRUE);
-			
-			$data = NULL;
-			$data['IOMode'] = (int)$post['IOMode'];
-			$ccnt = 0;
-			if (isset($post['score'])){
-				foreach ($post['score'] as $case){
-					if (isset($newcase)) unset($newcase);
-					$newcase['score'] = (double)$case;
-					$ccnt++;
-					$data['cases'][] = $newcase;
-				}
-			}
-			
-			$tcnt = $post['tcnt'];
-			for ($i = 1000000000; $i < 1000000000 + $tcnt; $i++){
-				if (isset($post['infile'][$i])){
-					if (isset($test)) unset($test);
-					
-					$test['input'] = $post['infile'][$i];
-					$test['output'] = $post['outfile'][$i];
-					
-					if ($data['IOMode'] != 2) {
-						$test['timeLimit'] = (int)$post['time'][$i];
-						$test['memoryLimit'] = (int)$post['memory'][$i];
-						$test['userInput'] = $post['user_input'];
-						$test['userOutput'] = $post['user_output'];
-						
-					} else {
-						$test['userOutput'] = $post['user_output'][$i];
-					}
-					
-					$data['cases'][(int)$post['case_no'][$i]]['tests'][] = $test;
-				}
-			}
-			
-			if (isset($post['spj'])){
-				$data['spjMode'] = (int)$post['spjMode'];
-				$data['spjFile'] = $post['spjFile'];
-			}
-			if ($data['IOMode'] == 3) $data['framework'] = $post['framework'];
-			
-			$path = $this->config->item('data_path') . $pid;
-			$IOMode = $data['IOMode'];
-			$data = json_encode($data);
-			$this->problems->save_dataconf($this->input->post('pid'), $data);
-			
-			$cur = getcwd();
-			chdir($path);
-			
-			if ($IOMode == 2) {
-				$cmd = "zip data.zip -q";
-				foreach ($post['infile'] as $infile) $cmd .= " $infile";
-				$info = exec($cmd);
-				if ( ! is_dir($path . '/submission')) mkdir($path . '/submission');
-			}
-			
-			$servers = $this->config->item('servers');
-			foreach ($servers as $server) {
-				proc_close(proc_open("ssh user@$server \". /home/judge/data/rsync.sh " . $this->config->item('data_path') . "/$pid\"", array(), $foo));
+			$post = $this->input->post(NULL, FALSE);
+
+			$cwd = getcwd();
+			if (!is_dir("/tmp/foj/dataconf/yauj/$pid")) mkdir("/tmp/foj/dataconf/yauj/$pid",0777,true);
+			chdir("/tmp/foj/dataconf/yauj/$pid");
+			exec('rm -r *');
+
+			$init_file = fopen("init.src","w");
+			$run_file = fopen("run.src","w");
+			fwrite($init_file,$post["script-init"]);
+			fwrite($run_file,$post["script-run"]);
+			fclose($init_file);
+			fclose($run_file);
+			copy("init.src",$datapath.'/init.src');
+			copy("run.src",$datapath.'/run.src');
+
+			$ret = 0; $out = array();
+			file_put_contents("/tmp/foj/dataconf/yauj/$pid/makefile","include /home/judge/resource/makefile");
+			exec("make > compile.log 2>&1", $out, $ret);
+			if ($ret)
+			{
+				$err = file_get_contents('compile.log');
+				chdir($cwd);
+				throw new MyException($err);
 			}
 
-			chdir($cur);
+			$ret = 0; $out = array();
+			exec("./yauj_judge loadconf > conf.log 2> err.log", $out, $ret);
+			if ($ret)
+			{
+				$err = file_get_contents('err.log');
+				chdir($cwd);
+				throw new MyException($err);
+			}
+			$confCache = str_replace(array(" ","\t","\n","\r"),array(),file_get_contents('conf.log'));
+			
+			chdir($cwd);
+
+			$this->problems->mark_update($pid);
+			$this->problems->save_dataconf($pid, $post["traditional"], $post["group"], $confCache);
+			
 			$this->load->view('success');
+
+		} catch (MyException $e)
+		{
+			$data = $this->problems->load_dataconf($pid);
+			$pass = array();
+			$pass['title'] = $data->title;
+			$pass['pid'] = $pid;
+		    	$pass['traditional'] = $data->dataConfiguration;
+			$pass['group'] = $data->dataGroup;
+			$pass['init'] = file_exists($datapath.'/init.src')?file_get_contents($datapath.'/init.src'):'';
+			$pass['run'] = file_exists($datapath.'/run.src')?file_get_contents($datapath.'/run.src'):'';
+			$pass['errmsg'] = $e->getMessage();
+
+			$this->load->view('admin/dataconf', $pass);
 		}
 	}
-	
+
 	public function upload($pid){
 		if ( !isset($_FILES['files'])) return;
 		$count = count($_FILES['files']['tmp_name']);
+
+		$target_path = $this->config->item('data_path') . $pid . '/';
+		if (! is_dir($target_path)) mkdir($target_path,0777,true);
+		//$cwd = getcwd();
+		//chdir($target_path);
+		//$makefile = "SPJ :";
+		
 		for ($i = 0; $i < $count; $i++) {
 			$temp_file = $_FILES['files']['tmp_name'][$i];
-			$target_path = $this->config->item('data_path') . $pid . '/';
-			if (! is_dir($target_path)) mkdir($target_path);
 			$target_file = $target_path . $_FILES['files']['name'][$i];
-
-			$file_types = array('c', 'cpp', 'pas', 'dpr');
-			$file_parts = pathinfo($_FILES['files']['name'][$i]);
-			$basename = $file_parts['basename'];
-			$filename = $file_parts['filename'];
-			if (isset($file_parts['extension'])) $extension = $file_parts['extension'];
-			else $extension = '';
+			//$file_types = array('c', 'cpp', 'pas', 'dpr');
+			//$file_parts = pathinfo($_FILES['files']['name'][$i]);
+			//$basename = $file_parts['basename'];
+			//$filename = $file_parts['filename'];
+			//if (isset($file_parts['extension'])) $extension = $file_parts['extension'];
+			//else $extension = '';
 		
 		//	if (in_array($file_parts['extension'],$file_types))
 			//if ( ! is_executable($temp_file))
 			move_uploaded_file($temp_file, $target_file);
-				
-			if (in_array($extension, $file_types)){
-				chdir($target_path);
+			
+			//if (in_array($extension, $file_types)){
+				/*chdir($target_path);
 				if ($extension == 'c')
 					exec("gcc $basename -o $filename");
 				if ($extension == 'cpp')
 					exec("g++ $basename -o $filename");
 				if ($extension == 'pas' || $extension == 'dpr')
-					exec("fpc $basename -o$filename");
-			}
+					exec("fpc $basename -o$filename");*/
+				//$makefile .= " $filename";
+			//}
 			
 			if (in_array($extension, array('tar', 'tar.gz', 'zip', 'rar', '7z', 'bz2', 'gz')))
 				exec("extract.sh $basename");
 		}
+		//$handle = fopen("spj.makefile","w");
+		//fwrite($handle, $makefile);
+		//fclose($handle);
+		//chdir($cwd);
+		$this->load->model('problems');
+		$this->problems->mark_update($pid);
 	}
 		
 	public function wipedata($pid){
@@ -273,7 +278,7 @@ class Admin extends CI_Controller {
 		chdir($target_path);
 		$dir = (scandir('.'));
 		natsort($dir);
-		$data = (array)json_decode($this->problems->load_dataconf($pid)->dataConfiguration);
+		$data = json_decode($this->problems->load_dataconf($pid)->dataConfiguration,true);
 		$hash = array();
 		$hash['input'] = $hash['output'] = array();
 		
@@ -367,8 +372,20 @@ class Admin extends CI_Controller {
 						$data['cases'][] = $case;
 					}
 			}
-
 		}
+		
+		$num = count($data['cases']);
+		foreach ($data['cases'] as &$case)
+		{
+			if (!isset($cases['score'])) $case['score']=100/$num;
+			foreach ($case['tests'] as &$test)
+			{
+				if (!isset($test['timeLimit'])) $test['timeLimit']=1000;
+				if (!isset($test['memoryLimit'])) $test['memoryLimit']=262144;
+			}
+		}
+
+		if (!isset($data["IOMode"])) $data["IOMode"]=0;
 		
 		echo json_encode($data);
 	}
@@ -532,7 +549,7 @@ class Admin extends CI_Controller {
 			$this->load->view('success');
 		}
 	}
-	
+
 	function always_true() {
 		return TRUE;
 	}

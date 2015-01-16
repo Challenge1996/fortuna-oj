@@ -1,11 +1,18 @@
+<div id='backdrop' class='modal-backdrop'></div>
+
 <link href="css/jquery.fileupload-ui.css" rel="stylesheet">
+<link href="application/third_party/codemirror/lib/codemirror.css" rel="stylesheet">
+<link rel="stylesheet" href="application/third_party/codemirror/theme/neat.css" />
+
+<script src="js/dataconf.js" type="text/javascript"></script>
 
 <?="<center><h3>$pid . $title <sub>(Data Configuration)</sub></h3></center>";?>
 
-<?php $dataconf = json_decode($data); ?>
-
 <?=validation_errors()?>
+<?php if (isset($errmsg) && $errmsg) { $errmsg=nl2br(htmlentities($errmsg)); echo "<div class='alert'>$errmsg</div>"; } ?>
 
+<script type="text/javascript"> pid=<?=$pid?>; </script>
+	
 <form id="form_file_upload" class="form-horizontal" enctype="multipart/form-data">
 	<div class="control-group">
 		<label for="file_upload" class="control-label">
@@ -34,13 +41,11 @@
 	</div>
 </form>
 
-<p class="alert-error">For Output Only problem, if there are additional files, please compress them as data.zip and upload with testdata.</p>
+<p class="alert-error">For Output Only problem, if there are additional files, please compress them as data.zip and upload with testdata if you don't use script.</p>
 
-<fieldset class="span5" style="display:none" id="data_config">
+<fieldset class="span5" id="data_config">
 <legend>Data Configuration</legend>
-<form id="data_configuration" class="form-horizontal" action="index.php/admin/dataconf/<?=$pid?>">
-	<input type="hidden" name="pid" value="<?=$pid?>" />
-	
+<form id="data_configuration" class="form-horizontal">
 	<div class="control-group">
 		<label for="IOMode" class="control-label">IO Mode</label>
 		<div class="controls">
@@ -48,7 +53,6 @@
 				<option value="0" <?=set_select('IOMode', '0', TRUE)?> >Standard IO</option>
 				<option value="1" <?=set_select('IOMode', '1')?> >File IO</option>
 				<option value="2" <?=set_select('IOMode', '2')?> >Output Only</option>
-				<option value="3" <?=set_select('IOMode', '3')?> >Interactive</option>
 			</select>
 		</div>
 		
@@ -66,41 +70,31 @@
 		<div class="controls">
 			<input type="number" id="overall_memory" class="memory" min="0" name="overall_memory">
 		</div>
-		<?
-			$input_filename = 'data.in';
-			$output_filename = 'data.out';
-			if (isset($dataconf->cases)) {
-				if (isset($dataconf->cases[0]->tests)) {
-					$input_filename = $dataconf->cases[0]->tests[0]->userInput;
-					$output_filename = $dataconf->cases[0]->tests[0]->userOutput;
-				}
-			}
-		?>
 		
 		<label for="user_input" class="user_input control-label">User Input</label>
 		<div class="controls">
-			<input type="text" id="user_input" class="user_input" name="user_input" value="<?=$input_filename?>">
+			<input type="text" id="user_input" class="user_input" name="user_input">
 		</div>
 		
 		<label for="user_output" class="user_output label_user_output control-label">User Output</label>
 		<div class="controls">
-			<input type="text" id="user_output" name="user_output" value="<?=$output_filename?>">
+			<input type="text" id="user_output" name="user_output">
 		</div>
 		
 		<label for="spj" class="control-label">Special Judge</label>
 		<div class="controls">
-			<input type="checkbox" id="spj" name="spj" <?=isset($dataconf->spjMode) ? 'checked' : '';?> >	
+			<input type="checkbox" id="spj" name="spj" />
 		</div>
 		<div class="clearfix"></div>
 		
 		<label for="spjMode" class="spjMode control-label">Special Judge Mode</label>
 		<div class="controls">
 			<select id="spjMode" class="spjMode" name="spjMode">
-				<option value="0" <?=(isset($dataconf->spjMode) && $dataconf->spjMode == 0) ? 'selected' : '';?>>Default</option>
-				<option value="1" <?=(isset($dataconf->spjMode) && $dataconf->spjMode == 1) ? 'selected' : '';?>>Cena</option>
-				<option value="2" <?=(isset($dataconf->spjMode) && $dataconf->spjMode == 2) ? 'selected' : '';?>>Tsinsen</option>
-				<option value="3" <?=(isset($dataconf->spjMode) && $dataconf->spjMode == 3) ? 'selected' : '';?>>HustOJ</option>
-				<option value="4" <?=(isset($dataconf->spjMode) && $dataconf->spjMode == 4) ? 'selected' : '';?>>Arbiter</option>
+				<option value="0">Default</option>
+				<option value="1">Cena</option>
+				<option value="2">Tsinsen</option>
+				<option value="3">HustOJ</option>
+				<option value="4">Arbiter</option>
 			</select>
 		</div>
 		
@@ -108,21 +102,12 @@
 		<div class="controls">
 			<input type="text" class="spjFile" id="spjFile" name="spjFile" />
 		</div>
-		
-		<label for="framework" class="framework control-label">Framework Code</label>
-		<div class="controls">
-			<textarea rows="7" class="framework span8" name="framework" id="framework"></textarea>
-		</div>
 	</div>
 	
-	
-
-	<input type="hidden" name="tcnt" id="tcnt" />
-	<button class="btn btn-primary pull-right" type="submit" id="submit">Submit</button>
 </form>
 </fieldset>
 
-<fieldset class="span5">
+<fieldset class="span5" id="data_identify">
 <legend>Data Identification</legend>
 <form id="data_identification" class="form-horizontal" action="index.php/admin/scan/<?=$pid?>">
 	<p class="alert-error">Custom Match: Use * for variables, eg. data*.in</p>
@@ -144,283 +129,96 @@
 </fieldset>
 
 <div class="clearfix"></div>
+
 <hr style="height:1px;border:none;border-top:1px dashed #0066CC"/>
-<div>
-	<button class="btn btn-info pull-left" id="addcase">Add case</button>
+
+<div><button class="btn btn-primary offset5" type="submit" id="submit">Submit</button></div>
+
+<ul class="nav nav-tabs">
+	<li id="nav-form-li" class="fgsnav active"><a id="nav-form-a" href="#">Case Form</a></li>
+	<li id="nav-group-li" class="fgsnav"><a id="nav-group-a" href="#">Data Grouping</a></li>
+	<li id="nav-script-li" class="fgsnav"><a id="nav-script-a" href="#">Script</a></li>
+</ul>
+<div id="div-form" class="fgsnav">
+	<div><button class="btn btn-info pull-left" id="addcase">Add case</button></div>
+	<div class="clearfix"></div>
+	<div id="data" style="margin-top:10px"></div>
 </div>
-<div class="clearfix"></div>
-<div id="data" style="margin-top:10px"></div>
+<div id="div-group" class="fgsnav" style="display:none">
+	<div class="alert">Counted from 0</div>
+	<div id="group"></div>
+	<div><span class="btn btn-info pull-left" id="addgroup">Add</span></div>
+</div>
+<div id="div-script" class="fgsnav" style="display:none">
+	<div class="alert alert-info">
+		<strong>Heads up!</strong> You should also set <i>Data Grouping</i> when you write the script.
+	</div>
+	<form method="post" class="form-inline" id="submit-script" action="index.php/admin/dataconf/<?=$pid?>">
+		<input type="hidden" id="traditional" name="traditional" value='<?=$traditional?>' />
+		<input type="hidden" id="submit-group" name="group" value='<?=$group?>' />
+		<div class="well textarea" style="padding:0">
+			<label for="editor-init"> <strong>Initialization Part</strong> </label>
+			<textarea id="editor-init" class="span12" rows="22"><?=$init?></textarea>
+			<textarea id="submit-init" name="script-init" class="span12" rows="22" style='display:none'></textarea>
+		</div>
+		<div class="well textarea" style="padding:0">
+			<label for="editor-run"> <strong>Running Part</strong> </label>
+			<textarea id="editor-run" class="span12" rows="22"><?=$run?></textarea>
+			<textarea id="submit-run" name="script-run" class="span12" rows="22" style='display:none'></textarea>
+		</div>
+		<span class="btn btn-primary pull-right" onclick='$("#submit").click()'>Submit</span>
+		<span id="btn-unlock" class="btn btn-danger pull-right"><i class="icon-pencil"></i>Unlock and Edit</span>
+		<span id="btn-discard" class="btn btn-danger pull-right" style="display:none"><i class="icon-remove"></i>Discard Change</span>
+	</form>
+</div>
 
+<script src="application/third_party/codemirror/lib/codemirror.js" type="text/javascript"></script>
+<script src="application/third_party/codemirror/addon/mode/simple.js" type="text/javascript"></script>
 <script type="text/javascript">
-	var signal = 0
-	function loaded() {
-		signal++
-		if (signal == 4) {
-			var fileId = 0;
-			$("#file_upload").fileupload({
-				dataType: 'json',
-				add: function(e, data) {
-					$.each(data.files, function(index, file) {
-						file.context = $('<p class="alert alert-info file_' + (++fileId).toString() + '"><strong>' + file.name + '</strong></p> ')
-							.appendTo("#files");
-
-						$('<button class="close" id=close_file_'+fileId.toString()+' style="float:none">&times</button>')
-							.appendTo(".file_" + fileId.toString());
-						$("#close_file_"+fileId.toString()).click(function() {
-							$(this).parent().remove();
-						});
-
-						$('<button style="display:none" class="btn_upload file_' + fileId.toString() + '"></button>')
-							.appendTo("#div_upload_controls").click(function() {
-								$(this).remove();
-								data.submit();
-							});
-					})
-				},
-				progressall: function(e, data) {
-					var progress = parseInt(data.loaded / data.total * 100, 10);
-					$("#div_progress").css('width', progress + '%');
-					if (data.loaded == data.total){
-						$(".progress").css('display', 'none');
-						$("#btn_scan").click();
-					}
-				},
-				done: function(e, data) {
-					$.each(data.files, function(index, file) {
-						file.context.html('Uploaded');
-						file.context.removeClass('alert-info');
-						file.context.addClass('alert-success');
-						file.context.fadeOut(1500);
-					});
-				}
-			})
-			
-			$("#btn_start").click(function() {
-				$(".btn_upload").click()
-				$(".progress").css('display', 'block');
-				return false;
-			})
-			
-			$("#btn_clear").click(function() {
-				$("#files").html('');
-				$("#div_upload_controls").html('');
-				$(".progress").css('display', 'block');
-			})
-
-			$("#addcase").click(function(){
-				add_case();
-				return false;
-			})
-			
-			$(".case_close").live('click', remove_case)
-			
-			$("#btn_scan").click(function() {
-				$('#data_identification').ajaxSubmit({
-					type: 'POST',
-					success: function(data){
-						$('#data').html('');
-						data = eval("(" + data + ")");
-						if (data != null && data != '') initialize(data);
-						$("#IOMode").trigger("change");
-					}
-				});
-				return false;
-			})
-			
-			$("#overall_time").change(function(){
-				$(".time").val($(this).val());
-			})
-			
-			$("#overall_memory").change(function(){
-				$(".memory").val($(this).val());
-			})
-			
-			$("#overall_score").change(function(){
-				$(".score").val($(this).val());
-			})
-			
-			$("#user_output").change(function(){
-				if ($("#IOMode").val() == 2) {
-					var outfile = $(this).val();
-					$(".datatest").each(function() {
-						var id = $(this).attr("id") - 1000000000 + 1;
-						var user_output = outfile.replace(/[*]/, id.toString());
-						$(this).children(".user_output").children(".user_output").val(user_output);
-					});
-				}
-			})
-			
-			$("#IOMode").change(function(){
-				if ($(this).val() == 1) {
-					$(".user_input").show();
-				} else {
-					$(".user_input").hide();
-				}
-				
-				$(".user_output").attr('disabled', '');
-				$(".user_output").hide();
-				if ($(this).val() == 1 || $(this).val() == 2) {
-					$(".label_user_output").show();
-					$("#user_output").show();
-					if ($(this).val() == 2) {
-						$(".user_output").removeAttr('disabled');
-						$(".user_output").show();
-					} else {
-						$("#user_output").removeAttr('disabled');
-					}
-				} else {
-					$("#user_output").hide();
-					$("#user_output").attr('disabled');
-				}
-				
-				if ($(this).val() == 2) {
-					$(".time, .memory").attr("disabled", '');
-					$(".time, .memory").hide();
-				} else {
-					$(".time, .memory").removeAttr("disabled");
-					$(".time, .memory").show();
-				}
-				
-				if ($(this).val() == 3) $(".framework").show();
-				else $(".framework").hide();
-			})
-			
-			$("#spj").change(function(){
-				if ($(this).attr("checked")){
-					$(".spjMode, .spjFile").show();
-				}else{
-					$(".spjMode, .spjFile").hide();
-				}
-			})
-			
-			$("#submit").click(function(){
-				count = 0;
-				valid = true;
-				
-				$('.datacase').each(function(){
-					tests = $(this).find('.datatest');
-					
-					if (tests.is('div')){
-						if ($(this).find('.score').val() == ''){
-							alert("Configuration not valid!");
-							return valid = false;
-						}
-						
-						tests.each(function(){
-							if ($("#IOMode").val() != 2) {
-								if ($(this).find('.time').val() == '' || $(this).find('.memory').val() == ''){
-									alert("Configuration not valid!");
-									return valid_test = valid = false;
-								}
-							}
-							$(this).children('.case_no').val(count);
-						});
-						
-						if ( ! valid) return false;
-						count++;
-					} else $(this).remove();
-				});
-				
-				if ( ! valid) return false;
-				$('#tcnt').val(test_cnt - 1000000000);
-				$('#data_configuration').append($('#data').detach());
-				
-				$('#data_configuration').ajaxSubmit({
-					type: 'post',
-					success: function(responseText, stautsText){
-						if (responseText == 'success') window.location.hash = 'admin/problemset';
-						else $('#page_content').html(responseText);
-					}
-				});
-				
-				return false;
-			})
-
-			function initialize(data){
-				$('#framework').val(data.framework);
-				test_cnt = 1000000000;
-				for (var i in data.cases){
-					case_id = add_case();
-					current_case = $("#" + case_id);
-					
-					if (typeof data.cases[i].score != 'undefined') current_case.find('.score').val(data.cases[i].score);
-					for (var j in data.cases[i].tests){
-						test_id = add_test(current_case);
-						current_test = $("#" + test_id);
-						
-						current_test.find('.in').val(data.cases[i].tests[j].input);
-						current_test.find('.out').val(data.cases[i].tests[j].output);
-						if (typeof data.cases[i].tests[j].userOutput != 'undefined')
-							current_test.find('.user_output').val(data.cases[i].tests[j].userOutput);
-						if (typeof data.cases[i].tests[j].timeLimit != 'undefined') 
-							current_test.find('.time').val(data.cases[i].tests[j].timeLimit);
-						if (typeof data.cases[i].tests[j].memoryLimit != 'undefined')
-							current_test.find('.memory').val(data.cases[i].tests[j].memoryLimit);
-					}
-				}
-				$(".testcase").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all");
-			}
-
-			function add_test(current_case){
-				var id = test_cnt++;
-				current_case.children(".holder").append("<div class='datatest well' style='padding:3px' id='" + id + "'> \
-					<label>Input File <input readonly type='text' name='infile[" + id + "]' class='in input-small pull-right'></label> \
-					<div class='clearfix'></div> \
-					<label>Answer File <input readonly type='text' name='outfile[" + id + "]' class='out input-small pull-right'></label> \
-					<div class='clearfix'></div> \
-					<label class='user_output'>Output File <input type='text' name='user_output[" + id + "]' class='user_output input-small pull-right'></label> \
-					<div class='clearfix'></div> \
-					<label class='time'>Time Limit (ms) <input class='time input-small pull-right' type='number' min='0' name='time[" + id + "]'></label> \
-					<div class='clearfix'></div> \
-					<label class='memory'>Mem Limit (KB) <input class='memory input-small pull-right' type='number' min='0' name='memory[" + id + "]'></label> \
-					<input name='case_no[" + id + "]' class='case_no' type='hidden'/><div class='clearfix'></div></div>");
-					
-				return id.toString();
-			}
-
-			function add_case(){
-				var id = case_cnt++;
-				$('#data').append("<div class='datacase well' id='" + id + "' style='padding-bottom:0'> \
-					<label class='pull-left'>Score <input class='score input-mini' type='text' name='score[]' /></label> \
-					<button class='close case_close'>&times;</button><div class='clearfix'></div> \
-					<div class='holder'></div></div>");
-
-				$('.holder').sortable({connectWith: '.holder'});
-
-				return id.toString();
-			}
-
-			function remove_case(){
-				$(this).parent().fadeOut("normal", function(){$(this).remove();});
-				return false;
-			} 
-			
-			$("#wipe").click(function(){
-				access_page("admin/wipedata/<?=$pid?>", void 0, false);
-				return false;
-			})
-			
-			var pid=<?=$pid?>, case_cnt = 0, test_cnt = 1000000000;
-			var data = <?=$data?>;
-			initialize(data);
-			
-			$("#IOMode").val(data.IOMode);
-			$("#IOMode").trigger("change");
-			
-			if (data.spjMode){
-				$("#spj").attr("checked", true);
-				$("#spj").val(data.spjMode);
-				$("#spjFile").val(data.spjFile);
-			}else $("#spj").removeAttr("checked");
-			
-			$("#spj").trigger("change");
-		}
-		
-		$("#data_config").show();
-	}
-	
-	loadJsFile("jquery-ui", "js/jquery-ui.js", loaded);
-	loadJsFile("jquery.ui.widget", "js/jquery.ui.widget.js", loaded);
-	loadJsFile("jquery.iframe-transport", "js/jquery.iframe-transport.js", loaded);
-	loadJsFile("jquery.fileupload", "js/jquery.fileupload.js", loaded);
+	CodeMirror.defineSimpleMode("yauj",{
+		start : [
+			{ regex : /[Ii][Ff]\b/,						token : "keyword" },
+			{ regex : /[Dd][Oo]\b/,						token : "keyword" },
+			{ regex : /[Ww][Hh][Ii][Ll][Ee]\b/,			token : "keyword" },
+			{ regex : /[Ff][Oo][Rr]\b/,					token : "keyword" },
+			{ regex : /[Ee][Ll][Ss][Ee]\b/,				token : "keyword" },
+			{ regex : /[Tt][Rr][Uu][Ee]\b/,				token : "atom" },
+			{ regex : /[Ff][Aa][Ll][Ss][Ee]\b/,			token : "atom" },
+			{ regex : /[Ff][Oo][Rr][Ee][Aa][Cc][Hh]\b/,		token : "keyword" },
+			{ regex : /[Aa][Ss]\b/,						token : "keyword" },
+			{ regex : /[Bb][Rr][Ee][Aa][Kk]\b/,			token : "keyword" },
+			{ regex : /[Cc][Oo][Nn][Tt][Ii][Nn][Uu][Ee]\b/,	token : "keyword" },
+			{ regex : /[Tt][Rr][Yy]/,					token : "keyword" },
+			{ regex : /[Cc][Aa][Tt][Cc][Hh]/,				token : "keyword" },
+			{ regex : /[Tt][Hh][Rr][Oo][Ww]/,				token : "keyword" },
+			{ regex : /\"[^\"]*?\"/,						token : "string" },
+			{ regex : /[a-zA-Z_]([a-zA-Z0-9_])*/,			token : "variable" },
+			{ regex : /[0-9]+/,							token : "number" },
+			{ regex : /[0-9]*\.[0-9]+/,					token : "number" },
+			{ regex : /\/\/.*?$/,						token : "comment" }
+		]
+	});
+	var editor_init = CodeMirror.fromTextArea($("#editor-init").get(0), {
+		mode : 'yauj',
+		lineNumbers : true,
+		indentUnit : 2,
+		smartIndent : true,
+		tabSize : 2,
+		indentWithTabs : false,
+		autofocus : true,
+		theme : 'neat',
+		readOnly : true
+	});
+	var editor_run = CodeMirror.fromTextArea($("#editor-run").get(0), {
+		mode : 'yauj',
+		lineNumbers : true,
+		indentUnit : 2,
+		smartIndent : true,
+		tabSize : 2,
+		indentWithTabs : false,
+		autofocus : true,
+		theme : 'neat',
+		readOnly : true
+	});
+	$(".CodeMirror").css("height","300px");
 </script>

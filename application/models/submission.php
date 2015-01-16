@@ -41,7 +41,6 @@ class Submission extends CI_Model{
 		$sql = $this->db->insert_string('Submission', $data);
 		$this->db->query($sql);
 		$sid = $this->db->insert_id();
-		$this->db->query("UPDATE ProblemSet SET submitCount=submitCount+1 WHERE pid=?", array($data['pid']));
 		return $sid;
 	}
 	
@@ -155,17 +154,34 @@ class Submission extends CI_Model{
 					array($row_begin, $count));
 		return $result->result();
 	}
-	
-	function load_code($sid){
-		$result = $this->db->query("SELECT uid, pid, code, language, private FROM Submission WHERE sid=?", array($sid));
+
+	function allow_view_code($sid)
+	{
+		$result = $this->db->query("SELECT uid, pid, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
 		$uid = $this->session->userdata('uid');
 		$accepted = $this->db->query("SELECT * FROM Submission WHERE pid=? AND uid=? AND status=0", array($result->pid, $uid))->num_rows() > 0;
 		if ($this->db->query("SELECT pid FROM ProblemSet WHERE pid=? AND isShowed=1", array($result->pid))->num_rows() == 0)
 			$accepted = FALSE;
-		if ($result->uid == $uid || $this->session->userdata('priviledge') == 'admin' || $result->private == 0 || $accepted) 
-			return $result;
-		return FALSE;
+		if ($result->uid != $uid && $this->session->userdata('priviledge') != 'admin' && $result->private != 0 && !$accepted) 
+			return FALSE;
+		return TRUE;
+	}
+	
+	function load_code($sid){
+		if (!$this->allow_view_code($sid)) return FALSE;
+		$show = array();
+		$path = $this->config->item('code_path') . $sid;
+		$files = scandir($path);
+		foreach ($files as $file)
+		{
+			if (! is_file("$path/$file")) continue;
+			if (filesize("$path/$file") > 10*1024)
+				$show[$file] = null;
+			else
+				$show[$file] = file_get_contents("$path/$file");
+		}
+		return $show;
 	}
 	
 	function load_result($sid){
@@ -199,5 +215,90 @@ class Submission extends CI_Model{
 	function is_private($sid) {
 		$result = $this->db->query("SELECT private FROM Submission WHERE sid=?", array($sid))->row();
 		return $result->private == 1;
+	}
+
+	function upd_status($sid, $stat)
+	{
+		$this->db->query("UPDATE Submission SET status=? WHERE sid=?", array($stat,$sid));
+	}
+	
+	function judge_done($sid, $pid, $data)
+	{
+		$uid = $this->db->query("SELECT uid FROM Submission WHERE sid=?", array($sid))->row()->uid;
+		$this->db->query($this->db->update_string('Submission',$data,"sid=$sid"));
+		$this->db->query("UPDATE ProblemSet SET submitCount=submitCount+1 WHERE pid=?", array($pid));
+		$this->db->query("UPDATE User SET submitCount=submitCount+1 WHERE uid=?",array($uid));
+		$notEnd = false;
+		$this->load->model('contests');
+		$ret = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
+		$now = strtotime('now');
+		foreach ($ret as $row)
+		{
+			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
+			if (strtotime($res->startTime)<=now && strtotime($res->endTime)>=now)
+			{
+				$notEnd = true;
+				break;
+			}
+		}
+		if (!$notEnd)
+		{
+			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum+? WHERE pid=?", array($data['score'],$pid));
+			if ($data['status']===0 && !$notEnd)
+			{
+				$this->db->query("UPDATE Submission SET ACCounted=1 WHERE sid=?", array($sid));
+				$this->db->query("UPDATE User SET acCount=acCount+1 WHERE uid=?", array($uid));
+				$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount+1 WHERE pid=?", array($pid));
+				if ($this->db->query("SELECT COUNT(*) FROM Submission WHERE uid=? AND status=0", array($uid)))
+					$this->db->query("UPDATE User SET acCount=acCount+1 WHERE uid=?", array($uid));
+			}
+		}
+	}
+	
+	function status_id($status)
+	{
+		switch (str_replace('_',' ',strtolower($status)))
+		{
+			case 'output not found':
+				return -4;
+			case 'partially accepted':
+			case 'partially accept':
+			case 'partial accepted':
+			case 'partial accept':
+				return -3;
+			case 'running':
+				return -2;
+			case 'pending':
+				return -1;
+			case 'accept':
+			case 'accepted':
+				return 0;
+			case 'presentation error':
+				return 1;
+			case 'wrong answer':
+				return 2;
+			case 'checker error':
+			case 'spj error':
+			case 'special judge error':
+				return 3;
+			case 'output limit exceeded':
+			case 'output limit exceed' :
+				return 4;
+			case 'memory limit exceeded':
+			case 'memory limit exceed':
+				return 5;
+			case 'time limit exceeded':
+			case 'time limit exceed':
+				return 6;
+			case 'runtime error':
+			case 'run time error':
+			case 'dangerous syscall':
+				return 7;
+			case 'compile error':
+				return 8;
+			case 'internal error':
+			default :
+				return 9;
+		}
 	}
 }
