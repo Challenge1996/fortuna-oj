@@ -1,31 +1,68 @@
 <div class="row-fluid">
 	<div id="header"><?php
+
 		$average = 0;
-		$IOMode = $data->data->IOMode;
 		if ($data->submitCount > 0) $average = number_format($data->scoreSum / $data->submitCount, 2);
 		
-		if (!isset($data->data) || $data->data->IOMode == 0) $IO = '(Standard IO)';
-		else if ($IOMode == 1) $IO = '(File IO)';
-		else if ($IOMode == 2) $IO = '(Output Only)';
-		else if ($IOMode == 3) $IO = '(Interactive)';
-		echo '<div style="text-align:center">';
-		echo "<h2>$data->title <sub>$IO</sub></h2>";
-		
-		echo '<div>';
-		if (isset($data->timeLimit)){
-			echo lang('time_limit') . ": <span class=\"badge badge-info\">$data->timeLimit ms</span> &nbsp;";
-			echo lang('memory_limit') . ": <span class=\"badge badge-info\">$data->memoryLimit KB</span>";
-		} else if ($IOMode != 2) {
-			echo lang('time_memory_limit');
-		} else {
-			$this->session->set_userdata('download', 'data.zip');
-			echo "<a href='index.php/main/download/$data->pid' target='_blank'>Download Input</a>";
+		$IO = '';
+		$src = (array)$data->filemode[2];
+		$outputOnly = true; $spj = false;
+		if (isset($data->filemode[4]))
+			foreach ($data->filemode[4] as $executable => $property)
+				if (isset($property->source))
+					foreach ((array)($property->source) as $source)
+						if (isset($source) && isset($src[$source]))
+							$outputOnly = false;
+						else
+							$spj = true;
+		if ($outputOnly)
+			$IO = '(Output Only)';
+		else
+		{
+			$inputFile = $outputFile = '';
+			if (isset($data->filemode[0]))
+				foreach ($data->filemode[0] as $file => $property)
+				{
+					if ($inputFile) $inputFile .= '/';
+					$inputFile .= $file;
+				}
+			if (isset($data->filemode[1]))
+				foreach ($data->filemode[1] as $file => $property)
+				{
+					if ($outputFile) $outputFile .= '/';
+					$outputFile .= $file;
+				}
+			if (!$inputFile && !$outputFile)
+				$IO = '(Standard IO)';
+			else
+			{
+				if (!$inputFile) $inputFile = 'None';
+				if (!$outputFile) $outputFile = 'None';
+				$IO = "<br />(File IO): <span style='color:red'>input:<strong>$inputFile</strong> output:<strong>$outputFile</strong></span>";
+			}
 		}
-		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#main/limits/$data->pid\" style=\"text-align:left\">";
+
+		echo '<div style="text-align:center">';
+		echo "<h2>$data->pid. $data->title <sub>$IO</sub></h2>";
+		echo '<div>';
+		if (isset($data->timeLimit))
+			echo lang('time_limit') . ": <span class=\"badge badge-info\">$data->timeLimit ms</span> &nbsp;";
+		if (isset($data->memoryLimit))
+			echo lang('memory_limit') . ": <span class=\"badge badge-info\">$data->memoryLimit KB</span> &nbsp;";
+		echo lang('detailed_limit');
+		$needDownload = false;
+		if (isset($data->filemode[3]))
+			foreach ($data->filemode[3] as $property)
+				if (isset($property->download) && $property->download)
+				{
+					$needDownload = true;
+					break;
+				}
+		echo "&nbsp; <a href=\"#main/limits/$data->pid\" style=\"text-align:left\">";
 		echo '<span id="trigger"><i class="icon-chevron-down"></i></span></a>';
-		
-		if (isset($data->data->spjMode)) echo '&nbsp;&nbsp;&nbsp;<span class="label label-important">Special Judge</span>';
+		if ($spj) echo "&nbsp;&nbsp;<span class=\"label label-important\">Special Judge</span>";
+		if ($needDownload)
+			echo "&nbsp;&nbsp;&nbsp; <a href='#main/showdownload/$data->pid'><strong>Downloads</strong></a>";
 		echo '</div>';
 		
 		if ($info->contestMode != 'OI' && $info->contestMode != 'OI Traditional'){
@@ -33,19 +70,13 @@
 			echo "Submit: <span class=\"badge badge-info\">$data->submitCount</span></div>";
 		}
 		
-		if (strtotime($info->submitTime) <= time() && strtotime($info->endTime) > time()){
-			if ($IOMode != 2) {
-				echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/submit/$data->pid/$cid')\">" . lang('submit') . "</button>";
-			} else {
-				echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/upload/$data->pid/$cid')\">" . lang('submit') . "</button>";
-			}
-			
-		} else {
+		if (strtotime($info->submitTime) <= time() && strtotime($info->endTime) > time())
+			echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/submit/$data->pid/$cid')\">" . lang('submit') . "</button>";
+		else
 			if (strtotime($info->submitTime) <= time())
 				echo "<a href='#main/show/$data->pid'>Goto ProblemSet</a>";
 			else
 				echo "<p>Please wait until <strong>$info->submitTime</strong> to make a submission</p>";
-		}
 		
 		echo '</div>';
 	?></div>
@@ -104,38 +135,17 @@
 </div>
 
 <div style="text-align:center"><?php
-	if (strtotime($info->submitTime) <=time() && strtotime($info->endTime) > time()){
-		if ($IOMode != 2) {
+	if (strtotime($info->submitTime) <=time() && strtotime($info->endTime) > time())
 			echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/submit/$data->pid/$cid')\">" . lang('submit') . "</button>";
-		} else {
-			echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/upload/$data->pid/$cid')\">" . lang('submit') . "</button>";
-		}	
-	}
 ?></div>
 
 <script type="text/javascript">
-	var dataconf = "<?php
-		echo '<pre>';
-		$caseCnt = 1;
-		if (isset($data->data->cases)){
-			foreach ($data->data->cases as $case){
-				echo "Case $caseCnt: " . number_format($case->score, 2) . ' pts<br />';
-				$testCnt = 1;
-				foreach ($case->tests as $test){
-					if ($IOMode != 2) {
-						echo "<i class='icon-arrow-right'></i>Test $testCnt:<span class='badge badge-info'>$test->timeLimit ms</span>";
-						echo "<span class='badge badge-info'>$test->memoryLimit KB</span><br />";
-					}
-					$testCnt++;
-				}
-				$caseCnt++;
-			}
-		}
-		echo '</pre>';
-	?>";
+	$.get('index.php/main/limits/<?=$data->pid?>?simple', function(data) {
+		data = '<pre>'+data+'</pre>';
+		$('#trigger').popover({html: true, content: data, trigger: 'hover', placement: 'bottom'});
+	});
 	
 	$(document).ready(function(){
-		$('#trigger').popover({html: true, content: dataconf, trigger: 'hover', placement: 'bottom'}),
 		$('#trigger').click(function(){
 			$('#trigger').popover('hide')
 		}),

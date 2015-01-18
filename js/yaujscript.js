@@ -114,12 +114,11 @@ function form2script(form)
 				break;
 			case 4 : // arbiter
 				run += '  // WARNING : BECAUSE SPJ WILL WRITE THE FILE /tmp/_eval.score, YOU SHOULD JUDGE SUBMISSION ONE BY ONE MANUALLY.\n';
-				run += '  exec(i,"' + form.spjFile + '","/dev/null","/dev/null","/dev/null",userOut[i]);\n';
 				run += '  exec(i,"' + form.spjFile + '","/dev/null","/dev/null","/dev/null",input[i]+" "+userOut[i]+" "+output[i]);\n';
 				run += '  tmp = split(read("/tmp/_eval.score"));\n';
 				run += '  result[i]["score"] = tmp[-1]; // the last element.\n';
 				run += '  result[i]["message"] = "";\n';
-				run += '  for (k=0; k<len(tmp)-1; k++) result[i]["message"] += tmp[k];\n';
+				run += '  for (k=0; k<len(tmp)-1; k++) result[i]["message"] += tmp[k]+" ";\n';
 				run += '  if (score[i]-result[i]["score"]<0.01) result[i]["status"]="accepted"; else if (result[i]["score"]>0.01) result[i]["status"]="partial accepted"; else result[i]["status"]="wrong answer";\n';
 		}
 	run += '} catch {}\n';

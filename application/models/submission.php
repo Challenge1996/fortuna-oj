@@ -1,5 +1,8 @@
 <?php
 
+require_once 'application/vendor/autoload.php';
+require_once 'application/myjob.php';
+
 class Submission extends CI_Model{
 
 	function __construct(){
@@ -7,24 +10,36 @@ class Submission extends CI_Model{
 	}
 	
 	function rejudge($sid){
-		$data = $this->db->query("SELECT cid, pid, uid, status, score FROM Submission WHERE sid=?",
-									array($sid))->row();
-									
-		if ($data->status != -1 && is_null($data->cid)) {
-			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum-? WHERE pid=?",
-				array($data->score, $data->pid));
+		$data = $this->db->query("SELECT cid, pid, uid, status, score, ACCounted, langDetail FROM Submission WHERE sid=?",array($sid))->row();
+
+		if ($data->ACCounted)
+		{
+			$this->db->query("UPDATE Submission SET ACCounted=0 WHERE sid=?", array($sid));
+			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum-?,submitCount=submitCount-1 WHERE pid=?", array($data->score, $data->pid));
+			$this->db->query("UPDATE User SET submitCount=submitCount-1 WHERE uid=?", array($data->uid));
+			if ($data->status==0)
+			{
+				$this->db->query("UPDATE User SET solvedCount=solvedCount-1 WHERE uid=?", array($data->uid));
+				$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount-1 WHERE pid=?", array($data->pid));
+				if ($this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE uid=? AND status=0", array($data->uid))->row()->cnt==1)
+					$this->db->query("UPDATE User SET acCount=acCount-1 WHERE uid=?", array($data->uid));
+			}
 		}
-	
-		if ($data->status == 0 && is_null($data->cid)){
-			$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount-1 WHERE pid=?",
-								array($data->pid));
 		
-			$this->db->query("UPDATE User SET solvedCount=solvedCount-1 WHERE uid=?",
-								array($data->uid));
-		}
+		$pushTime = date("Y-m-d H:i:s");
+		$this->db->query("UPDATE Submission SET score=0,status=-1,time=NULL,memory=NULL,codeLength=NULL,judgeResult=NULL,pushTime=? WHERE sid=?",array($pushTime,$sid));
+
+		Resque::setBackend('127.0.0.1:6379');
+		Resque::enqueue('default', 'myjob', array(
+			'passwd' => $this->config->item('local_passwd'),
+			'oj_name' => $this->config->item('oj_name'),
+			'pid' => (int)$data->pid,
+			'sid' => (int)$sid,
+			'lang' => $data->langDetail,
+			'servers' => $this->config->item('servers'),
+			'pushTime' => $pushTime
+		));
 		
-		$this->db->query("UPDATE Submission SET score=0,status=-1,time=0, memory=0,judgeResult='' WHERE sid=?",
-							array($sid));
 	}
 	
 	function change_status($sid){
@@ -181,6 +196,7 @@ class Submission extends CI_Model{
 			else
 				$show[$file] = file_get_contents("$path/$file");
 		}
+		uksort($show, 'strnatcmp');
 		return $show;
 	}
 	
@@ -217,6 +233,11 @@ class Submission extends CI_Model{
 		return $result->private == 1;
 	}
 
+	function load_pushTime($sid)
+	{
+		return $this->db->query("SELECT pushTime FROM Submission WHERE sid=?", array($sid))->row()->pushTime;
+	}
+
 	function upd_status($sid, $stat)
 	{
 		$this->db->query("UPDATE Submission SET status=? WHERE sid=?", array($stat,$sid));
@@ -224,10 +245,11 @@ class Submission extends CI_Model{
 	
 	function judge_done($sid, $pid, $data)
 	{
-		$uid = $this->db->query("SELECT uid FROM Submission WHERE sid=?", array($sid))->row()->uid;
+		$got = $this->db->query("SELECT uid, pushTime FROM Submission WHERE sid=?", array($sid))->row();
+		if ($got->pushTime != $data['pushTime']) return;
+		unset($data['pushTime']);
+		$uid = $got->uid;
 		$this->db->query($this->db->update_string('Submission',$data,"sid=$sid"));
-		$this->db->query("UPDATE ProblemSet SET submitCount=submitCount+1 WHERE pid=?", array($pid));
-		$this->db->query("UPDATE User SET submitCount=submitCount+1 WHERE uid=?",array($uid));
 		$notEnd = false;
 		$this->load->model('contests');
 		$ret = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
@@ -243,13 +265,14 @@ class Submission extends CI_Model{
 		}
 		if (!$notEnd)
 		{
-			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum+? WHERE pid=?", array($data['score'],$pid));
+			$this->db->query("UPDATE Submission SET ACCounted=1 WHERE sid=?", array($sid));
+			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum+?,submitCount=submitCount+1 WHERE pid=?", array($data['score'],$pid));
+			$this->db->query("UPDATE User SET submitCount=submitCount+1 WHERE uid=?",array($uid));
 			if ($data['status']===0 && !$notEnd)
 			{
-				$this->db->query("UPDATE Submission SET ACCounted=1 WHERE sid=?", array($sid));
-				$this->db->query("UPDATE User SET acCount=acCount+1 WHERE uid=?", array($uid));
+				$this->db->query("UPDATE User SET solvedCount=solvedCount+1 WHERE uid=?", array($uid));
 				$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount+1 WHERE pid=?", array($pid));
-				if ($this->db->query("SELECT COUNT(*) FROM Submission WHERE uid=? AND status=0", array($uid)))
+				if ($this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE uid=? AND status=0", array($uid))->row()->cnt==1)
 					$this->db->query("UPDATE User SET acCount=acCount+1 WHERE uid=?", array($uid));
 			}
 		}

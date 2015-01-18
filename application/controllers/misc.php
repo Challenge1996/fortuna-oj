@@ -171,6 +171,11 @@ class Misc extends CI_Controller {
 		$server = $get['server'];
 		$this->load->model('submission');
 		$this->load->model('network');
+		if ($this->submission->load_pushTime($get['sid'])!=$get['push_time'])
+		{
+			$this->network->jsonrpc_call($server,'cancel',array('key'=>(int)$get['key']));
+			exit('canceled');
+		}
 		$this->submission->upd_status($get['sid'],-2);
 		$get['submission'] = str_replace('c  ','c++',$get['submission']);
 
@@ -197,7 +202,7 @@ class Misc extends CI_Controller {
 			foreach ($ret as $id => &$result)
 			{
 				if (!isset($result->message)) $result->message = '';
-				$result->message = $result->status . $result->message;
+				$result->message = $result->status . ' ' . $result->message;
 				if (isset($result->score) && (!isset($score[$id]) || $result->score > $score[id]))
 					$score[$id] = $result->score;
 				if (isset($result->time))
@@ -232,7 +237,8 @@ class Misc extends CI_Controller {
 			'time' => $time,
 			'memory' => $memory,
 			'score' => $sum,
-			'codeLength' => $codeLength
+			'codeLength' => $codeLength,
+			'pushTime' => $get['push_time']
 		));
 	}
 

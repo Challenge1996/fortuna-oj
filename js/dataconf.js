@@ -2,7 +2,7 @@
 
 (function() {
 
-var use_script, cases_cnt, tests_cnt;
+var use_script, cases_cnt, tests_cnt, editor_init, editor_run;
 
 function upd_gs(data, group)
 {
@@ -64,9 +64,9 @@ function initialize(data)
 			$("#spj").removeAttr("checked");
 		if (data.IOMode == 0 || data.IOMode == 1)
 		{
-			if (data.cases[0].tests[0].userInput)
+			if (data.cases[0] && data.cases[0].tests[0] && data.cases[0].tests[0].userInput)
 				$("#user_input").val(data.cases[0].tests[0].userInput);
-			if (data.cases[0].tests[0].userOutput)
+			if (data.cases[0] && data.cases[0].tests[0] && data.cases[0].tests[0].userOutput)
 				$("#user_output").val(data.cases[0].tests[0].userOutput);
 		}
 	}
@@ -219,10 +219,61 @@ function upd_spj()
 
 // UI PART END
 
+function init_codemirror()
+{
+	CodeMirror.defineSimpleMode("yauj",{
+		start : [
+			{ regex : /[Ii][Ff]\b/,						token : "keyword" },
+			{ regex : /[Dd][Oo]\b/,						token : "keyword" },
+			{ regex : /[Ww][Hh][Ii][Ll][Ee]\b/,			token : "keyword" },
+			{ regex : /[Ff][Oo][Rr]\b/,					token : "keyword" },
+			{ regex : /[Ee][Ll][Ss][Ee]\b/,				token : "keyword" },
+			{ regex : /[Tt][Rr][Uu][Ee]\b/,				token : "atom" },
+			{ regex : /[Ff][Aa][Ll][Ss][Ee]\b/,			token : "atom" },
+			{ regex : /[Ff][Oo][Rr][Ee][Aa][Cc][Hh]\b/,		token : "keyword" },
+			{ regex : /[Aa][Ss]\b/,						token : "keyword" },
+			{ regex : /[Bb][Rr][Ee][Aa][Kk]\b/,			token : "keyword" },
+			{ regex : /[Cc][Oo][Nn][Tt][Ii][Nn][Uu][Ee]\b/,	token : "keyword" },
+			{ regex : /[Tt][Rr][Yy]/,					token : "keyword" },
+			{ regex : /[Cc][Aa][Tt][Cc][Hh]/,				token : "keyword" },
+			{ regex : /[Tt][Hh][Rr][Oo][Ww]/,				token : "keyword" },
+			{ regex : /\"[^\"]*?\"/,						token : "string" },
+			{ regex : /[a-zA-Z_]([a-zA-Z0-9_])*/,			token : "variable" },
+			{ regex : /[0-9]+/,							token : "number" },
+			{ regex : /[0-9]*\.[0-9]+/,					token : "number" },
+			{ regex : /\/\/.*?$/,						token : "comment" }
+		]
+	});
+	editor_init = CodeMirror.fromTextArea($("#editor-init").get(0), {
+		mode : 'yauj',
+		lineNumbers : true,
+		indentUnit : 2,
+		smartIndent : true,
+		tabSize : 2,
+		indentWithTabs : false,
+		autofocus : true,
+		theme : 'neat',
+		readOnly : true
+	});
+	editor_run = CodeMirror.fromTextArea($("#editor-run").get(0), {
+		mode : 'yauj',
+		lineNumbers : true,
+		indentUnit : 2,
+		smartIndent : true,
+		tabSize : 2,
+		indentWithTabs : false,
+		autofocus : true,
+		theme : 'neat',
+		readOnly : true
+	});
+	$(".CodeMirror").css("height","300px");
+}
+
 var signal = 0
 
 function loaded() {
-	if (++signal < 5) return;
+	if (++signal < 6) return;
+	init_codemirror();
 	var fileId = 0;
 	cases_cnt = tests_cnt = 0;
 	use_script = (!$("#traditional").val() && $("#editor-init").val());
@@ -319,9 +370,9 @@ function loaded() {
 		if ($("#IOMode").val() == 2) {
 			var outfile = $(this).val();
 			$(".datatest").each(function() {
-				var id = $(this).attr("id") + 1;
-				var user_output = outfile.replace(/[*]/, id.toString());
-				$(this).children(".user_output").children(".user_output").val(user_output);
+				var id = Number($(this).attr("id").match(/\d+/)[0]) + 1;
+				var user_output = outfile.replace(/\d+/, id.toString());
+				$(this).find("input.user_output").val(user_output);
 			});
 		} else
 		{
@@ -489,6 +540,9 @@ $(document).ready(function(){
 	loadJsFile("jquery.iframe-transport", "js/jquery.iframe-transport.js", loaded);
 	loadJsFile("jquery.fileupload", "js/jquery.fileupload.js", loaded);
 	loadJsFile("yaujscript", "js/yaujscript.js", loaded);
+	loadJsFile("codemirror", "application/third_party/codemirror/lib/codemirror.js", function(){
+		loadJsFile("codemirror-simple", "application/third_party/codemirror/addon/mode/simple.js", loaded)
+	});
 });
 
 })();

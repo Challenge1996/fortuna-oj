@@ -160,27 +160,34 @@ class Contest extends CI_Controller {
 			if ($pid != FALSE){
 				$data = $this->problems->load_problem($pid);
 				if ($data != FALSE){
-					$data->data = json_decode($data->dataConfiguration);
-					
-					$data->timeLimit = $data->memoryLimit = 0;
-					foreach ($data->data->cases as $case) {
-						foreach ($case->tests as $test) {
-							if ( ! isset($test->timeLimit)) continue;
-						
-							if ($data->timeLimit == 0) {
-								$data->timeLimit = $test->timeLimit;
-								$data->memoryLimit = $test->memoryLimit;
-							} elseif ($data->timeLimit != $test->timeLimit || $data->memoryLimit != $test->memoryLimit)
-								$data->timeLimit = -1;
-								
-							if ($data->timeLimit < 0) break;
+					$data->filemode = json_decode($data->confCache);
+					unset($data->confCache);
+
+					$noTime = $noMemory = false;
+					if (isset($data->filemode[4]))
+						foreach ($data->filemode[4] as $executable => $conf)
+						{
+							if (!$noTime && isset($conf->time))
+								foreach ($conf->time as $time)
+									if (!isset($data->timeLimit) || $data->timeLimit == $time)
+										$data->timeLimit = $time;
+									else
+									{
+										unset($data->timeLimit);
+										$noTime = true;
+										break;
+									}
+							if (!$noMemory && isset($conf->memory))
+								foreach ($conf->memory as $memory)
+									if (!isset($data->memoryLimit) || $data->memoryLimit == $memory)
+										$data->memoryLimit = $memory;
+									else
+									{
+										unset($data->memoryLimit);
+										$noMemory = true;
+										break;
+									}
 						}
-						if ($data->timeLimit < 0) break;
-					}
-					if ($data->timeLimit <= 0){
-						unset($data->timeLimit);
-						unset($data->memoryLimit);
-					}
 				}
 				$data->id = $id;
 				if ($info->contestMode == 'ACM') $data->id += 1000;

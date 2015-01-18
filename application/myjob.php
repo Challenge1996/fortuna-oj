@@ -48,13 +48,18 @@ class myjob
 		$pid = $this->args['pid'];
 		$sid = $this->args['sid'];
 		$lang = $this->args['lang'];
+		$servers = $this->args['servers'];
+		$pushTime = urlencode($this->args['pushTime']);
 		while (true)
 		{
 			echo "attempt\n";
-			$serverstatus = json_decode($this->local("misc/serverstatus/$pid"));
-			$version = $serverstatus->version;
-			unset($serverstatus->version);
-			foreach ($serverstatus as $server => $status)
+			$serverstatus = json_decode($this->local("misc/serverstatus/$pid"), true);
+			$version = $serverstatus['version'];
+			unset($serverstatus['version']);
+			foreach ($servers as $server)
+			{
+				$status = 'unsynced';
+				if (isset($serverstatus[$server])) $status = $serverstatus[$server];
 				if ($status != $version)
 					$this->local("misc/push_data/$pid", 2500);
 				else
@@ -64,10 +69,11 @@ class myjob
 					if ($key === null || $key == -1) continue;
 					$ser = urlencode($server);
 					echo "preserved $key\n";
-					$msg = $this->local("misc/push_submission/?pid=$pid&sid=$sid&key=$key&submission=$lang&server=$ser", 2500);
+					$msg = $this->local("misc/push_submission/?pid=$pid&sid=$sid&key=$key&submission=$lang&server=$ser&push_time=$pushTime", 2500);
 					echo "$msg\n";
 					return;
 				}
+			}
 			sleep(1);
 		}
 	}

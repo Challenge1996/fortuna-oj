@@ -42,6 +42,7 @@
 			}
 		}
 
+		$this->load->model('misc');
 		$is_accepted = $this->misc->is_accepted($this->session->userdata('uid'), $data->pid);
 		
 		echo '<div style="text-align:center">';
@@ -64,7 +65,7 @@
 		echo '<span id="trigger"><i class="icon-chevron-down"></i></span></a>';
 		if ($spj) echo "&nbsp;&nbsp;<span class=\"label label-important\">Special Judge</span>";
 		if ($needDownload)
-			echo "&nbsp;&nbsp;&nbsp; <a href='index.php/main/showdownload/$data->pid'><strong>Downloads</strong></a>";
+			echo "&nbsp;&nbsp;&nbsp; <a href='#main/showdownload/$data->pid'><strong>Downloads</strong></a>";
 		echo '</div>';
 		echo '</div>';	
 

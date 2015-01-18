@@ -48,7 +48,7 @@
 			$s = '';
 			if ($statId != 8)
 				foreach ($filemode[3] as $file => $property)
-					if (in_array($id, (array)($property->case)))
+					if (isset($property->case) && in_array($id, (array)($property->case)))
 					{
 						$detail->status .= " <a href='index.php/main/download/$pid/$file/1'>$file</a>";
 						if ($s) $s .= '|';

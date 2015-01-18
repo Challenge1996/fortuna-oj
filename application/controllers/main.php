@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require 'application/vendor/autoload.php';
-require 'application/myjob.php';
+require_once 'application/vendor/autoload.php';
+require_once 'application/myjob.php';
 
 class Main extends CI_Controller {
 
@@ -261,6 +261,7 @@ class Main extends CI_Controller {
 		foreach ($data->filemode[3] as $name => $property)
 			if (isset($property->download) && $property->download)
 				$files[] = $name;
+		$this->session->set_userdata('download',implode('|',$files));
 		$this->load->view('main/showdownload', array('pid' => $pid, 'files' => $files));
 	}
 	
@@ -376,7 +377,8 @@ class Main extends CI_Controller {
 		
 		$filemode = json_decode($this->problems->load_dataconf($pid)->confCache);
 
-		$toSubmit = $filemode[2];
+		$toSubmit = (array)$filemode[2];
+		uksort($toSubmit, 'strnatcmp');
 		foreach ($toSubmit as $name => &$property)
 		{
 			$langArr = array();
@@ -432,7 +434,8 @@ class Main extends CI_Controller {
 				'uid'	=>	$uid,
 				'name'	=>	$this->session->userdata('username'),
 				'pid'	=>	$this->input->post('pid', TRUE),
-				'submitTime'	=>	date("Y-m-d H:i:s")
+				'submitTime'	=>	date("Y-m-d H:i:s"),
+				'pushTime' => date("Y-m-d H:i:s")
 			);
 			
 			if ($this->input->post('cid') != '') $data['cid'] = $this->input->post('cid');
@@ -469,15 +472,18 @@ class Main extends CI_Controller {
 			$arg_lang = array();
 			$toSubmitArr = (array)$toSubmit;
 			foreach ($language as $file => $lang)
+			{
 				if (! in_array($lang, $toSubmitArr[$file]->language))
 					exit('lang');
+				$arg_lang[] = array('source' => $file, 'language' => $lang);
+			}
+			$data['langDetail'] = json_encode($arg_lang);
 			
 			$this->load->model('submission');
 			$sid = $this->submission->save_submission($data);
 			mkdir($this->config->item('code_path').$sid,0777,true);
 			foreach ($language as $file => $lang)
 			{
-				$arg_lang[] = array('source' => $file, 'language' => $lang);
 				if (isset($editor[$file]))
 				{
 					$handle = fopen($this->config->item('code_path') . $sid . '/' . $file, 'w');
@@ -498,7 +504,9 @@ class Main extends CI_Controller {
 				'oj_name' => $this->config->item('oj_name'),
 				'pid' => $pid,
 				'sid' => $sid,
-				'lang' => json_encode($arg_lang)
+				'lang' => $data['langDetail'],
+				'servers' => $this->config->item('servers'),
+				'pushTime' => $data['pushTime']
 			));
 			
 			$this->load->view('success');

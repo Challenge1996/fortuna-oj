@@ -46,15 +46,14 @@
 		<br />
 		<div class='one-file'>
 			<?php if ($property->fileIO) echo "<script> fileIO['$name']=true; </script>"; ?>
-			<div><strong> To submit <?=$name?>, we 
-				<span data-file='<?=$name?>' class='use-textarea btn btn-link active'>paste it in a text area</span>, or
-				<span data-file='<?=$name?>' class='use-upload btn btn-link'>upload it in a file</span>? What's more, <?=$name?> is of
+			<div><strong> File <?=$name?>:  
+				<span data-file='<?=$name?>' class='use-textarea btn btn-link active'>paste it in a text area</span> or
+				<span data-file='<?=$name?>' class='use-upload btn btn-link'>upload it in a file</span> Format: 
 				<select data-file='<?=$name?>' name='language[<?=$name?>]' class='language input-small' onchange='language_on_change("<?=$name?>")'>
 					<?php foreach ($property->language as $allowed): ?>
 						<option value='<?=$allowed?>' <?php if ($language==$allowed) echo 'selected';?> ><?=$allowed?></option>
 					<?php endforeach; ?>
 				</select>
-				format.
 			</strong></div>
 			<div class='textarea-part'>
 				<div class='well textarea' style='padding:0'>
@@ -115,12 +114,12 @@
 					else load_page('main/status');
 				} else {
 					alert('Failed to submit!');
-					//location.reload();
+					location.reload();
 				}
 			},
 			error: function() {
 				alert('Failed to submit!');
-				//location.reload();
+				location.reload();
 			}
 		});
 	}
@@ -177,7 +176,7 @@
 		try
 		{
 			$(".submit-editor").each(function(){
-				if ($(this).parents('.use-textarea').css('display')=='none') return true;
+				if ($(this).parents('.textarea-part').css('display')=='none') return true;
 				var name = $(this).attr('data-file');
 				var lang = $(this).parents('.one-file').find('.language');
 				var str = $(this).val();
@@ -200,7 +199,7 @@
 			});
 		} catch (err) { return false; }
 		$('#submit_button').attr('disabled','true');
-		$('.use-textarea:hidden,.use-upload:hidden').remove();
+		$('.textarea-part:hidden,.upload-part:hidden').remove();
 
 		var new_lang = undefined;
 		$(".language").each(function(){
