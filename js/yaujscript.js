@@ -57,6 +57,7 @@ function form2script(form)
 		run += 'compile(range(0,' + cnt + '),submission["SRC"],"SRC","EXE"); // throw when CE.\n';
 		run += 'length = len(read("SRC"));\n';
 		run += 'for (i=0; i<' + cnt + '; i++) result[i]["codeLength"]["SRC"] = length;\n';
+		run += 'if (length>50*1024) { for (i=0; i<' + cnt + '; i++) { result[i]["status"]="compile error"; result[i]["message"]="the code is too long."; } throw; }\n';
 	}
 	run += 'for (i=0; i<' + cnt + '; i++) try {\n';
 

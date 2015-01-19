@@ -186,7 +186,9 @@ class Submission extends CI_Model{
 	function load_code($sid){
 		if (!$this->allow_view_code($sid)) return FALSE;
 		$show = array();
-		$path = $this->config->item('code_path') . $sid;
+		$front = intval($sid/10000);
+		$back = $sid%10000;
+		$path = $this->config->item('code_path') . "$front/$back";
 		$files = scandir($path);
 		foreach ($files as $file)
 		{
@@ -257,7 +259,7 @@ class Submission extends CI_Model{
 		foreach ($ret as $row)
 		{
 			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
-			if (strtotime($res->startTime)<=now && strtotime($res->endTime)>=now)
+			if (strtotime($res->startTime)<=$now && strtotime($res->endTime)>=$now)
 			{
 				$notEnd = true;
 				break;

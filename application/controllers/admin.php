@@ -206,6 +206,11 @@ class Admin extends CI_Controller {
 		} catch (MyException $e)
 		{
 			$data = $this->problems->load_dataconf($pid);
+			if (!$data)
+			{
+				$this->load->view('error',array('message'=>'No such a problem'));
+				return;
+			}
 			$pass = array();
 			$pass['title'] = $data->title;
 			$pass['pid'] = $pid;

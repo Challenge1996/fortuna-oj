@@ -291,7 +291,9 @@ class Main extends CI_Controller {
 	public function codedownload($sid, $file)
 	{
 		$this->load->model('submission');
-		$path = $this->config->item('code_path') . $sid;
+		$front = intval($sid/10000);
+		$back = $sid%10000;
+		$path = $this->config->item('code_path') . "$front/$back";
 		if (!$this->submission->allow_view_code($sid))
 			$this->load->view('error', array('message' => 'You are not allowed to download this file!'));
 		else if (!is_file("$path/$file"))
@@ -481,12 +483,14 @@ class Main extends CI_Controller {
 			
 			$this->load->model('submission');
 			$sid = $this->submission->save_submission($data);
-			mkdir($this->config->item('code_path').$sid,0777,true);
+			$front = intval($sid/10000);
+			$back = $sid%10000;
+			mkdir($this->config->item('code_path')."$front/$back",0777,true);
 			foreach ($language as $file => $lang)
 			{
 				if (isset($editor[$file]))
 				{
-					$handle = fopen($this->config->item('code_path') . $sid . '/' . $file, 'w');
+					$handle = fopen($this->config->item('code_path') . "$front/$back" . '/' . $file, 'w');
 					fwrite($handle, $editor[$file]);
 					fclose($handle);
 				}
@@ -494,7 +498,7 @@ class Main extends CI_Controller {
 				{
 					if ($upload['error'][$file]>0) exit('upload error');
 					if ($upload['size'][$file]>67108864) exit('too large');
-					move_uploaded_file($upload['tmp_name'][$file], $this->config->item('code_path') . $sid . '/' . $file);
+					move_uploaded_file($upload['tmp_name'][$file], $this->config->item('code_path') . "$front/$back" . '/' . $file);
 				}
 			}
 
