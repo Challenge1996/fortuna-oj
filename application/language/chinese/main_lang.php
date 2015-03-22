@@ -83,6 +83,7 @@
 		
 	$lang['declaration'] = '更正';
 	$lang['standing'] = '排名';
+	$lang['forum'] = '论坛';
 	
 	$lang['rank'] = '排名';
 	$lang['score'] = '分数';

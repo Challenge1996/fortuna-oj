@@ -272,4 +272,16 @@ class Contest extends CI_Controller {
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
 		else if ($data != FALSE) $this->load->view('contest/result', array('data' => $data, 'info' => $info));
 	}
+
+	public function forum($cid)
+	{
+		$title = $this->input->post('title');
+		$content = $this->input->post('content');
+		
+		if ($content)
+			$this->contests->add_post($cid,$title,$content);
+		
+		$data = $this->contests->load_forum($cid);
+		$this->load->view('contest/forum', array('data' => $data));
+	}
 }

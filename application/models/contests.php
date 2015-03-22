@@ -617,4 +617,19 @@ class Contests extends CI_Model{
 		)->row()->pid;
 	}
 
+	function load_forum($cid)
+	{
+		return $this->db->query("SELECT * FROM Contest_Forum WHERE cid=?", array($cid))->result();
+	}
+
+	function add_post($cid, $title, $content)
+	{
+		$this->load->model('user');
+		$this->db->query("INSERT INTO Contest_Forum
+			(cid, uid, user, date, title, content) VALUE
+			(?,   ?,   ?,    NOW(),    ?,     ?)",
+			array($cid,$this->user->uid(),$this->user->username(),$title,$content)
+		);
+	}
+
 }

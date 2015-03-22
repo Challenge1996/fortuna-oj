@@ -10,6 +10,7 @@
 			<li><a href="#contest/status/<?=$cid?>"><?=lang('status')?></a></li>
 			<li><a href="#contest/standing/<?=$cid?>"><?=lang('standing')?></a></li>
 			<li><a href="#contest/statistic/<?=$cid?>"><?=lang('statistic')?></a></li>
+			<li><a href="#contest/forum/<?=$cid?>"><?=lang('forum')?></a></li>
 		</ul>
 	</div>
 </div>

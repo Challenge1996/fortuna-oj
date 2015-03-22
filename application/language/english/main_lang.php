@@ -83,6 +83,7 @@
 	
 	$lang['declaration'] = 'Declaration';
 	$lang['standing'] = 'Standing';
+	$lang['forum'] = 'Forum';
 	
 	$lang['rank'] = 'Rank';
 	$lang['score'] = 'Score';
