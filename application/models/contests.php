@@ -619,7 +619,11 @@ class Contests extends CI_Model{
 
 	function load_forum($cid)
 	{
-		return $this->db->query("SELECT * FROM Contest_Forum WHERE cid=?", array($cid))->result();
+		$data = $this->db->query("SELECT * FROM Contest_Forum WHERE cid=?", array($cid))->result();
+		$this->load->model('user');
+		foreach ($data as &$row)
+			$row->avatar = $this->user->load_avatar($row->uid);
+		return $data;
 	}
 
 	function add_post($cid, $title, $content)
@@ -630,6 +634,18 @@ class Contests extends CI_Model{
 			(?,   ?,   ?,    NOW(),    ?,     ?)",
 			array($cid,$this->user->uid(),$this->user->username(),$title,$content)
 		);
+	}
+
+	function del_post($id)
+	{
+		$uid = $this->db->query("SELECT uid FROM Contest_Forum WHERE id=?", array($id))->row()->uid;
+		$this->load->model('user');
+		if ($this->user->uid()==$uid || $this->user->is_admin())
+		{
+			$this->db->query("DELETE FROM Contest_Forum WHERE id=?", array($id));
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 }

@@ -275,11 +275,16 @@ class Contest extends CI_Controller {
 
 	public function forum($cid)
 	{
-		$title = $this->input->post('title');
-		$content = $this->input->post('content');
-		
-		if ($content)
-			$this->contests->add_post($cid,$title,$content);
+		$del = $this->input->get('del');
+		if ($del)
+			$this->contests->del_post($del);
+		else
+		{
+			$title = $this->input->post('title');
+			$content = $this->input->post('content');
+			if ($content)
+				$this->contests->add_post($cid,$title,$content);
+		}
 		
 		$data = $this->contests->load_forum($cid);
 		$this->load->view('contest/forum', array('data' => $data));

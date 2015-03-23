@@ -1,11 +1,19 @@
+<?php $this->load->model('user'); ?>
+
 <?php foreach ($data as $row): ?>
 	<div class='span11'>
 		<div class='span2'>
+			<div class='text-center'><img src='<?=$row->avatar?>' /></div>
 			<div class='text-center'><span class='label label-info'><?=$row->user?></span></div>
 			<div class='text-center'><?=$row->date?></div>
 		</div>
 		<div class='span10 well'>
 			<h4><?=$row->title?></h4>
+			<?php if ($this->user->uid()==$row->uid || $this->user->is_admin()): ?>
+				<span class='pull-right'>
+					<a href='#contest/forum/<?=$cid?>?del=<?=$row->id?>'>Delete</a>
+				</span>
+			<?php endif; ?>
 			<hr />
 			<?=$row->content?>
 		</div>
