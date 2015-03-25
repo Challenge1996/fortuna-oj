@@ -8,13 +8,11 @@
 			<div class='text-center'><?=$row->date?></div>
 		</div>
 		<div class='span10 well'>
-			<h4><?=$row->title?></h4>
+			<span class='span9'><h4><?=$row->title?></h4></span>
 			<?php if ($this->user->uid()==$row->uid || $this->user->is_admin()): ?>
-				<span class='pull-right'>
-					<a href='#contest/forum/<?=$cid?>?del=<?=$row->id?>'>Delete</a>
-				</span>
+				<span class='pull-right btn btn-link del' data-id='<?=$row->id?>'>Delete</span>
 			<?php endif; ?>
-			<hr />
+			<br /><hr />
 			<?=$row->content?>
 		</div>
 	</div>
@@ -66,6 +64,16 @@
 				{
 					$('#page_content').html(content);
 				}
+		});
+	});
+
+	$('.del').click(function(){
+		if (!confirm('Sure to delete?')) return;
+		$(this).addClass('disabled');
+		//console.log($(this).attr('data-id'));
+		//return;
+		$.get('index.php/contest/forum/<?=$cid?>?del='+$(this).attr('data-id'),function(data){
+			$('#page_content').html(data);
 		});
 	});
 </script>
