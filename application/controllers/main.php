@@ -192,8 +192,7 @@ class Main extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
-		if ($keyword) $config['suffix'] = '?search=' . $this->input->get('search');
-		if ($filter) $config['suffix'] = '?filter=' . $filter;
+		$config['suffix'] = '?' . http_build_query($this->input->get());
 		$this->pagination->initialize($config);
 
 		$this->load->view('main/problemset',
