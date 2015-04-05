@@ -208,10 +208,12 @@ class Contest extends CI_Controller {
 				$data = $this->contests->load_contest_ranklist_OI($cid, $info);
 			}
 		}
+
+		$est = $this->contests->load_estimate($cid);
 		
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
-		else $this->load->view('contest/standing', array('data' => $data, 'info' => $info));
+		else $this->load->view('contest/standing', array('data' => $data, 'info' => $info, 'est' => $est));
 	}
 	
 	public function statistic($cid){
@@ -288,5 +290,11 @@ class Contest extends CI_Controller {
 		
 		$data = $this->contests->load_forum($cid);
 		$this->load->view('contest/forum', array('data' => $data));
+	}
+
+	public function estimate($cid, $pid, $score)
+	{
+		$this->contests->upd_estimate($cid, $pid, $score);
+		$this->load->view('success');
 	}
 }

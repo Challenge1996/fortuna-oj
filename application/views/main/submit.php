@@ -51,9 +51,42 @@
 		<button type="submit" class="btn btn-primary pull-right" id="submit_button">Submit</button>
 	</div>
 </form>
-	
+
+<div id='est-modal' class='modal hide fade'>
+	<div class='modal-header'>
+		<h3>Expected Score?</h3>
+	</div>
+	<div class='modal-body'>
+		<input id='est-input' type='number'></input>
+	</div>
+	<div class='modal-footer'>
+		<span id='est-submit' class='btn btn-primary'>OK</span>
+	</div>
+</div>
 	
 <script type="text/javascript">
+
+	function final_submit()
+	{
+		$('#est-modal').modal('hide');
+		$('#submit_code').ajaxSubmit({
+			url: 'index.php/main/submit/' + $('#pid').val(),
+			success: function(responseText, statusText){
+				if (responseText == 'success') {
+					if ($('#cid').val() != '') load_page('contest/status/' + $('#cid').val());
+					else load_page('main/status');
+				} else {
+					$('#submit_button').removeAttr('disabled');
+					alert('Failed to submit!');
+				}
+			},
+			error: function() {
+				$('#submit_button').removeAttr('disabled');
+			}
+		});
+	}
+
+
 	$(document).ready(function(){
 		$('#toggle_editor').change(function (){
 			if ($('#toggle_editor').attr("checked")){
@@ -65,7 +98,10 @@
 				$('#texteditor').css({"visibility" : "visible", "display" : "block", "zIndex" : 10000});
 				editor.save();
 			}
-		})
+		});
+		$('#est-submit').click(function(){
+			$.ajax({ url:"index.php/contest/estimate/<?=$cid?>/<?=$pid?>/"+$("#est-input").val(), success: final_submit});
+		});
 	})
 	$(".CodeMirror-linenumbers").width(28);
 
@@ -82,7 +118,8 @@
 	{
 		return $('#texteditor').val().indexOf(str)!=-1;
 	}
-	
+
+		
 	function check_on_submit(){
 		if ($('#pid').val() == ''){
 			alert("You should specify the Problem ID!");
@@ -115,21 +152,13 @@
 		<?php endif ?>
 		
 		$('#submit_button').attr('disabled','true');
-		$('#submit_code').ajaxSubmit({
-			url: 'index.php/main/submit/' + $('#pid').val(),
-			success: function(responseText, statusText){
-				if (responseText == 'success') {
-					if ($('#cid').val() != '') load_page('contest/status/' + $('#cid').val());
-					else load_page('main/status');
-				} else {
-					$('#submit_button').removeAttr('disabled');
-					alert('Failed to submit!');
-				}
-			},
-			error: function() {
-				$('#submit_button').removeAttr('disabled');
-			}
-		});
+
+		<?php if ($cid): ?>
+			$('#est-modal').modal('show');
+		<?php else: ?>
+			final_submit();
+		<?php endif; ?>
+		
 		return false;
 	}
 
