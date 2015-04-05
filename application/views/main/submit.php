@@ -99,9 +99,11 @@
 				editor.save();
 			}
 		});
-		$('#est-submit').click(function(){
-			$.ajax({ url:"index.php/contest/estimate/<?=$cid?>/<?=$pid?>/"+$("#est-input").val(), success: final_submit});
-		});
+		<?php if (isset($cid) && $cid): ?>
+			$('#est-submit').click(function(){
+				$.ajax({ url:"index.php/contest/estimate/<?=$cid?>/<?=$pid?>/"+$("#est-input").val(), success: final_submit});
+			});
+		<?php endif; ?>
 	})
 	$(".CodeMirror-linenumbers").width(28);
 
@@ -153,7 +155,7 @@
 		
 		$('#submit_button').attr('disabled','true');
 
-		<?php if ($cid): ?>
+		<?php if (isset($cid) && $cid): ?>
 			$('#est-modal').modal('show');
 		<?php else: ?>
 			final_submit();
