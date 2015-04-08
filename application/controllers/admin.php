@@ -667,6 +667,36 @@ class Admin extends CI_Controller {
 			$this->load->view('success');
 		}
 	}
+
+
+
+
+
+	// temp
+
+	/*public function rejudgeall()
+	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		$this->load->model('submission');
+		for ($i=1000; $i<=86511; $i++)
+		{
+			if (!$this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE sid=$i")->row()->cnt) continue;
+			$this->submission->rejudge($i);
+		}
+	}
+
+	public function rejudgeerror()
+	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		$this->load->model('submission');
+		for ($i=1000; $i<=86511; $i++)
+		{
+			if (!$this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE sid=$i && status=9")->row()->cnt) continue;
+			$this->submission->rejudge($i);
+		}
+	}*/
 }
 
 // End of file admin.php

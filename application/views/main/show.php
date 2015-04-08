@@ -15,6 +15,8 @@
 							$outputOnly = false;
 						else
 							$spj = true;
+				else
+					$spj = true;
 		if ($outputOnly)
 			$IO = '(Output Only)';
 		else
