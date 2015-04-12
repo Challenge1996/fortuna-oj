@@ -107,23 +107,21 @@ class Submission extends CI_Model{
 	function load_statistic($pid, $row_begin, $count){
 		if ($this->user->is_admin()) {
 			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
-							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed, 
-							-score*100000000000000+time*10000000000+memory*100000+sid val FROM Submission
+							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed FROM Submission
 							WHERE pid=? AND (status>=0 OR status<=-3)) A
 						INNER JOIN
-							(SELECT uid, min(-score*100000000000000+time*10000000000+memory*100000+sid) eval, COUNT(*) AS count
+							(SELECT uid, sid, COUNT(*) AS count
 							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) GROUP BY uid) B
-						ON A.val=B.eval AND A.uid=B.uid GROUP BY A.uid ORDER BY A.val LIMIT ?,?;",
+						ON A.sid=B.sid AND A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
 							array($pid, $pid, $row_begin, $count))->result();
 		} else {
 			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
-							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed, 
-							-score*100000000000000+time*10000000000+memory*100000+sid val FROM Submission
+							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed FROM Submission
 							WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1) A
 						INNER JOIN
-							(SELECT uid, min(-score*100000000000000+time*10000000000+memory*100000+sid) eval, COUNT(*) AS count
+							(SELECT uid, sid, COUNT(*) AS count
 							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1 GROUP BY uid) B
-						ON A.val=B.eval AND A.uid=B.uid GROUP BY A.uid ORDER BY A.val LIMIT ?,?;",
+						ON A.sid=B.sid AND A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
 							array($pid, $pid, $row_begin, $count))->result();
 	
 		}

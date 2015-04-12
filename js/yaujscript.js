@@ -89,6 +89,7 @@ function form2script(form)
 				run += '  if (score[i]-result[i]["score"]<0.01) result[i]["status"]="accepted"; else if (result[i]["score"]>0.01) result[i]["status"]="partial accepted"; else result[i]["status"]="wrong answer";\n';
 				break;
 			case 1 : // cena
+				if (form.IOMode != 1) run += '  copy(input[i],userIn[i]);\n';
 				run += '  exec_ret = exec(i,"' + form.spjFile + '","/dev/null","/dev/null","/dev/null",score[i]+" "+output[i]);\n';
 				run += '  if (exec_ret["exitcode"]) { result[i]["status"]="spj error"; result[i]["score"]=0; throw; }\n';
 				run += '  result[i]["score"] = split(read("score.log"))[0];\n';
@@ -99,7 +100,7 @@ function form2script(form)
 				run += '  exec_ret = exec(i,"' + form.spjFile + '","/dev/null","/dev/null","/dev/null",input[i]+" "+userOut[i]+" "+output[i]+" spj.out");\n';
 				run += '  if (exec_ret["exitcode"]) { result[i]["status"]="spj error"; result[i]["score"]=0; throw; }\n';
 				run += '  res = split(read("spj.out"));\n';
-				run += '  result[i]["score"] = res[0];\n';
+				run += '  result[i]["score"] = res[0]*score[i];\n';
 				run += '  result[i]["message"] = res[1];\n';
 				run += '  if (score[i]-result[i]["score"]<0.01) result[i]["status"]="accepted"; else if (result[i]["score"]>0.01) result[i]["status"]="partial accepted"; else result[i]["status"]="wrong answer";\n';
 				break;

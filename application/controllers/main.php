@@ -485,7 +485,8 @@ class Main extends CI_Controller {
 			$sid = $this->submission->save_submission($data);
 			$front = intval($sid/10000);
 			$back = $sid%10000;
-			mkdir($this->config->item('code_path')."$front/$back",0777,true);
+			if (!mkdir($this->config->item('code_path')."$front/$back",0777,true))
+				exit('error when mkdir');
 			foreach ($language as $file => $lang)
 			{
 				if (isset($editor[$file]))
@@ -598,6 +599,9 @@ class Main extends CI_Controller {
 		{
 			$result = json_decode($data->result);
 
+			if (!isset($result))
+				$this->load->view('error', array('message' => 'No result avalible'));
+			else
 			if (isset($result->error))
 				$this->load->view('error', array('message' => $result->error));
 			else

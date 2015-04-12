@@ -164,7 +164,7 @@ class Admin extends CI_Controller {
 
 			$cwd = getcwd();
 			if (!is_dir("/tmp/foj/dataconf/yauj/$pid")) mkdir("/tmp/foj/dataconf/yauj/$pid",0777,true);
-			chdir("/tmp/foj/dataconf/yauj/$pid");
+			if (!chdir("/tmp/foj/dataconf/yauj/$pid")) throw new MyException('Error when changing directory');
 			exec('rm -r *');
 
 			$init_file = fopen("init.src","w");
@@ -173,8 +173,11 @@ class Admin extends CI_Controller {
 			fwrite($run_file,$post["script-run"]);
 			fclose($init_file);
 			fclose($run_file);
-			copy("init.src",$datapath.'/init.src');
-			copy("run.src",$datapath.'/run.src');
+			if (!copy("init.src",$datapath.'/init.src') || !copy("run.src",$datapath.'/run.src'))
+			{
+				chdir($cwd);
+				throw new MyException('Error when copying');
+			}
 
 			$ret = 0; $out = array();
 			file_put_contents("/tmp/foj/dataconf/yauj/$pid/makefile","include /home/judge/resource/makefile");

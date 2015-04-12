@@ -28,6 +28,8 @@ class NetWork extends CI_Model
 		if ($result === false) echo curl_error($handle);
 		curl_close($handle);
 		if ($result === false) return null;
+		$result = utf8_encode($result);
+		//$reslut = iconv(mb_detect_encoding($result,mb_detect_order(),true),"ASCII//IGNORE",$result);
 		$result = json_decode($result);
 		if (!isset($result) || !isset($result->result)) return null;
 		return $result->result;

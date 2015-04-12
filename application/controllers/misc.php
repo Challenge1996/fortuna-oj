@@ -186,16 +186,18 @@ class Misc extends CI_Controller {
 			'submission' => json_decode($get['submission'])
 		);
 		$ret = $this->network->jsonrpc_call($server,'run',$params);
+		if (!isset($ret)) $ret=(object)array('error'=>"JSON ERROR (MAY CONTAINING ILLEGAL CHARACTER): ".json_last_error());
 		//var_dump($ret);
 
 		$time = $memory = $codeLength = $language = $status = null;
 		$score = array();
 		$sum = 0;
-		foreach (json_decode($get['submission']) as $file)
-			if (!isset($language))
-				$language = $file->language;
-			else if ($language != $file->language)
-				$language = 'multiple';
+		if ($params['submission'])
+			foreach ($params['submission'] as $file)
+				if (!isset($language))
+					$language = $file->language;
+				else if ($language != $file->language)
+					$language = 'multiple';
 		// error should be handled in the detailed status page.
 		if (isset($ret) && !isset($ret->error))
 		{

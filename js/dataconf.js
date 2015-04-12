@@ -62,7 +62,7 @@ function initialize(data)
 			$("#spjFile").val(data.spjFile);
 		} else
 			$("#spj").removeAttr("checked");
-		if (data.IOMode == 0 || data.IOMode == 1)
+		if ((data.IOMode == 0 || data.IOMode == 1) && data.cases)
 		{
 			if (data.cases[0] && data.cases[0].tests[0] && data.cases[0].tests[0].userInput)
 				$("#user_input").val(data.cases[0].tests[0].userInput);
