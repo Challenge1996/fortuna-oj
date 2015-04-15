@@ -108,20 +108,22 @@ class Submission extends CI_Model{
 		if ($this->user->is_admin()) {
 			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
 							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed FROM Submission
-							WHERE pid=? AND (status>=0 OR status<=-3)) A
+							WHERE pid=? AND (status>=0 OR status<=-3)
+							ORDER BY -score, time, memory, sid) A
 						INNER JOIN
 							(SELECT uid, sid, COUNT(*) AS count
 							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) GROUP BY uid) B
-						ON A.sid=B.sid AND A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
+						ON A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
 							array($pid, $pid, $row_begin, $count))->result();
 		} else {
 			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
 							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed FROM Submission
-							WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1) A
+							WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1
+							ORDER BY -score, time, memory, sid) A
 						INNER JOIN
 							(SELECT uid, sid, COUNT(*) AS count
 							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1 GROUP BY uid) B
-						ON A.sid=B.sid AND A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
+						ON A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
 							array($pid, $pid, $row_begin, $count))->result();
 	
 		}
