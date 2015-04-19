@@ -22,7 +22,7 @@ class myjob
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
 		$result = curl_exec($handle);
 		//echo $result;
-		if ($result === false) echo curl_error($handle);
+		if ($result === false) syslog(LOG_WARNING, "jsonrpc failed: ".curl_error($handle));
 		curl_close($handle);
 		if ($result === false) return null;
 		$result = json_decode($result);
@@ -52,7 +52,7 @@ class myjob
 		$pushTime = urlencode($this->args['pushTime']);
 		while (true)
 		{
-			echo "attempt\n";
+			//echo "attempt\n";
 			$serverstatus = json_decode($this->local("misc/serverstatus/$pid"), true);
 			$version = $serverstatus['version'];
 			unset($serverstatus['version']);
@@ -64,13 +64,13 @@ class myjob
 					$this->local("misc/push_data/$pid", 2500);
 				else
 				{
-					echo "hit\n";
+					//echo "hit\n";
 					$key = $this->jsonrpc($server, 'preserve', array('sid' => $sid));
 					if ($key === null || $key == -1) continue;
 					$ser = urlencode($server);
-					echo "preserved $key\n";
-					$msg = $this->local("misc/push_submission/?pid=$pid&sid=$sid&key=$key&submission=$lang&server=$ser&push_time=$pushTime", 2500);
-					echo "$msg\n";
+					//echo "preserved $key\n";
+					$msg = trim($this->local("misc/push_submission/?pid=$pid&sid=$sid&key=$key&submission=$lang&server=$ser&push_time=$pushTime", 2500));
+					if ($msg) syslog(LOG_INFO, "msg = $msg");
 					return;
 				}
 			}
