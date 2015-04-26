@@ -166,8 +166,12 @@ class Problems extends CI_Model{
 		//$is_accepted = $this->misc->is_accepted($this->session->userdata('uid'), $pid);
 		
 		//if ($is_accepted)
-			return $this->db->query("SELECT idSolution, uid, filename FROM Solution WHERE pid=?",
-									array($pid))->result();
+		$this->load->model('user');
+		$solutions = $this->db->query("SELECT idSolution, uid, filename FROM Solution WHERE pid=?", array($pid))->result();
+		if ($solutions)
+			foreach ($solutions as $solution)
+				$solution->username = $this->user->load_username($solution->uid);
+		return $solutions;
 	}
 	
 	function delete_solution($idSolution) {
