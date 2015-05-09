@@ -1,7 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class MyException extends Exception {}
-
 class Admin extends CI_Controller {
 
 	private function _redirect_page($method, $params = array()){
@@ -162,45 +160,7 @@ class Admin extends CI_Controller {
 
 			$post = $this->input->post(NULL, FALSE);
 
-			$cwd = getcwd();
-			if (!is_dir("/tmp/foj/dataconf/yauj/$pid")) mkdir("/tmp/foj/dataconf/yauj/$pid",0777,true);
-			if (!chdir("/tmp/foj/dataconf/yauj/$pid")) throw new MyException('Error when changing directory');
-			exec('rm -r *');
-
-			$init_file = fopen("init.src","w");
-			$run_file = fopen("run.src","w");
-			fwrite($init_file,$post["script-init"]);
-			fwrite($run_file,$post["script-run"]);
-			fclose($init_file);
-			fclose($run_file);
-			if (!copy("init.src",$datapath.'/init.src') || !copy("run.src",$datapath.'/run.src'))
-			{
-				chdir($cwd);
-				throw new MyException('Error when copying');
-			}
-
-			$ret = 0; $out = array();
-			file_put_contents("/tmp/foj/dataconf/yauj/$pid/makefile","include /home/judge/resource/makefile");
-			exec("make > compile.log 2>&1", $out, $ret);
-			if ($ret)
-			{
-				$err = file_get_contents('compile.log');
-				chdir($cwd);
-				throw new MyException($err);
-			}
-
-			$ret = 0; $out = array();
-			exec("./yauj_judge loadconf > conf.log 2> err.log", $out, $ret);
-			if ($ret)
-			{
-				$err = file_get_contents('err.log');
-				chdir($cwd);
-				throw new MyException($err);
-			}
-			$confCache = str_replace(array(" ","\t","\n","\r"),array(),file_get_contents('conf.log'));
-			
-			chdir($cwd);
-
+			$confCache = $this->problems->save_script($pid, $post["script-init"], $post["script-run"]);
 			$this->problems->mark_update($pid);
 			$this->problems->save_dataconf($pid, $post["traditional"], $post["group"], $confCache);
 			

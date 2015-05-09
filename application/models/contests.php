@@ -686,4 +686,9 @@ class Contests extends CI_Model{
 		}
 		return $ret;
 	}
+
+	function load_contest_mode($cid)
+	{
+		return $this->db->query("SELECT contestMode FROM Contest WHERE cid=?", array($cid))->row()->contestMode;
+	}
 }

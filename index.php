@@ -1,5 +1,7 @@
 <?php
 
+class MyException extends Exception {}
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

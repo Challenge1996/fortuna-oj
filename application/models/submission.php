@@ -320,6 +320,7 @@ class Submission extends CI_Model{
 			case 'dangerous syscall':
 				return 7;
 			case 'compile error':
+			case 'compiling error':
 				return 8;
 			case 'internal error':
 			default :

@@ -1,3 +1,5 @@
+<?php $this->load->model('contests'); ?>
+
 <script src="application/third_party/codemirror/lib/codemirror.js" charset="utf-8"></script>
 <link rel="stylesheet" href="application/third_party/codemirror/lib/codemirror.css" />
 <link rel="stylesheet" href="application/third_party/codemirror/theme/neat.css" />
@@ -208,7 +210,7 @@
 		});
 		if (new_lang) $("#cookie-lang").val(new_lang);
 
-		<?php if (isset($cid) && $cid): ?>
+		<?php if (isset($cid) && $cid && $this->contests->load_contest_mode($cid)=='OI Traditional'): ?>
 			$('#est-modal').modal('show');
 		<?php else: ?>
 			final_submit();

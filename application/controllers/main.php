@@ -253,8 +253,14 @@ class Main extends CI_Controller {
 			$this->load->view('error', array('message' => 'Problem not available!'));
 			return;
 		}
-		
-		$data = $this->problems->load_dataconf($pid);
+
+		$data = null;	
+		try {
+			$data = $this->problems->load_dataconf($pid,true);
+		} catch (MyException $e) {
+			$this->load->view('error', array('message'=>$e->getMessage()));
+			return;
+		}	
 		$data->filemode = json_decode($data->confCache);
 		unset($data->confCache);
 		$files = array();
@@ -328,7 +334,13 @@ class Main extends CI_Controller {
 
 		$simple = false;
 		if (isset($_GET['simple'])) $simple = true;
-		$data = $this->problems->load_dataconf($pid);
+		$data = null;
+		try {
+			$data = $this->problems->load_dataconf($pid,true);
+		} catch (MyException $e) {
+			$this->load->view('error', array('message'=>$e->getMessage()));
+			return;
+		}	
 		$data->filemode = json_decode($data->confCache);
 		$data->dataGroup = json_decode($data->dataGroup);
 		unset($data->confCache);
@@ -336,7 +348,7 @@ class Main extends CI_Controller {
 		$TIME = array(); $MEMORY = array();
 		$src = (array)$data->filemode[2];
 		if (isset($data->filemode[4]))
-			foreach ($data->filemode[4] as $property)
+			foreach ($data->filemode[4] as $property) if (isset($property->source))
 				foreach ((array)($property->source) as $source)
 					if (isset($source) && isset($src[$source]))
 					{
@@ -377,7 +389,13 @@ class Main extends CI_Controller {
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
 		$this->form_validation->set_rules('pid', 'Problem ID', 'required');
 		
-		$filemode = json_decode($this->problems->load_dataconf($pid)->confCache);
+		$filemode = null;
+		try {
+			$filemode = json_decode($this->problems->load_dataconf($pid,true)->confCache);
+		} catch (MyException $e) {
+			$this->load->view('error', array('message'=>$e->getMessage()));
+			return;
+		}	
 
 		$toSubmit = (array)$filemode[2];
 		uksort($toSubmit, 'strnatcmp');
@@ -606,7 +624,13 @@ class Main extends CI_Controller {
 				$this->load->view('error', array('message' => $result->error));
 			else
 			{
-				$got = $this->problems->load_dataconf($data->pid);
+				$got = null;
+				try {
+					$got = $this->problems->load_dataconf($data->pid,true);
+				} catch (MyException $e) {
+					$this->load->view('error', array('message'=>$e->getMessage()));
+					return;
+				}	
 				$group = json_decode($got->dataGroup);
 				$filemode = json_decode($got->confCache);
 
