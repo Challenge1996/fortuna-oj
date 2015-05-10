@@ -2,6 +2,7 @@
 	<div id="header"><?php
 
 		$average = 0;
+		$allowed_download = '';
 		if ($data->submitCount > 0) $average = number_format($data->scoreSum / $data->submitCount, 2);
 
 		$IO = '';
@@ -169,7 +170,7 @@
 						foreach ($data->solutions as $solution) {
 							$encoded_filename = urlencode(rawurlencode($solution->filename));
 							$allowed_download .= "|$solution->filename";
-							echo "<a href='index.php/main/download/$data->pid/$encoded_filename/0/solution'>$solution->filename</a>";
+							echo "<a href='index.php/main/download/$data->pid/$encoded_filename/0/solution_path'>$solution->filename</a>";
 							if ($this->user->uid() == $solution->uid || $this->user->is_admin())
 								echo "<a class='pull-right' onclick='delete_solution($solution->idSolution)'>&times;</a>";
 							echo '<br />';
@@ -211,6 +212,8 @@
 		</div>
 	</div>
 </form>
+
+<?php $this->session->set_userdata('download', $allowed_download) ?>
 
 <script type="text/javascript">
 	function add_solution(){

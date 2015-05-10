@@ -5,7 +5,7 @@
 	$fileCnt = 1;
 	foreach ($files as $file)
 	{
-		echo "<tr><td>File $fileCnt</td><td><a href='index.php/main/download/$pid/$file'>$file</a></td></tr>";
+		echo "<tr><td>File $fileCnt</td><td><a href='index.php/main/download/$pid/$file/1'>$file</a></td></tr>";
 		$fileCnt++;
 	}
 	echo '</tbody></table>';

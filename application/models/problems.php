@@ -307,7 +307,7 @@ class Problems extends CI_Model{
 			$init .= "\n";
 			if (isset($x->tests)) foreach ($x->tests as $yy=>$y)
 			{
-				$group[$xx][] = $yy;
+				$group[$xx][] = $cnt;
 				$init .= "filemode[3][\"$y->input\"]={\"case\":$cnt}; // \"case\" can be an array.\n";
 				$init .= "filemode[3][\"$y->output\"]={\"case\":$cnt};\n";
 				if ($form->IOMode == 2)
