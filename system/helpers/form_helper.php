@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -21,7 +22,7 @@
  * @package		CodeIgniter
  * @subpackage	Helpers
  * @category	Helpers
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/helpers/form_helper.html
  */
 
@@ -614,7 +615,7 @@ if ( ! function_exists('form_close'))
  */
 if ( ! function_exists('form_prep'))
 {
-	function form_prep($str = '', $field_name = '', $encode = TRUE)
+	function form_prep($str = '', $field_name = '')
 	{
 		static $prepped_fields = array();
 
@@ -643,12 +644,10 @@ if ( ! function_exists('form_prep'))
 			return $str;
 		}
 
-		if ($encode){
-			$str = htmlspecialchars($str);
+		$str = htmlspecialchars($str);
 
-			// In case htmlspecialchars misses these.
-			$str = str_replace(array("'", '"'), array("&#39;", "&quot;"), $str);
-		}
+		// In case htmlspecialchars misses these.
+		$str = str_replace(array("'", '"'), array("&#39;", "&quot;"), $str);
 
 		if ($field_name != '')
 		{
@@ -674,7 +673,7 @@ if ( ! function_exists('form_prep'))
  */
 if ( ! function_exists('set_value'))
 {
-	function set_value($field = '', $default = '', $encode = TRUE)
+	function set_value($field = '', $default = '')
 	{
 		if (FALSE === ($OBJ =& _get_validation_object()))
 		{
@@ -686,7 +685,7 @@ if ( ! function_exists('set_value'))
 			return form_prep($_POST[$field], $field);
 		}
 
-		return form_prep($OBJ->set_value($field, $default), $field, $encode);
+		return form_prep($OBJ->set_value($field, $default), $field);
 	}
 }
 
