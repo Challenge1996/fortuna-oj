@@ -41,7 +41,7 @@
 		<label for="tid">Task ID</label>
 		<input name="tid" id="tid" type="text" class="input-mini" value="<?=isset($tid) ? $tid : ''?>" readonly />
 		<input name="gid" id="gid" type="hidden" class="input-mini" value="<?=isset($gid) ? $gid : ''?>" />
-		<input name='cookie-language' id='cookie-lang' type='hidden' value='<?=$language?>' />
+		<input id='cookie-language' name='cookie-language' id='cookie-lang' type='hidden' value='<?=$language?>' />
 	</div>
 
 	<?php foreach ($toSubmit as $name => $property): ?>
@@ -109,6 +109,7 @@
 	{
 		$('#est-modal').modal('hide');
 		$('.submit-editor').each(function() { $(this).val(encodeURIComponent($(this).val())); }); // prevent % escape
+		$('#cookie-language').val($('.language').first().val());
 		$('#submit-form').ajaxSubmit({
 			url: 'index.php/main/submit/' + $('#pid').val(),
 			success: function(responseText, statusText){
