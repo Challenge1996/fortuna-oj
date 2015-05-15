@@ -85,6 +85,7 @@ class Contest extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $contests_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('contest/index', array('data' => $data));
@@ -141,6 +142,7 @@ class Contest extends CI_Controller {
 			$config['total_rows'] = $count;
 			$config['per_page'] = $submission_per_page;
 			$config['uri_segment'] = 4;
+			$config['first_url'] = $config['base_url'] . '1';
 			$this->pagination->initialize($config);
 		}
 

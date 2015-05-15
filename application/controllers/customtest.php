@@ -30,6 +30,27 @@ class Customtest extends CI_Controller {
 		else
 			$this->login();
 	}
+
+	function login(){
+		$this->load->library('form_validation');
+		
+		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');
+			
+		$this->form_validation->set_rules('username', 'Username', 'required|callback_username_check');
+		$this->form_validation->set_rules('password', 'Password', 'required|callback_password_check');
+			
+		$this->form_validation->set_message('required', "%s is required");
+		$this->form_validation->set_message('username_check', 'User NOT exist or DISABLED!');
+		$this->form_validation->set_message('password_check', 'Password Error!');
+
+		if ($this->form_validation->run() == FALSE){
+			$this->load->view('login');
+		}else{
+			$this->user->login_success($this->input->post(NULL, TRUE));
+			
+			$this->load->view('success');
+		}
+	}
 	
 	public function run() {
 		$this->load->library('form_validation');
@@ -66,12 +87,9 @@ class Customtest extends CI_Controller {
 			
 			$path = '/tmp/foj/customtest/run' . rand();
 			mkdir($path, 0777, true);
-			
-			$cmd = 'cp /usr/bin/judge_core ' . $path . ' > /dev/null';
-			system($cmd);
 
 			$output='';
-			$memory=$time=false;
+			$status=$memory=$time=$retcode=false;
 			switch ($language) {
 				case 'C':	
 					$cmd = 'gcc Main.c -o Main -O2 -DONLINE_JUDGE >data.out 2>&1';
@@ -90,52 +108,56 @@ class Customtest extends CI_Controller {
 					$source = 'Main.pas';
 					break;
 			}
-			
-			$current_path = getcwd();
-			chdir($path);
-			
-			$file = fopen($source, 'w');
+			$file = fopen("$path/$source", 'w');
 			fwrite($file, $code);
 			fclose($file);
-			system($cmd, $status);
-			if ($status)
-				$output = file_get_contents('data.out');
-			unlink('data.out');
+			system("cd $path; $cmd", $CE);
+			if ($CE)
+			{
+				$status = "compile error";
+				$output = file_get_contents("$path/data.out");
+			}
+			unlink("$path/data.out");
 			
-			if ($output=='')
+			if ($status != "compile error")
 			{
 				if ($use_file_selected)
 				{
 					if (file_exists($uploaded_file))
 					{
 						$uid=$this->session->userdata('uid');
-						$cmd='cp '.$uploaded_file.' data.in';
+						$cmd="cp $uploaded_file $path/data.in";
 						system($cmd);
 					} else
 						$output = 'The input file dose not exist.';
 				}
 				else
 				{
-					$file = fopen('data.in', 'w');
+					$file = fopen("$path/data.in", 'w');
 					fwrite($file, $input_text);
 					fclose($file);
 				}
-			}
-			
-			if ($output=='')
-			{
-				$cmd = './judge_core 0 Main data.in /dev/null data.out 10000 524288 0 > /dev/null';
-				system($cmd);
+				$judge = popen("cd $path; uoj_run -T 10000 -M 1048576 -S 1048576 -i data.in -o data.out Main","r");
+				fscanf($judge,"%d%d%d%d",$status,$time,$memory,$retcode);
+				pclose($judge);
 	
-				if (file_exists('data.out'))
-					$output = file_get_contents('data.out');
+				if (file_exists("$path/data.out"))
+					$output = file_get_contents("$path/data.out");
 				else
 					$output = 'Output not found';
-				$file = fopen('test.log', 'r');
-				fscanf($file, "%d %f %d %d", $time, $time, $time, $memory);
-				fclose($file);
 			}
 
+			switch ($status)
+			{
+				case 0: $status = "normal"; break;
+				case 2: $status = "run time error"; break;
+				case 3: $status = "memory limit exceeded (1G)"; break;
+				case 4: $status = "time limit exceeded (10s)"; break;
+				case 5: $status = "output limit exceeded"; break;
+				case 6: $status = "dangerous syscall"; break;
+				case 7: $status = "Oh, you should find VFK!!";
+			}
+			
 			$data = array(
 				'language' => $language,
 				'code'	=>	$code,
@@ -145,13 +167,13 @@ class Customtest extends CI_Controller {
 				'time'	=>	$time,
 				'memory'	=>	$memory,
 				'status'	=>	$status,
+				'retcode'	=>	$retcode,
 				'text_checked' => ($use_file_selected?'':'checked'),
 				'file_checked' => ($use_file_selected?'checked':'')
 			);
 			
 			system('rm -R ' . $path);
 			
-			chdir($current_path);
 			$this->load->view('customtest/run', $data);
 		}
 	}

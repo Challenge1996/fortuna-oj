@@ -62,7 +62,7 @@
 					<textarea data-file='<?=$name?>' class="source-editor span12" rows="22"></textarea>
 					<textarea data-file='<?=$name?>' class="submit-editor span12" rows="22" name="texteditor[<?=$name?>]" style='display:none'></textarea>
 					<script type='text/javascript'>
-						editor["<?=$name?>"] = CodeMirror.fromTextArea($(".source-editor[data-file='<?=$name?>'").get(0), {
+						editor["<?=$name?>"] = CodeMirror.fromTextArea($(".source-editor[data-file='<?=$name?>']").get(0), {
 							lineNumbers: true,
 							theme: "neat",
 							indentUnit: 4,
@@ -108,6 +108,7 @@
 	function final_submit()
 	{
 		$('#est-modal').modal('hide');
+		$('.submit-editor').each(function() { $(this).val(encodeURIComponent($(this).val())); }); // prevent % escape
 		$('#submit-form').ajaxSubmit({
 			url: 'index.php/main/submit/' + $('#pid').val(),
 			success: function(responseText, statusText){

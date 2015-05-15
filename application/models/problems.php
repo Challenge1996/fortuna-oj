@@ -247,8 +247,10 @@ class Problems extends CI_Model{
 	{
 		$datapath = $this->config->item('data_path').$pid;
 		$cwd = getcwd();
-		if (!is_dir("/tmp/foj/dataconf/yauj/$pid")) mkdir("/tmp/foj/dataconf/yauj/$pid",0777,true);
-		if (!chdir("/tmp/foj/dataconf/yauj/$pid")) throw new MyException('Error when changing directory');
+		$ojname = $this->config->item('oj_name');
+		$rand = rand();
+		if (!is_dir("/tmp/foj/dataconf/$ojname/$pid.$rand")) mkdir("/tmp/foj/dataconf/$ojname/$pid.$rand",0777,true);
+		if (!chdir("/tmp/foj/dataconf/$ojname/$pid.$rand")) throw new MyException('Error when changing directory');
 		exec('rm -r *');
 
 		file_put_contents("init.src",$script_init);
@@ -260,7 +262,7 @@ class Problems extends CI_Model{
 		}
 
 		$ret = 0; $out = array();
-		file_put_contents("/tmp/foj/dataconf/yauj/$pid/makefile","include /home/judge/resource/makefile");
+		file_put_contents("/tmp/foj/dataconf/$ojname/$pid.$rand/makefile","include /home/judge/resource/makefile");
 		exec("make > compile.log 2>&1", $out, $ret);
 		if ($ret)
 		{
@@ -301,13 +303,13 @@ class Problems extends CI_Model{
 			case 2: // output only
 				$init .= 'filemode[3]["data.zip"]={"download"};'."\n";
 		}
-		if (isset($form->cases)) foreach ($form->cases as $xx=>$x)
+		if (isset($form->cases)) foreach ($form->cases as $x)
 		{
-			$group[$xx] = array();
+			$cur_group = array();
 			$init .= "\n";
-			if (isset($x->tests)) foreach ($x->tests as $yy=>$y)
+			if (isset($x->tests)) foreach ($x->tests as $y)
 			{
-				$group[$xx][] = $cnt;
+				$cur_group[] = $cnt;
 				$init .= "filemode[3][\"$y->input\"]={\"case\":$cnt}; // \"case\" can be an array.\n";
 				$init .= "filemode[3][\"$y->output\"]={\"case\":$cnt};\n";
 				if ($form->IOMode == 2)
@@ -332,6 +334,7 @@ class Problems extends CI_Model{
 					$init .= "userIn[$cnt]=\"$y->userInput\";\n";
 				$cnt ++;
 			}
+			if ($cur_group) $group[] = $cur_group;
 		}
 		if (isset($form->spjFile) && gettype($form->spjFile)=='string')
 			$init .= "filemode[4][\"$form->spjFile\"]={}; // not needed. you can set limits of spj here.\n";

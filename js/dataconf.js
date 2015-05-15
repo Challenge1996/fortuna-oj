@@ -14,10 +14,24 @@ function upd_gs(data, group)
 	$("#submit-group").val(JSON.stringify(group));
 }
 
+function clean_data(data)
+{
+	if (data.cases === undefined) return data;
+	data.cases = data.cases.filter(function(x){
+		if (x === undefined || x === null) return false;
+		if (x.tests === undefined || x.tests === null) return false;
+		return true;
+	});
+	for (var i in data.cases)
+		data.cases[i].tests = data.cases[i].tests.filter(function(x){ return x !== undefined && x !== null; })
+	return data;
+}
+
 function initialize(data)
 {
 	$("#traditional").val(data);
 	data = eval('('+data+')');
+	data = clean_data(data);
 	var group = Array();
 	$("#data").html("");
 	cases_cnt = tests_cnt = 0;
@@ -25,6 +39,8 @@ function initialize(data)
 	{
 		for (var i in data.cases)
 		{
+			//if (data.cases[i] === null || data.cases[i] === undefined)
+			//	continue;
 			case_id = add_case();
 			group[case_id] = Array();
 			current_case = $("#" + case_id);

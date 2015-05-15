@@ -89,18 +89,30 @@
 
 		<strong>Output</strong>
 		<textarea id="output" class="span12" rows="6" readonly><?=$output?></textarea>
-		
-		<?php if (isset($time) && $time !== false) { ?>
+
+		<?php if (isset($status) && $status !== false): ?>
+		<label>Status
+			<span class="label label-info"><?=$status?></span>
+		</label>
+		<?php endif; ?>
+
+		<?php if (isset($time) && $time !== false): ?>
 		<label>Time
 			<span class="label label-info"><?=$time?> ms</span>
 		</label>
-		<?php } 
+		<?php endif; ?>
 		
-		if (isset($memory) && $memory !== false) { ?>
+		<?php if (isset($memory) && $memory !== false): ?>
 			<label>Memory
 			<span class="label label-info"><?=$memory?> KB</span>
 			</label>
-		<?php } ?>
+		<?php endif; ?>
+
+		<?php if (isset($retcode) && $retcode !== false): ?>
+			<label>Returned Code
+			<span class="label label-info"><?=$retcode?></span>
+			</label>
+		<?php endif; ?>
 	</div>
 </div>
 	

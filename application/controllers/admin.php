@@ -138,6 +138,7 @@ class Admin extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('admin/problemset', array('data' => $data, 'page' => $page));
@@ -386,6 +387,7 @@ class Admin extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $contests_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('admin/contestlist', array('data' => $data));
@@ -485,6 +487,7 @@ class Admin extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $tasks_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 		
 		$this->load->view('admin/task_list', array('tasks' => $tasks));

@@ -188,6 +188,7 @@ class Main extends CI_Controller {
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
 		$config['suffix'] = '?' . http_build_query($this->input->get());
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('main/problemset',
@@ -479,7 +480,8 @@ class Main extends CI_Controller {
 			}
 
 			$language = $this->input->post('language');
-			$editor = $this->input->post('texteditor');
+			$editor = $this->input->post('texteditor',FALSE);
+			foreach ($editor as &$code) $code = urldecode($code);
 			$upload = array('name'=>array());
 			if (isset($_FILES['file'])) $upload = $_FILES['file'];
 			$arg_lang = array();
@@ -550,6 +552,7 @@ class Main extends CI_Controller {
 		$config['per_page'] = $users_per_page;
 		$config['cur_page'] = $page;
 		$config['uri_segment'] = 4;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 		
 		$this->load->view('main/statistic', array('data' => $data, 'pid' => $pid));
@@ -573,6 +576,7 @@ class Main extends CI_Controller {
 		$config['per_page'] = $submission_per_page;
 		$config['first_link'] = 'Top';
 		$config['last_link'] = FALSE;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$url = uri_string() . ($_SERVER['QUERY_STRING'] == '' ? '' : ('?' . $_SERVER['QUERY_STRING']));
@@ -662,6 +666,7 @@ class Main extends CI_Controller {
 		$config['base_url'] = '#main/ranklist/';
 		$config['total_rows'] = $count;
 		$config['per_page'] = $users_per_page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('main/ranklist', array('data' => $data));
@@ -677,7 +682,7 @@ class Main extends CI_Controller {
 		if ( !isset($_FILES['solution'])) return;
 		
 		$temp_file = $_FILES['solution']['tmp_name'];
-		$target_path = $this->config->item('data_path') . $pid . '/solution/';
+		$target_path = $this->config->item('solution_path') . $pid;
 		if (! is_dir($target_path)) mkdir($target_path);
 		$target_file = $target_path . $_FILES['solution']['name'];
 		
