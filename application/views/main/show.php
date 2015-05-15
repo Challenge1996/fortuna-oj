@@ -134,7 +134,8 @@
 			echo lang('submit') . ": <a class=\"pull-right\" href=\"#main/statistic/$data->pid\"><span class=\"badge badge-info\">$data->submitCount</span></a><br />";
 			echo lang('average') . ": <a class=\"pull-right\" href=\"#main/statistic/$data->pid\"><span class=\"badge badge-info\">$average</span></a><br />";
 			echo '<div style="text-align:center">';
-			echo "<button class=\"btn btn-primary\" onclick=\"window.location.href='#main/submit/$data->pid'\">" . lang('submit') . "</button>";
+			$disabled = ($noSubmit ? 'disabled' : '');
+			echo "<button class=\"$disabled btn btn-primary\" onclick=\"window.location.href='#main/submit/$data->pid'\">" . lang('submit') . "</button>";
 			echo '</div></section></fieldset>';
 		?></div>
 		

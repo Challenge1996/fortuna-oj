@@ -242,7 +242,11 @@ class Main extends CI_Controller {
 		if ($data == FALSE)
 			$this->load->view('error', array('message' => 'Problem not available!'));
 		else
-			$this->load->view('main/show', array('data' => $data, 'category' => $categorization));
+			$this->load->view('main/show', array(
+				'data' => $data,
+				'category' => $categorization,
+				'noSubmit' => $this->problems->no_submit($pid)
+			));
 	}
 
 	public function showdownload($pid)
@@ -379,6 +383,12 @@ class Main extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->helper('cookie');
 		$this->load->model('problems');
+
+		if ($this->problems->no_submit($pid))
+		{
+			$this->load->view('error', array('message'=>'This problem is set to NO SUBMISSION'));
+			return;
+		}
 		
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
 		$this->form_validation->set_rules('pid', 'Problem ID', 'required');

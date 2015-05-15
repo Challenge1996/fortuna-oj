@@ -9,6 +9,10 @@ class Problems extends CI_Model{
 	function change_status($pid){
 		$this->db->query("UPDATE ProblemSet SET isShowed=1-isShowed WHERE pid=?", array($pid));
 	}
+
+	function change_nosubmit($pid){
+		$this->db->query("UPDATE ProblemSet SET noSubmit=1-noSubmit WHERE pid=?", array($pid));
+	}
 	
 	function uid($pid){
 		return $this->db->query("SELECT uid FROM ProblemSet WHERE pid=?", array($pid))->row()->uid;
@@ -84,7 +88,7 @@ class Problems extends CI_Model{
 		$rev_str = ($rev?"DESC":"");
 
 		return $this->db->query("
-			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, uname AS author
+			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, noSubmit, uname AS author
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
 			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim)
 			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?
@@ -153,6 +157,10 @@ class Problems extends CI_Model{
 	
 	function is_showed($pid){
 		return $this->db->query("SELECT isShowed FROM ProblemSet WHERE pid=?", array($pid))->row()->isShowed;
+	}
+
+	function no_submit($pid){
+		return $this->db->query("SELECT noSubmit FROM ProblemSet WHERE pid=?", array($pid))->row()->noSubmit;
 	}
 	
 	function load_problem_submission($pid){

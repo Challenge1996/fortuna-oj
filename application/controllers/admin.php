@@ -117,6 +117,11 @@ class Admin extends CI_Controller {
 		$this->load->model('problems');
 		$this->problems->change_status($pid);
 	}
+
+	public function change_problem_nosubmit($pid){
+		$this->load->model('problems');
+		$this->problems->change_nosubmit($pid);
+	}
 	
 	public function problemset($page = 1){
 		$problems_per_page = 20;
@@ -130,8 +135,10 @@ class Admin extends CI_Controller {
 		$row_begin = ($page - 1) * $problems_per_page;
 		$data = $this->problems->load_problemset($row_begin, $problems_per_page, TRUE, $uid, TRUE);
 		foreach ($data as $row)
-			if ($row->isShowed == 1) $row->isShowed = '<span class="label label-success">Showed</span>';
-			else $row->isShowed = '<span class="label label-important">Hidden</span>';
+		{
+			$row->isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');
+			$row->noSubmit=($row->noSubmit?'<span class="label label-important">Disallowing</span>':'<span class="label label-success">Allowing</span>');
+		}
 
 		$this->load->library('pagination');
 		$config['base_url'] = '#admin/problemset/';

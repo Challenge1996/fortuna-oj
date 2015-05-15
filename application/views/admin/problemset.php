@@ -34,7 +34,8 @@
 			<th>Author</th>
 			<th>Title</th>
 			<th>Source</th>
-			<th>Status</th>
+			<th>Show/Hide</th>
+			<th>Allow Submit</th>
 			<th>Edit</th>
 			<th>Data</th>
 			<th></th>
@@ -48,6 +49,7 @@
 			echo "<td><a class='title' href='#main/show/$pid'>$row->title</a></td>";
 			echo '<td>' . strtrim($row->source) . '</td>';
 			echo "<td><a onclick=\"access_page('#admin/change_problem_status/$pid')\">$row->isShowed</a></td>";
+			echo "<td><a onclick=\"access_page('#admin/change_problem_nosubmit/$pid')\">$row->noSubmit</a></td>";
 			echo "<td><button class='btn btn-mini' onclick=\"window.location.href='#admin/addproblem/$pid'\">Edit</button></td>";
 			echo "<td><button class='btn btn-mini' onclick=\"window.location.href='#admin/dataconf/$pid'\">Configure</button></td>";
 			echo "<td><button class='close' onclick=\"delete_problem($pid, $(this))\">&times;</button></tr>";
