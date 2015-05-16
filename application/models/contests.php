@@ -638,6 +638,18 @@ class Contests extends CI_Model{
 		);
 	}
 
+	function modify_post($id, $title, $content)
+	{
+		$uid = $this->db->query("SELECT uid FROM Contest_Forum WHERE id=?", array($id))->row()->uid;
+		$this->load->model('user');
+		if ($this->user->uid()==$uid)
+		{
+			$this->db->query("UPDATE Contest_Forum SET title=?, content=?", array($title, $content));
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 	function del_post($id)
 	{
 		$uid = $this->db->query("SELECT uid FROM Contest_Forum WHERE id=?", array($id))->row()->uid;

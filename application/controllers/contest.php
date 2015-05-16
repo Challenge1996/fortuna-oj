@@ -287,14 +287,28 @@ class Contest extends CI_Controller {
 	public function forum($cid)
 	{
 		$del = $this->input->get('del');
+		$post = $this->input->get('post');
+		$mdfy = $this->input->get('mdfy');
+		$title = $this->input->post('title');
+		$content = $this->input->post('content');
 		if ($del)
 			$this->contests->del_post($del);
-		else
+		else if ($post)
 		{
-			$title = $this->input->post('title');
-			$content = $this->input->post('content');
-			if ($content)
-				$this->contests->add_post($cid,$title,$content);
+			if (!$content)
+			{
+				$this->load->view('error', array('message' => 'Cannot post an empty post'));
+				return;
+			}
+			$this->contests->add_post($cid,$title,$content);
+		} else if ($mdfy)
+		{
+			if (!$content)
+			{
+				$this->load->view('error', array('message' => 'Cannot post an empty post'));
+				return;
+			}
+			$this->contests->modify_post($mdfy,$title,$content);
 		}
 		
 		$data = $this->contests->load_forum($cid);
