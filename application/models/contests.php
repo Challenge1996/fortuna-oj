@@ -644,7 +644,7 @@ class Contests extends CI_Model{
 		$this->load->model('user');
 		if ($this->user->uid()==$uid)
 		{
-			$this->db->query("UPDATE Contest_Forum SET title=?, content=?", array($title, $content));
+			$this->db->query("UPDATE Contest_Forum SET title=?, content=? WHERE id=?", array($title, $content,$id));
 			return TRUE;
 		}
 		return FALSE;
