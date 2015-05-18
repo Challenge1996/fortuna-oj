@@ -131,7 +131,11 @@ class Main extends CI_Controller {
 
 		if (count($this->input->get(NULL,TRUE))==1)
 			if ($page == 0)
+			{
 				$page = $this->user->load_last_page($uid);
+				//redirect(uri_string().'/'.$this->user->load_last_page($uid).'?seed='.rand());
+				//return;
+			}
 			else
 				$this->user->save_last_page($uid, $page);
 		else if ($page == 0)
@@ -188,7 +192,7 @@ class Main extends CI_Controller {
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
 		$config['suffix'] = '?' . http_build_query($this->input->get());
-		$config['first_url'] = $config['base_url'] . '1';
+		$config['first_url'] = $config['base_url'] . '1' . $config['suffix'];
 		$this->pagination->initialize($config);
 
 		$this->load->view('main/problemset',
@@ -692,7 +696,7 @@ class Main extends CI_Controller {
 		if ( !isset($_FILES['solution'])) return;
 		
 		$temp_file = $_FILES['solution']['tmp_name'];
-		$target_path = $this->config->item('solution_path') . $pid;
+		$target_path = $this->config->item('solution_path') . $pid . '/';
 		if (! is_dir($target_path)) mkdir($target_path);
 		$target_file = $target_path . $_FILES['solution']['name'];
 		

@@ -67,6 +67,7 @@ class myjob
 					echo "hit\n";
 					$key = $this->jsonrpc($server, 'preserve', array('sid' => $sid));
 					if ($key === null || $key == -1) continue;
+					$lang = urlencode($lang);
 					$ser = urlencode($server);
 					echo "preserved $key\n";
 					$msg = trim($this->local("misc/push_submission/?pid=$pid&sid=$sid&key=$key&submission=$lang&server=$ser&push_time=$pushTime", 2500));

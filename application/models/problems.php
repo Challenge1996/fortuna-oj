@@ -234,7 +234,7 @@ class Problems extends CI_Model{
 		foreach ($data as $row)
 		{
 			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
-			if (strtotime($res->startTime)<=now && strtotime($res->endTime)>=now) return true;
+			if (strtotime($res->startTime)<=$now && strtotime($res->endTime)>=$now) return true;
 		}
 		return false;
 	}
@@ -340,6 +340,8 @@ class Problems extends CI_Model{
 					$init .= "userOut[$cnt]=\"data.out\";\n";
 				if (isset($y->userInput))
 					$init .= "userIn[$cnt]=\"$y->userInput\";\n";
+				else
+					$init .= "userIn[$cnt]=\"data.in\";\n";
 				$cnt ++;
 			}
 			if ($cur_group) $group[] = $cur_group;

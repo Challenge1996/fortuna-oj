@@ -47,6 +47,8 @@ function form2script(form)
 				init += 'userOut[' + cnt + ']="data.out";\n';
 			if (y.userInput !== undefined)
 				init += 'userIn[' + cnt + ']="' + y.userInput + '";\n';
+			else
+				init += 'userIn[' + cnt + ']="data.in";\n';
 			cnt++;
 		}
 	}
