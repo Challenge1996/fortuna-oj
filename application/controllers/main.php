@@ -558,7 +558,7 @@ class Main extends CI_Controller {
 		$row_begin = ($page - 1) * $users_per_page;
 		$count = $this->submission->statistic_count($pid);
 		$data = $this->submission->load_statistic($pid, $row_begin, $users_per_page);
-		$this->submission->format_data($data);
+		foreach ($data as &$row) $this->submission->format_data($row);
 		
 		$this->load->library('pagination');
 		$config['base_url'] = "#main/statistic/$pid/";

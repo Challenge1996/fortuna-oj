@@ -3,6 +3,13 @@
 require_once 'application/vendor/autoload.php';
 require_once 'application/myjob.php';
 
+function compare_submission($lhs, $rhs) {
+	if ($lhs[0]->score != $rhs[0]->score) return $lhs[0]->score < $rhs[0]->score ? 1 : -1;
+	if ($lhs[0]->time != $rhs[0]->time) return $lhs[0]->time > $rhs[0]->time ? 1 : -1;
+	if ($lhs[0]->memory != $rhs[0]->memory) return $lhs[0]->memory > $rhs[0]->memory ? 1 : -1;
+	return $lhs[0]->sid > $rhs[0]->sid ? 1 : -1;
+}
+
 class Submission extends CI_Model{
 
 	function __construct(){
@@ -105,28 +112,16 @@ class Submission extends CI_Model{
 	}
 	
 	function load_statistic($pid, $row_begin, $count){
-		if ($this->user->is_admin()) {
-			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
-							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed FROM Submission
-							WHERE pid=? AND (status>=0 OR status<=-3)
-							ORDER BY -score, time, memory, sid) A
-						INNER JOIN
-							(SELECT uid, sid, COUNT(*) AS count
-							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) GROUP BY uid) B
-						ON A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
-							array($pid, $pid, $row_begin, $count))->result();
-		} else {
-			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
-							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed FROM Submission
-							WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1
-							ORDER BY -score, time, memory, sid) A
-						INNER JOIN
-							(SELECT uid, sid, COUNT(*) AS count
-							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1 GROUP BY uid) B
-						ON A.uid=B.uid GROUP BY A.uid ORDER BY -A.score, A.time, A.memory, A.sid LIMIT ?,?;",
-							array($pid, $pid, $row_begin, $count))->result();
-	
-		}
+		$temp = null;
+		if ($this->user->is_admin())
+			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) AND ORDER BY -score, time, memory, sid", array($pid))->result();
+		else
+			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) AND isShowed=1 ORDER BY -score, time, memory, sid", array($pid))->result();
+		$result = array();
+		foreach ($temp as $row) 
+			$result[$row->uid][] = $row;
+		uasort($result, 'compare_submission');
+		return array_slice($result,$row_begin,$count);
 	}
 	
 	private function filter_to_string($filter){
