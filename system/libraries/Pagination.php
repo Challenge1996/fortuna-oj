@@ -155,7 +155,7 @@ class CI_Pagination {
 		}
 		else
 		{
-			if ($CI->uri->segment($this->uri_segment) != $base_page)
+			if ($CI->uri->segment($this->uri_segment) != FALSE && $CI->uri->segment($this->uri_segment) != $base_page)
 			{
 				$this->cur_page = $CI->uri->segment($this->uri_segment);
 

@@ -114,7 +114,7 @@ class Submission extends CI_Model{
 	function load_statistic($pid, $row_begin, $count){
 		$temp = null;
 		if ($this->user->is_admin())
-			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) AND ORDER BY -score, time, memory, sid", array($pid))->result();
+			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) ORDER BY -score, time, memory, sid", array($pid))->result();
 		else
 			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) AND isShowed=1 ORDER BY -score, time, memory, sid", array($pid))->result();
 		$result = array();

@@ -160,7 +160,13 @@ class Contest extends CI_Controller {
 		if ($info != FALSE){
 			$pid = $this->contests->load_contest_pid($cid, $id);
 			if ($pid != FALSE){
-				$data = $this->problems->load_problem($pid);
+				$data = null;
+				try {	
+					$data = $this->problems->load_problem($pid);
+				} catch (MyException $e) {
+					$this->load->view('error', array('message'=>$e->getMessage()));
+					return;
+				}	
 				if ($data != FALSE){
 					$data->filemode = json_decode($data->confCache);
 					unset($data->confCache);

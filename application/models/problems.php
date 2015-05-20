@@ -131,10 +131,19 @@ class Problems extends CI_Model{
 		return $this->db->query("SELECT pid, starred, note FROM Bookmark WHERE uid=? AND pid in $pids", array($uid))->result();
 	}
 	
-	function load_problem($pid){
+	function load_problem($pid){ // may throw
 		$result = $this->db->query("SELECT * from ProblemSet WHERE pid=?", array($pid));
 		if ($result->num_rows() == 0) return FALSE;
-		return $result->row();
+		$data = $result->row();
+		if (!isset($data->dataGroup) || !$data->dataGroup || !isset($data->confCache) || !$data->confCache)
+		{
+			$got = $this->form2script(json_decode($data->dataConfiguration));
+			$data->dataGroup = $got->group;
+			$data->confCache = $this->save_script($pid, $got->init, $got->run);
+			$this->problems->mark_update($pid);
+			$this->problems->save_dataconf($pid, $data->dataConfiguration, $data->dataGroup, $data->confCache);
+		}
+		return $data;
 	}
 	
 	function add($data, $pid = 0){
@@ -254,6 +263,7 @@ class Problems extends CI_Model{
 	function save_script($pid, $script_init, $script_run) // this function may throw MyException
 	{
 		$datapath = $this->config->item('data_path').$pid;
+		if (!is_dir($datapath)) mkdir($datapath,0777,true);
 		$cwd = getcwd();
 		$ojname = $this->config->item('oj_name');
 		$rand = rand();

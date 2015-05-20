@@ -131,11 +131,7 @@ class Main extends CI_Controller {
 
 		if (count($this->input->get(NULL,TRUE))==1)
 			if ($page == 0)
-			{
 				$page = $this->user->load_last_page($uid);
-				//redirect(uri_string().'/'.$this->user->load_last_page($uid).'?seed='.rand());
-				//return;
-			}
 			else
 				$this->user->save_last_page($uid, $page);
 		else if ($page == 0)
@@ -205,8 +201,14 @@ class Main extends CI_Controller {
 	public function show($pid){
 		$this->load->model('problems');
 		$this->load->model('misc');
-		
-		$data = $this->problems->load_problem($pid);
+
+		$data = null;
+		try {	
+			$data = $this->problems->load_problem($pid);
+		} catch (MyException $e) {
+			$this->load->view('error', array('message'=>$e->getMessage()));
+			return;
+		}	
 		if ($data != FALSE && ($data->isShowed || $this->user->is_admin())) {
 			
 			$data->filemode = json_decode($data->confCache);
