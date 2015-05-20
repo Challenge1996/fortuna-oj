@@ -1,5 +1,15 @@
 <?php
 
+require_once 'application/vendor/autoload.php';
+require_once 'application/myjob.php';
+
+function compare_submission($lhs, $rhs) {
+	if ($lhs[0]->score != $rhs[0]->score) return $lhs[0]->score < $rhs[0]->score ? 1 : -1;
+	if ($lhs[0]->time != $rhs[0]->time) return $lhs[0]->time > $rhs[0]->time ? 1 : -1;
+	if ($lhs[0]->memory != $rhs[0]->memory) return $lhs[0]->memory > $rhs[0]->memory ? 1 : -1;
+	return $lhs[0]->sid > $rhs[0]->sid ? 1 : -1;
+}
+
 class Submission extends CI_Model{
 
 	function __construct(){
@@ -7,24 +17,36 @@ class Submission extends CI_Model{
 	}
 	
 	function rejudge($sid){
-		$data = $this->db->query("SELECT cid, pid, uid, status, score FROM Submission WHERE sid=?",
-									array($sid))->row();
-									
-		if ($data->status != -1 && is_null($data->cid)) {
-			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum-? WHERE pid=?",
-				array($data->score, $data->pid));
+		$data = $this->db->query("SELECT cid, pid, uid, status, score, ACCounted, langDetail FROM Submission WHERE sid=?",array($sid))->row();
+
+		if ($data->ACCounted)
+		{
+			$this->db->query("UPDATE Submission SET ACCounted=0 WHERE sid=?", array($sid));
+			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum-?,submitCount=submitCount-1 WHERE pid=?", array($data->score, $data->pid));
+			$this->db->query("UPDATE User SET submitCount=submitCount-1 WHERE uid=?", array($data->uid));
+			if ($data->status==0)
+			{
+				$this->db->query("UPDATE User SET solvedCount=solvedCount-1 WHERE uid=?", array($data->uid));
+				$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount-1 WHERE pid=?", array($data->pid));
+				if ($this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE uid=? AND status=0", array($data->uid))->row()->cnt==1)
+					$this->db->query("UPDATE User SET acCount=acCount-1 WHERE uid=?", array($data->uid));
+			}
 		}
-	
-		if ($data->status == 0 && is_null($data->cid)){
-			$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount-1 WHERE pid=?",
-								array($data->pid));
 		
-			$this->db->query("UPDATE User SET solvedCount=solvedCount-1 WHERE uid=?",
-								array($data->uid));
-		}
+		$pushTime = date("Y-m-d H:i:s");
+		$this->db->query("UPDATE Submission SET score=0,status=-1,time=NULL,memory=NULL,codeLength=NULL,judgeResult=NULL,pushTime=? WHERE sid=?",array($pushTime,$sid));
+
+		Resque::setBackend('127.0.0.1:6379');
+		Resque::enqueue('default', 'myjob', array(
+			'passwd' => $this->config->item('local_passwd'),
+			'oj_name' => $this->config->item('oj_name'),
+			'pid' => (int)$data->pid,
+			'sid' => (int)$sid,
+			'lang' => $data->langDetail,
+			'servers' => $this->config->item('servers'),
+			'pushTime' => $pushTime
+		));
 		
-		$this->db->query("UPDATE Submission SET score=0,status=-1,time=0, memory=0,judgeResult='' WHERE sid=?",
-							array($sid));
 	}
 	
 	function change_status($sid){
@@ -41,7 +63,6 @@ class Submission extends CI_Model{
 		$sql = $this->db->insert_string('Submission', $data);
 		$this->db->query($sql);
 		$sid = $this->db->insert_id();
-		$this->db->query("UPDATE ProblemSet SET submitCount=submitCount+1 WHERE pid=?", array($data['pid']));
 		return $sid;
 	}
 	
@@ -91,28 +112,16 @@ class Submission extends CI_Model{
 	}
 	
 	function load_statistic($pid, $row_begin, $count){
-		if ($this->user->is_admin()) {
-			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
-							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed, 
-							-score*100000000000000+time*10000000000+memory*100000+sid val FROM Submission
-							WHERE pid=? AND (status>=0 OR status<=-3)) A
-						INNER JOIN
-							(SELECT uid, min(-score*100000000000000+time*10000000000+memory*100000+sid) eval, COUNT(*) AS count
-							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) GROUP BY uid) B
-						ON A.val=B.eval AND A.uid=B.uid GROUP BY A.uid ORDER BY A.val LIMIT ?,?;",
-							array($pid, $pid, $row_begin, $count))->result();
-		} else {
-			return $this->db->query("SELECT *, COUNT(DISTINCT A.uid) FROM
-							(SELECT sid, uid, status, name, score, time, memory, codeLength, submitTime, language, private, isShowed, 
-							-score*100000000000000+time*10000000000+memory*100000+sid val FROM Submission
-							WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1) A
-						INNER JOIN
-							(SELECT uid, min(-score*100000000000000+time*10000000000+memory*100000+sid) eval, COUNT(*) AS count
-							 FROM Submission WHERE pid=? AND (status>=0 OR status<=-3) AND isShowed=1 GROUP BY uid) B
-						ON A.val=B.eval AND A.uid=B.uid GROUP BY A.uid ORDER BY A.val LIMIT ?,?;",
-							array($pid, $pid, $row_begin, $count))->result();
-	
-		}
+		$temp = null;
+		if ($this->user->is_admin())
+			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) ORDER BY -score, time, memory, sid", array($pid))->result();
+		else
+			$temp = $this->db->query("SELECT * FROM Submission WHERE pid=? AND (status >= 0 OR status <= -3) AND isShowed=1 ORDER BY -score, time, memory, sid", array($pid))->result();
+		$result = array();
+		foreach ($temp as $row) 
+			$result[$row->uid][] = $row;
+		uasort($result, 'compare_submission');
+		return array_slice($result,$row_begin,$count);
 	}
 	
 	private function filter_to_string($filter){
@@ -155,17 +164,37 @@ class Submission extends CI_Model{
 					array($row_begin, $count));
 		return $result->result();
 	}
-	
-	function load_code($sid){
-		$result = $this->db->query("SELECT uid, pid, code, language, private FROM Submission WHERE sid=?", array($sid));
+
+	function allow_view_code($sid)
+	{
+		$result = $this->db->query("SELECT uid, pid, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
 		$uid = $this->session->userdata('uid');
 		$accepted = $this->db->query("SELECT * FROM Submission WHERE pid=? AND uid=? AND status=0", array($result->pid, $uid))->num_rows() > 0;
 		if ($this->db->query("SELECT pid FROM ProblemSet WHERE pid=? AND isShowed=1", array($result->pid))->num_rows() == 0)
 			$accepted = FALSE;
-		if ($result->uid == $uid || $this->session->userdata('priviledge') == 'admin' || $result->private == 0 || $accepted) 
-			return $result;
-		return FALSE;
+		if ($result->uid != $uid && $this->session->userdata('priviledge') != 'admin' && $result->private != 0 && !$accepted) 
+			return FALSE;
+		return TRUE;
+	}
+	
+	function load_code($sid){
+		if (!$this->allow_view_code($sid)) return FALSE;
+		$show = array();
+		$front = intval($sid/10000);
+		$back = $sid%10000;
+		$path = $this->config->item('code_path') . "$front/$back";
+		$files = scandir($path);
+		foreach ($files as $file)
+		{
+			if (! is_file("$path/$file")) continue;
+			if (filesize("$path/$file") > 10*1024)
+				$show[$file] = null;
+			else
+				$show[$file] = file_get_contents("$path/$file");
+		}
+		uksort($show, 'strnatcmp');
+		return $show;
 	}
 	
 	function load_result($sid){
@@ -199,5 +228,98 @@ class Submission extends CI_Model{
 	function is_private($sid) {
 		$result = $this->db->query("SELECT private FROM Submission WHERE sid=?", array($sid))->row();
 		return $result->private == 1;
+	}
+
+	function load_pushTime($sid)
+	{
+		return $this->db->query("SELECT pushTime FROM Submission WHERE sid=?", array($sid))->row()->pushTime;
+	}
+
+	function upd_status($sid, $stat)
+	{
+		$this->db->query("UPDATE Submission SET status=? WHERE sid=?", array($stat,$sid));
+	}
+	
+	function judge_done($sid, $pid, $data)
+	{
+		$got = $this->db->query("SELECT uid, pushTime FROM Submission WHERE sid=?", array($sid))->row();
+		if ($got->pushTime != $data['pushTime']) return;
+		unset($data['pushTime']);
+		$uid = $got->uid;
+		$this->db->query($this->db->update_string('Submission',$data,"sid=$sid"));
+		$notEnd = false;
+		$this->load->model('contests');
+		$ret = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
+		$now = strtotime('now');
+		foreach ($ret as $row)
+		{
+			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
+			if (strtotime($res->startTime)<=$now && strtotime($res->endTime)>=$now)
+			{
+				$notEnd = true;
+				break;
+			}
+		}
+		if (!$notEnd)
+		{
+			$this->db->query("UPDATE Submission SET ACCounted=1 WHERE sid=?", array($sid));
+			$this->db->query("UPDATE ProblemSet SET scoreSum=scoreSum+?,submitCount=submitCount+1 WHERE pid=?", array($data['score'],$pid));
+			$this->db->query("UPDATE User SET submitCount=submitCount+1 WHERE uid=?",array($uid));
+			if ($data['status']===0 && !$notEnd)
+			{
+				$this->db->query("UPDATE User SET solvedCount=solvedCount+1 WHERE uid=?", array($uid));
+				$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount+1 WHERE pid=?", array($pid));
+				if ($this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE uid=? AND status=0", array($uid))->row()->cnt==1)
+					$this->db->query("UPDATE User SET acCount=acCount+1 WHERE uid=?", array($uid));
+			}
+		}
+	}
+	
+	function status_id($status)
+	{
+		switch (str_replace('_',' ',strtolower($status)))
+		{
+			case 'output not found':
+				return -4;
+			case 'partially accepted':
+			case 'partially accept':
+			case 'partial accepted':
+			case 'partial accept':
+				return -3;
+			case 'running':
+				return -2;
+			case 'pending':
+				return -1;
+			case 'accept':
+			case 'accepted':
+				return 0;
+			case 'presentation error':
+				return 1;
+			case 'wrong answer':
+				return 2;
+			case 'checker error':
+			case 'spj error':
+			case 'special judge error':
+				return 3;
+			case 'output limit exceeded':
+			case 'output limit exceed' :
+				return 4;
+			case 'memory limit exceeded':
+			case 'memory limit exceed':
+				return 5;
+			case 'time limit exceeded':
+			case 'time limit exceed':
+				return 6;
+			case 'runtime error':
+			case 'run time error':
+			case 'dangerous syscall':
+				return 7;
+			case 'compile error':
+			case 'compiling error':
+				return 8;
+			case 'internal error':
+			default :
+				return 9;
+		}
 	}
 }

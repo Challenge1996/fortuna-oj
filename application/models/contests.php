@@ -1,7 +1,7 @@
 <?php
 
 class Participant{
-	var $score, $penalty, $rank, $name, $isFormal, $attempt, $acList, $submitTime;
+	var $score, $penalty, $rank, $uid, $name, $isFormal, $attempt, $acList, $submitTime;
 }
 
 function team_cmp_ACM($a, $b){
@@ -198,6 +198,7 @@ class Contests extends CI_Model{
 			foreach ($data as $row){
 				if ( ! isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
+					$result[$row->uid]->uid = $row->uid;
 					$result[$row->uid]->name = $row->name;
 					$result[$row->uid]->penalty = 0;
 					$result[$row->uid]->score = 0;
@@ -267,6 +268,7 @@ class Contests extends CI_Model{
 			foreach ($data as $row){
 				if ( ! isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
+					$result[$row->uid]->uid = $row->uid;
 					$result[$row->uid]->name = $row->name;
 					$result[$row->uid]->score = 0;
 					$result[$row->uid]->isFormal = TRUE;
@@ -636,6 +638,18 @@ class Contests extends CI_Model{
 		);
 	}
 
+	function modify_post($id, $title, $content)
+	{
+		$uid = $this->db->query("SELECT uid FROM Contest_Forum WHERE id=?", array($id))->row()->uid;
+		$this->load->model('user');
+		if ($this->user->uid()==$uid)
+		{
+			$this->db->query("UPDATE Contest_Forum SET title=?, content=? WHERE id=?", array($title, $content,$id));
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 	function del_post($id)
 	{
 		$uid = $this->db->query("SELECT uid FROM Contest_Forum WHERE id=?", array($id))->row()->uid;
@@ -647,5 +661,46 @@ class Contests extends CI_Model{
 		}
 		return FALSE;
 	}
+	
+	function upd_estimate($cid, $pid, $score)
+	{
+		$uid = $this->user->uid();
+		$cnt = $this->db->query(
+			"SELECT COUNT(*) AS cnt FROM Estimate WHERE cid=? AND pid=? AND uid=?",
+			array($cid, $pid, $uid)
+		)->row()->cnt;
+		if ($cnt)
+			$this->db->query(
+				"DELETE FROM Estimate WHERE cid=? AND pid=? AND uid=?",
+				array($cid, $pid, $uid)
+			);
+		$this->db->query(
+			"INSERT INTO Estimate (cid, pid, uid, score) VALUES (?, ?, ?, ?)",
+			array($cid, $pid, $uid, $score)
+		);
+	}
 
+	function load_estimate($cid)
+	{
+		$data = $this->db->query("SELECT * FROM Estimate WHERE cid=?", array($cid))->result();
+		$ret = array();
+		foreach ($data as $row)
+		{
+			if (!isset($ret[$row->uid])) $ret[$row->uid] = array();
+			$ret[$row->uid][$row->pid] = (int)$row->score;
+		}
+		foreach ($ret as &$row)
+		{
+			$sum = 0;
+			foreach ($row as $prob)
+				$sum += $prob;
+			$row['sum'] = $sum;
+		}
+		return $ret;
+	}
+
+	function load_contest_mode($cid)
+	{
+		return $this->db->query("SELECT contestMode FROM Contest WHERE cid=?", array($cid))->row()->contestMode;
+	}
 }

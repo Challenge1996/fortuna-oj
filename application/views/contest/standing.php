@@ -32,11 +32,15 @@
 		<tbody><?php
 		if ($data != FALSE){
 			foreach ($data as $row){
+				$uid = $row->uid;
 				$s=(isset($startTime) && $row->submitTime<$startTime)?' class="submitted_before" style="display:none" ':'';
 				echo "<tr".$s.">";
 				echo "<td><div ".$s."><span class=\"label\">$row->rank</span></div></td>";
 				echo "<td><div ".$s."><a href='#users/$row->name'><span class=\"label label-info\">$row->name</span></a></div></td>";
-				echo "<td><div ".$s."><span class=\"badge badge-info\">$row->score</span></div></td>";
+				echo "<td><div ".$s.">".
+					"<span class=\"badge badge-info\">$row->score</span>".
+					(isset($est[$uid])? "<sup><span class=\"badge\">".$est[$uid]['sum']."</span></sup>" :'').
+					"</div></td>";
 				
 				if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
 					foreach ($pid as $prob){
@@ -50,6 +54,8 @@
 								echo '<span class="badge badge-success">' . $row->acList[$prob] . '</span>';
 							echo '</a>';
 						}
+						if (isset($est[$uid]) && isset($est[$uid][$prob]))
+							echo '<sup><span class="badge">'.$est[$uid][$prob].'</span></sup>';
 						echo '</div></td>';
 					}
 				}else if ($info->contestMode == 'ACM'){

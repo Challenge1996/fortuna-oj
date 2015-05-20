@@ -1,4 +1,4 @@
-var tests = [], debug = null, debugUsed = new Array(), allNames = [];
+var tests = [], filters = [], allNames = [];
 
 function Failure(why) {this.message = why;}
 Failure.prototype.toString = function() { return this.message; };
@@ -23,16 +23,17 @@ function test(name, run, expectedFail) {
   tests.push({name: name, func: run, expectedFail: expectedFail});
   return name;
 }
+var namespace = "";
 function testCM(name, run, opts, expectedFail) {
-  return test("core_" + name, function() {
-    var place = document.getElementById("testground"), cm = CodeMirror(place, opts);
+  return test(namespace + name, function() {
+    var place = document.getElementById("testground"), cm = window.cm = CodeMirror(place, opts);
     var successful = false;
     try {
       run(cm);
       successful = true;
     } finally {
-      if ((debug && !successful) || verbose) {
-        place.style.visibility = "";
+      if (!successful || verbose) {
+        place.style.visibility = "visible";
       } else {
         place.removeChild(cm.getWrapperElement());
       }
@@ -41,49 +42,27 @@ function testCM(name, run, opts, expectedFail) {
 }
 
 function runTests(callback) {
-  if (debug) {
-    if (indexOf(debug, "verbose") === 0) {
-      verbose = true;
-      debug.splice(0, 1);
-    }
-    if (debug.length < 1) {
-      debug = null;
-    } else {
-      if (totalTests > debug.length) {
-        totalTests = debug.length;
-      }
-    }
-  }
   var totalTime = 0;
   function step(i) {
-    if (i === tests.length){
-      running = false;
-      return callback("done");
-    }
-    var test = tests[i], expFail = test.expectedFail, startTime = +new Date;
-    if (debug !== null) {
-      var debugIndex = indexOf(debug, test.name);
-      if (debugIndex !== -1) {
-        // Remove from array for reporting incorrect tests later
-        debug.splice(debugIndex, 1);
+    for (;;) {
+      if (i === tests.length) {
+        running = false;
+        return callback("done");
+      }
+      var test = tests[i], skip = false;
+      if (filters.length) {
+        skip = true;
+        for (var j = 0; j < filters.length; j++)
+          if (test.name.match(filters[j])) skip = false;
+      }
+      if (skip) {
+        callback("skipped", test.name, message);
+        i++;
       } else {
-        var wildcardName = test.name.split("_").shift() + "_*";
-        debugIndex = indexOf(debug, wildcardName);
-        if (debugIndex !== -1) {
-          // Remove from array for reporting incorrect tests later
-          debug.splice(debugIndex, 1);
-          debugUsed.push(wildcardName);
-        } else {
-          debugIndex = indexOf(debugUsed, wildcardName);
-          if (debugIndex !== -1) {
-            totalTests++;
-          } else {
-            return step(i + 1);
-          }
-        }
+        break;
       }
     }
-    var threw = false;
+    var expFail = test.expectedFail, startTime = +new Date, threw = false;
     try {
       var message = test.func();
     } catch(e) {
@@ -91,7 +70,8 @@ function runTests(callback) {
       if (expFail) callback("expected", test.name);
       else if (e instanceof Failure) callback("fail", test.name, e.message);
       else {
-        var pos = /\bat .*?([^\/:]+):(\d+):/.exec(e.stack);
+        var pos = /(?:\bat |@).*?([^\/:]+):(\d+)/.exec(e.stack);
+        if (pos) console["log"](e.stack);
         callback("error", test.name, e.toString() + (pos ? " (" + pos[1] + ":" + pos[2] + ")" : ""));
       }
     }
@@ -122,13 +102,37 @@ function label(str, msg) {
 function eq(a, b, msg) {
   if (a != b) throw new Failure(label(a + " != " + b, msg));
 }
+function near(a, b, margin, msg) {
+  if (Math.abs(a - b) > margin)
+    throw new Failure(label(a + " is not close to " + b + " (" + margin + ")", msg));
+}
 function eqPos(a, b, msg) {
   function str(p) { return "{line:" + p.line + ",ch:" + p.ch + "}"; }
   if (a == b) return;
-  if (a == null) throw new Failure(label("comparing null to " + str(b)));
-  if (b == null) throw new Failure(label("comparing " + str(a) + " to null"));
+  if (a == null) throw new Failure(label("comparing null to " + str(b), msg));
+  if (b == null) throw new Failure(label("comparing " + str(a) + " to null", msg));
   if (a.line != b.line || a.ch != b.ch) throw new Failure(label(str(a) + " != " + str(b), msg));
 }
 function is(a, msg) {
   if (!a) throw new Failure(label("assertion failed", msg));
+}
+
+function countTests() {
+  if (!filters.length) return tests.length;
+  var sum = 0;
+  for (var i = 0; i < tests.length; ++i) {
+    var name = tests[i].name;
+    for (var j = 0; j < filters.length; j++) {
+      if (name.match(filters[j])) {
+        ++sum;
+        break;
+      }
+    }
+  }
+  return sum;
+}
+
+function parseTestFilter(s) {
+  if (/_\*$/.test(s)) return new RegExp("^" + s.slice(0, s.length - 2), "i");
+  else return new RegExp(s, "i");
 }

@@ -90,12 +90,11 @@ class Admin extends CI_Controller {
 			$this->load->view("admin/addproblem", $data);
 		}else{
 			$data = $this->input->post(NULL);
-			$data['codeSizeLimit'] = (int)$data['codeSizeLimit'];
 			//$data['isShowed'] = 0;
 			if ($pid == 0){
 				$new = TRUE;
 				$pid = $this->problems->add($data);
-				$this->problems->save_dataconf($pid, '{IOMode:0, cases:[]}');
+				$this->problems->save_dataconf($pid, '{IOMode:0, cases:[]}', null, null);
 			}else{
 				$new = FALSE;
 				$this->problems->add($data, $pid);
@@ -118,6 +117,11 @@ class Admin extends CI_Controller {
 		$this->load->model('problems');
 		$this->problems->change_status($pid);
 	}
+
+	public function change_problem_nosubmit($pid){
+		$this->load->model('problems');
+		$this->problems->change_nosubmit($pid);
+	}
 	
 	public function problemset($page = 1){
 		$problems_per_page = 20;
@@ -131,14 +135,17 @@ class Admin extends CI_Controller {
 		$row_begin = ($page - 1) * $problems_per_page;
 		$data = $this->problems->load_problemset($row_begin, $problems_per_page, TRUE, $uid, TRUE);
 		foreach ($data as $row)
-			if ($row->isShowed == 1) $row->isShowed = '<span class="label label-success">Showed</span>';
-			else $row->isShowed = '<span class="label label-important">Hidden</span>';
+		{
+			$row->isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');
+			$row->noSubmit=($row->noSubmit?'<span class="label label-important">Disallowing</span>':'<span class="label label-success">Allowing</span>');
+		}
 
 		$this->load->library('pagination');
 		$config['base_url'] = '#admin/problemset/';
 		$config['total_rows'] = $count;
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('admin/problemset', array('data' => $data, 'page' => $page));
@@ -149,115 +156,89 @@ class Admin extends CI_Controller {
 		$this->load->model('problems');
 		$this->form_validation->set_error_delimiters('<div class="alert">', '</div>');
 		
-		$this->form_validation->set_rules('pid', 'pid', 'required');
+		$this->form_validation->set_rules('script-init', 'Initialization Part', 'required');
+		$this->form_validation->set_rules('script-run', 'Running Part', 'required');
+		$this->form_validation->set_rules('group', 'Manual Setting of Data Grouping', 'required');
 		
-		if ($this->form_validation->run() == FALSE){
-			$data = $this->problems->load_dataconf($pid);
-			$title = $data->title;
-			$data = $data->dataConfiguration;
+		$datapath = $this->config->item('data_path').$pid;
+		
+		try
+		{
+			if ($this->form_validation->run() == FALSE) throw new MyException();
 
-			$this->load->view('admin/dataconf', array('data' => $data, 'pid' => $pid, 'title' => $title));
-		} else {
-			$post = $this->input->post(NULL, TRUE);
-			
-			$data = NULL;
-			$data['IOMode'] = (int)$post['IOMode'];
-			$ccnt = 0;
-			if (isset($post['score'])){
-				foreach ($post['score'] as $case){
-					if (isset($newcase)) unset($newcase);
-					$newcase['score'] = (double)$case;
-					$ccnt++;
-					$data['cases'][] = $newcase;
-				}
-			}
-			
-			$tcnt = $post['tcnt'];
-			for ($i = 1000000000; $i < 1000000000 + $tcnt; $i++){
-				if (isset($post['infile'][$i])){
-					if (isset($test)) unset($test);
-					
-					$test['input'] = $post['infile'][$i];
-					$test['output'] = $post['outfile'][$i];
-					
-					if ($data['IOMode'] != 2) {
-						$test['timeLimit'] = (int)$post['time'][$i];
-						$test['memoryLimit'] = (int)$post['memory'][$i];
-						$test['userInput'] = $post['user_input'];
-						$test['userOutput'] = $post['user_output'];
-						
-					} else {
-						$test['userOutput'] = $post['user_output'][$i];
-					}
-					
-					$data['cases'][(int)$post['case_no'][$i]]['tests'][] = $test;
-				}
-			}
-			
-			if (isset($post['spj'])){
-				$data['spjMode'] = (int)$post['spjMode'];
-				$data['spjFile'] = $post['spjFile'];
-			}
-			if ($data['IOMode'] == 3) $data['framework'] = $post['framework'];
-			
-			$path = $this->config->item('data_path') . $pid;
-			$IOMode = $data['IOMode'];
-			$data = json_encode($data);
-			$this->problems->save_dataconf($this->input->post('pid'), $data);
-			
-			$cur = getcwd();
-			chdir($path);
-			
-			if ($IOMode == 2) {
-				$cmd = "zip data.zip -q";
-				foreach ($post['infile'] as $infile) $cmd .= " $infile";
-				$info = exec($cmd);
-				if ( ! is_dir($path . '/submission')) mkdir($path . '/submission');
-			}
-			
-			$servers = $this->config->item('servers');
-			foreach ($servers as $server) {
-				proc_close(proc_open("ssh user@$server \". /home/judge/data/rsync.sh " . $this->config->item('data_path') . "/$pid\"", array(), $foo));
-			}
+			$post = $this->input->post(NULL, FALSE);
 
-			chdir($cur);
+			$confCache = $this->problems->save_script($pid, $post["script-init"], $post["script-run"]);
+			$this->problems->mark_update($pid);
+			$this->problems->save_dataconf($pid, $post["traditional"], $post["group"], $confCache);
+			
 			$this->load->view('success');
+
+		} catch (MyException $e)
+		{
+			$data = $this->problems->load_dataconf($pid);
+			if (!$data)
+			{
+				$this->load->view('error',array('message'=>'No such a problem'));
+				return;
+			}
+			$pass = array();
+			$pass['title'] = $data->title;
+			$pass['pid'] = $pid;
+		    	$pass['traditional'] = $data->dataConfiguration;
+			$pass['group'] = $data->dataGroup;
+			$pass['init'] = file_exists($datapath.'/init.src')?file_get_contents($datapath.'/init.src'):'';
+			$pass['run'] = file_exists($datapath.'/run.src')?file_get_contents($datapath.'/run.src'):'';
+			$pass['errmsg'] = $e->getMessage();
+
+			$this->load->view('admin/dataconf', $pass);
 		}
 	}
-	
+
 	public function upload($pid){
 		if ( !isset($_FILES['files'])) return;
 		$count = count($_FILES['files']['tmp_name']);
+
+		$target_path = $this->config->item('data_path') . $pid . '/';
+		if (! is_dir($target_path)) mkdir($target_path,0777,true);
+		//$cwd = getcwd();
+		//chdir($target_path);
+		//$makefile = "SPJ :";
+		
 		for ($i = 0; $i < $count; $i++) {
 			$temp_file = $_FILES['files']['tmp_name'][$i];
-			$target_path = $this->config->item('data_path') . $pid . '/';
-			if (! is_dir($target_path)) mkdir($target_path);
 			$target_file = $target_path . $_FILES['files']['name'][$i];
-
-			$file_types = array('c', 'cpp', 'pas', 'dpr');
-			$file_parts = pathinfo($_FILES['files']['name'][$i]);
-			$basename = $file_parts['basename'];
-			$filename = $file_parts['filename'];
-			if (isset($file_parts['extension'])) $extension = $file_parts['extension'];
-			else $extension = '';
+			//$file_types = array('c', 'cpp', 'pas', 'dpr');
+			//$file_parts = pathinfo($_FILES['files']['name'][$i]);
+			//$basename = $file_parts['basename'];
+			//$filename = $file_parts['filename'];
+			//if (isset($file_parts['extension'])) $extension = $file_parts['extension'];
+			//else $extension = '';
 		
 		//	if (in_array($file_parts['extension'],$file_types))
 			//if ( ! is_executable($temp_file))
 			move_uploaded_file($temp_file, $target_file);
-				
-			if (in_array($extension, $file_types)){
-				chdir($target_path);
+			
+			//if (in_array($extension, $file_types)){
+				/*chdir($target_path);
 				if ($extension == 'c')
 					exec("gcc $basename -o $filename");
 				if ($extension == 'cpp')
 					exec("g++ $basename -o $filename");
 				if ($extension == 'pas' || $extension == 'dpr')
-					exec("fpc $basename -o$filename");
-			}
+					exec("fpc $basename -o$filename");*/
+				//$makefile .= " $filename";
+			//}
 			
 			if (in_array($extension, array('tar', 'tar.gz', 'zip', 'rar', '7z', 'bz2', 'gz')))
 				exec("extract.sh $basename");
 		}
+		//$handle = fopen("spj.makefile","w");
+		//fwrite($handle, $makefile);
+		//fclose($handle);
+		//chdir($cwd);
+		$this->load->model('problems');
+		$this->problems->mark_update($pid);
 	}
 		
 	public function wipedata($pid){
@@ -273,7 +254,7 @@ class Admin extends CI_Controller {
 		chdir($target_path);
 		$dir = (scandir('.'));
 		natsort($dir);
-		$data = (array)json_decode($this->problems->load_dataconf($pid)->dataConfiguration);
+		$data = json_decode($this->problems->load_dataconf($pid)->dataConfiguration,true);
 		$hash = array();
 		$hash['input'] = $hash['output'] = array();
 		
@@ -367,8 +348,20 @@ class Admin extends CI_Controller {
 						$data['cases'][] = $case;
 					}
 			}
-
 		}
+		
+		$num = count($data['cases']);
+		foreach ($data['cases'] as &$case)
+		{
+			if (!isset($cases['score'])) $case['score']=100/$num;
+			foreach ($case['tests'] as &$test)
+			{
+				if (!isset($test['timeLimit'])) $test['timeLimit']=1000;
+				if (!isset($test['memoryLimit'])) $test['memoryLimit']=262144;
+			}
+		}
+
+		if (!isset($data["IOMode"])) $data["IOMode"]=0;
 		
 		echo json_encode($data);
 	}
@@ -401,6 +394,7 @@ class Admin extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $contests_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('admin/contestlist', array('data' => $data));
@@ -500,6 +494,7 @@ class Admin extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $tasks_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 		
 		$this->load->view('admin/task_list', array('tasks' => $tasks));
@@ -532,7 +527,7 @@ class Admin extends CI_Controller {
 			$this->load->view('success');
 		}
 	}
-	
+
 	function always_true() {
 		return TRUE;
 	}
@@ -645,6 +640,36 @@ class Admin extends CI_Controller {
 			$this->load->view('success');
 		}
 	}
+
+
+
+
+
+	// temp
+
+	/*public function rejudgeall()
+	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		$this->load->model('submission');
+		for ($i=1000; $i<=86511; $i++)
+		{
+			if (!$this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE sid=$i")->row()->cnt) continue;
+			$this->submission->rejudge($i);
+		}
+	}
+
+	public function rejudgeerror()
+	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		$this->load->model('submission');
+		for ($i=1000; $i<=86511; $i++)
+		{
+			if (!$this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE sid=$i && status=9")->row()->cnt) continue;
+			$this->submission->rejudge($i);
+		}
+	}*/
 }
 
 // End of file admin.php

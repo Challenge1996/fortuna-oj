@@ -278,4 +278,5 @@ class Misc extends CI_Model{
 		
 		return $data;
 	}
+
 }

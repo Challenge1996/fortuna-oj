@@ -30,7 +30,7 @@
 //show
 	$lang['time_limit'] = '时间限制';
 	$lang['memory_limit'] = '空间限制';
-	$lang['time_memory_limit'] = '时间空间限制';
+	$lang['detailed_limit'] = '具体限制';
 	$lang['description'] = '题目描述';
 	$lang['input'] = '输入';
 	$lang['output'] = '输出';

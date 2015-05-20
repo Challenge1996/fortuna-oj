@@ -57,6 +57,11 @@ class Task extends CI_Controller {
 	}
 	
 	public function show($pid, $gid, $tid){
+		// temp
+		$this->load->view('error',array('message' => 'this page has not been updated after migrating to YAUJ'));
+		return;
+		// temp
+		
 		$this->load->model('problems');
 		$this->load->model('misc');
 		

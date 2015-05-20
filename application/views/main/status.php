@@ -108,14 +108,6 @@
 							<input type="checkbox" name="languages[]" value="Pascal" <?=my_set_checkbox($filter['languages'], 'Pascal')?> />
 							Pascal
 						</label> 
-						<label for="languages">
-							<input type="checkbox" name="languages[]" value="Java" <?=my_set_checkbox($filter['languages'], 'Java')?> />
-							Java
-						</label> 
-						<label for="languages">
-							<input type="checkbox" name="languages[]" value="Python" <?=my_set_checkbox($filter['languages'], 'Python')?> />
-							Python
-						</label> 
 					</div>
 				</div>
 				<button class="btn btn-primary btn-mini pull-right" id="btn_filter" style="margin:5px 10px"><?=lang('filter')?></button>
@@ -180,7 +172,7 @@
 			}
 			echo '</td>';
 			
-			if ($row->codeLength > 0) {
+			//if ($row->codeLength > 0) {
 			
 				if ($row->status == -3 || ($row->status >= 0 && $row->status <= 7)) {
 					echo "<td><span class=\"label label-info\">$row->time</span></td>";
@@ -192,7 +184,7 @@
 				else echo "<td>$row->language</td>";
 				echo "<td>$row->codeLength</td>";
 				
-			} else {
+			/*} else {
 				echo '<td>---</td><td>---</td>';
 				if ($row->uid == $this->user->uid() || $this->user->is_admin() || ! $row->private) {
 					echo "<td>File <a href='index.php/main/download/$row->pid/$row->sid.compressed/1/submission' target='_blank'>
@@ -200,7 +192,7 @@
 					$allowed_download .= "$row->sid.compressed";
 				} else echo '<td>---</td>';
 				echo '<td>---</td>';
-			}
+			}*/
 			
 			echo "<td>$row->submitTime</td>";
 			

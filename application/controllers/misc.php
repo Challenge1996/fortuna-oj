@@ -12,7 +12,7 @@ class Misc extends CI_Controller {
 	public function _remap($method, $params = array()){
 		$this->load->model('user');
 		
-		$allowed_methods = array('reset_password');
+		$allowed_methods = array('reset_password', 'push_data', 'push_submission', 'serverstatus');
 		if ($this->user->is_logged_in() || in_array($method, $allowed_methods))
 			$this->_redirect_page($method, $params);
 	}
@@ -109,5 +109,144 @@ class Misc extends CI_Controller {
 			system($command);
 		}
 	}
+	
+	public function push_data($pid)
+	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		$this->load->model('problems');
+		$this->load->model('network');
 
+		$makefile = "SPJ : yauj_judge ";
+		$path = $this->config->item('data_path') . $pid;
+		$files = scandir($path);
+		foreach ($files as $file)
+		{
+			if (! is_file("$path/$file")) continue;
+			$file_parts = pathinfo($file);
+			$extenssion = isset($file_parts['extension'])? $extension = $file_parts['extension']: '';
+			$filename = $file_parts['filename'];
+			if (in_array($extension, array('c','cpp','pas'))) $makefile .= " $filename";
+		}
+		file_put_contents("$path/makefile","$makefile\ninclude /home/judge/resource/makefile");
+		
+		$servers = $this->config->item('servers');
+		foreach ($servers as $server)
+		{
+			$old = array();
+			$new = $this->problems->load_pushed($pid);
+			if (!isset($new['version'])) exit('no data');
+			if (!isset($new[$server])) $new[$server] = 'unsynced';
+			while (true)
+			{
+				$old = $new;
+				if ($old[$server] == $old['version']) break;
+				$result = $this->network->jsonrpc_call($server,'sync',array('pid'=>(int)$pid));
+				if (!isset($result)) $result = 'connecton failed';
+				echo "$server is $result";
+				if ($result != 'success') break;
+				$old[$server] = $old['version'];
+				$new = $this->problems->load_pushed($pid);
+				if (!isset($new['version'])) exit('no data');
+				if (!isset($new[$server])) $new[$server] = 'unsynced';
+				if ($new['version'] == $old['version'])
+				{
+					if ($new[$server] != $old[$server])
+					{
+						$new[$server] = $old[$server];
+						$this->problems->save_pushed($pid,$new);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public function push_submission()
+	{
+		ignore_user_abort(true);
+		set_time_limit(0);
+		if ($this->input->post('passwd') != $this->config->item('local_passwd')) exit('passwd wrong');
+		$get = $this->input->get();
+		$server = $get['server'];
+		$this->load->model('submission');
+		$this->load->model('network');
+		if ($this->submission->load_pushTime($get['sid'])!=$get['push_time'])
+		{
+			$this->network->jsonrpc_call($server,'cancel',array('key'=>(int)$get['key']));
+			exit('canceled');
+		}
+		$this->submission->upd_status($get['sid'],-2);
+		$get['submission'] = str_replace('c  ','c++',$get['submission']);
+
+		$params = array(
+			'pid' => (int)$get['pid'],
+			'sid' => (int)$get['sid'],
+			'key' => (int)$get['key'],
+			'submission' => json_decode($get['submission'])
+		);
+		$ret = $this->network->jsonrpc_call($server,'run',$params);
+		if (!isset($ret)) $ret=(object)array('error'=>"JSON ERROR (MAY CONTAINING ILLEGAL CHARACTER): ".json_last_error());
+		//var_dump($ret);
+
+		$time = $memory = $codeLength = $language = $status = null;
+		$score = array();
+		$sum = 0;
+		if ($params['submission'])
+			foreach ($params['submission'] as $file)
+				if (!isset($language))
+					$language = $file->language;
+				else if ($language != $file->language)
+					$language = 'multiple';
+		// error should be handled in the detailed status page.
+		if (isset($ret) && !isset($ret->error))
+		{
+			foreach ($ret as $id => &$result)
+			{
+				if (!isset($result->message)) $result->message = '';
+				$result->message = $result->status . ' ' . $result->message;
+				if (isset($result->score) && (!isset($score[$id]) || $result->score > $score[id]))
+					$score[$id] = $result->score;
+				if (isset($result->time))
+					foreach ($result->time as &$t)
+					{
+						if (isset($t) && $t<0) unset($t);
+						if (isset($t) && (!isset($time) || $t > $time)) $time = $t;
+					}
+				if (isset($result->memory))
+					foreach ($result->memory as &$m)
+					{
+						if (isset($m) && $m<0) unset($m);
+						if (isset($m) && (!isset($memory) || $m > $memory)) $memory = $m;
+					}
+				if (isset($result->codeLength))
+					foreach ($result->codeLength as &$l)
+					{
+						if (isset($l) && $l<0) unset($l);
+						if (isset($l) && (!isset($codeLength) || $l > $codeLength)) $codeLength = $l;
+					}
+				if (isset($result->status) && (!isset($status) || $this->submission->status_id($status)==0 && $this->submission->status_id($result->status)!=0))
+					$status = $result->status;
+			}
+			foreach ($score as $case)
+				$sum += $case;
+		}
+		if ($status === null) $status = 'internal error';
+		$this->submission->judge_done($get['sid'],$get['pid'],array(
+			'language' => ucfirst($language),
+			'status' => $this->submission->status_id($status),
+			'judgeResult' => json_encode($ret),
+			'time' => $time,
+			'memory' => $memory,
+			'score' => $sum,
+			'codeLength' => $codeLength,
+			'pushTime' => $get['push_time']
+		));
+	}
+
+	public function serverstatus($pid)
+	{
+		$this->load->model('problems');
+		echo json_encode($this->problems->load_pushed($pid));
+	}
 }

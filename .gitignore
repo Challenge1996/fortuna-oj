@@ -1,2 +1,5 @@
 /application/config
 /application/daemon.php
+*.swp
+/application/logs
+/application/cache

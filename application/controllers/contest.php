@@ -85,6 +85,7 @@ class Contest extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $contests_per_page;
 		$config['cur_page'] = $page;
+		$config['first_url'] = $config['base_url'] . '1';
 		$this->pagination->initialize($config);
 
 		$this->load->view('contest/index', array('data' => $data));
@@ -141,6 +142,7 @@ class Contest extends CI_Controller {
 			$config['total_rows'] = $count;
 			$config['per_page'] = $submission_per_page;
 			$config['uri_segment'] = 4;
+			$config['first_url'] = $config['base_url'] . '1';
 			$this->pagination->initialize($config);
 		}
 
@@ -158,29 +160,42 @@ class Contest extends CI_Controller {
 		if ($info != FALSE){
 			$pid = $this->contests->load_contest_pid($cid, $id);
 			if ($pid != FALSE){
-				$data = $this->problems->load_problem($pid);
+				$data = null;
+				try {	
+					$data = $this->problems->load_problem($pid);
+				} catch (MyException $e) {
+					$this->load->view('error', array('message'=>$e->getMessage()));
+					return;
+				}	
 				if ($data != FALSE){
-					$data->data = json_decode($data->dataConfiguration);
-					
-					$data->timeLimit = $data->memoryLimit = 0;
-					foreach ($data->data->cases as $case) {
-						foreach ($case->tests as $test) {
-							if ( ! isset($test->timeLimit)) continue;
-						
-							if ($data->timeLimit == 0) {
-								$data->timeLimit = $test->timeLimit;
-								$data->memoryLimit = $test->memoryLimit;
-							} elseif ($data->timeLimit != $test->timeLimit || $data->memoryLimit != $test->memoryLimit)
-								$data->timeLimit = -1;
-								
-							if ($data->timeLimit < 0) break;
+					$data->filemode = json_decode($data->confCache);
+					unset($data->confCache);
+
+					$noTime = $noMemory = false;
+					if (isset($data->filemode[4]))
+						foreach ($data->filemode[4] as $executable => $conf)
+						{
+							if (!$noTime && isset($conf->time))
+								foreach ($conf->time as $time)
+									if (!isset($data->timeLimit) || $data->timeLimit == $time)
+										$data->timeLimit = $time;
+									else
+									{
+										unset($data->timeLimit);
+										$noTime = true;
+										break;
+									}
+							if (!$noMemory && isset($conf->memory))
+								foreach ($conf->memory as $memory)
+									if (!isset($data->memoryLimit) || $data->memoryLimit == $memory)
+										$data->memoryLimit = $memory;
+									else
+									{
+										unset($data->memoryLimit);
+										$noMemory = true;
+										break;
+									}
 						}
-						if ($data->timeLimit < 0) break;
-					}
-					if ($data->timeLimit <= 0){
-						unset($data->timeLimit);
-						unset($data->memoryLimit);
-					}
 				}
 				$data->id = $id;
 				if ($info->contestMode == 'ACM') $data->id += 1000;
@@ -208,10 +223,12 @@ class Contest extends CI_Controller {
 				$data = $this->contests->load_contest_ranklist_OI($cid, $info);
 			}
 		}
+
+		$est = $this->contests->load_estimate($cid);
 		
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
-		else $this->load->view('contest/standing', array('data' => $data, 'info' => $info));
+		else $this->load->view('contest/standing', array('data' => $data, 'info' => $info, 'est' => $est));
 	}
 	
 	public function statistic($cid){
@@ -276,17 +293,37 @@ class Contest extends CI_Controller {
 	public function forum($cid)
 	{
 		$del = $this->input->get('del');
+		$post = $this->input->get('post');
+		$mdfy = $this->input->get('mdfy');
+		$title = $this->input->post('title');
+		$content = $this->input->post('content');
 		if ($del)
 			$this->contests->del_post($del);
-		else
+		else if ($post)
 		{
-			$title = $this->input->post('title');
-			$content = $this->input->post('content');
-			if ($content)
-				$this->contests->add_post($cid,$title,$content);
+			if (!$content)
+			{
+				$this->load->view('error', array('message' => 'Cannot post an empty post'));
+				return;
+			}
+			$this->contests->add_post($cid,$title,$content);
+		} else if ($mdfy)
+		{
+			if (!$content)
+			{
+				$this->load->view('error', array('message' => 'Cannot post an empty post'));
+				return;
+			}
+			$this->contests->modify_post($mdfy,$title,$content);
 		}
 		
 		$data = $this->contests->load_forum($cid);
 		$this->load->view('contest/forum', array('data' => $data));
+	}
+
+	public function estimate($cid, $pid, $score)
+	{
+		$this->contests->upd_estimate($cid, $pid, $score);
+		$this->load->view('success');
 	}
 }

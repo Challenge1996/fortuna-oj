@@ -3,7 +3,7 @@ var loadedJsFile = new Array()
 function loadJsFile ( name, src, success ) {
 	if ($.inArray(name, loadedJsFile) == -1) {
 		loadedJsFile.push(name)
-		$.getScript(src, success)
+		$.getScript(src, success).fail(function(jqxhr, settings, exception){console.log([name, settings])});
 	} else success();
 }
 
