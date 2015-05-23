@@ -262,16 +262,17 @@ class Admin extends CI_Controller {
 		$output_pattern = $this->input->post('output_file');
 		
 		if (isset($data['cases'])) {
-			foreach ($data['cases'] as $cid => $case) {
+			foreach ($data['cases'] as $cid => &$case) {
 				foreach ($case->tests as $tid => $test){
 					if (file_exists($test->input) && file_exists($test->output)) {
 						$hash['input'][$test->input] = true;
 						$hash['output'][$test->output] = true;
 					} else {
-						unset($data['cases'][$cid]->tests[$tid]);
+						$case->tests = array_diff_key($case->tests,array($tid=>null)); // do not use unset.
 					}
 				}
-				if (count($data['cases'][$cid]->tests) == 0) unset($data['cases'][$cid]);
+				if (count($data['cases'][$cid]->tests) == 0)
+					$data['cases'] = array_diff_key($data['cases'],array($cid=>null)); // do not use unset.
 			}
 		}
 		
