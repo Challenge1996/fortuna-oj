@@ -6,6 +6,7 @@
 <table class="table table-bordered table-hover">
 	<thead>
 		<th>From</th>
+		<th>To</th>
 		<th style="width: 50%">Title</th>
 		<th>Sent Time</th>
 		<th>Status</th>
@@ -19,7 +20,10 @@
 			if (is_null($mail->isRead)) $mail->isRead = 1;
 
 			if ($mail->isRead == 0) echo '<tr class="error">'; else echo '<tr>';
-			echo "<td><a href='#users/$mail->user'><span class='label label-info'>$mail->user</span></a></td>";
+			if ($mail->from_uid == $uid)
+				echo "<td></td><td><a href='#users/$mail->to_user'><span class='label label-info'>$mail->to_user</span></a></td>";
+			else
+				echo "<td><a href='#users/$mail->from_user'><span class='label label-info'>$mail->from_user</span></a></td><td></td>";
 
 			echo '<td><div style="width:100%">';
 			if ($mail->isRead == 0) echo "<a href='#misc/mail/$mail->user'><strong>$mail->title</strong></a>";
