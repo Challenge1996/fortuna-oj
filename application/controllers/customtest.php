@@ -145,18 +145,18 @@ class Customtest extends CI_Controller {
 					$output = file_get_contents("$path/data.out");
 				else
 					$output = 'Output not found';
+				switch ($status)
+				{
+					case 0: $status = "normal"; break;
+					case 2: $status = "run time error"; break;
+					case 3: $status = "memory limit exceeded (1G)"; break;
+					case 4: $status = "time limit exceeded (10s)"; break;
+					case 5: $status = "output limit exceeded"; break;
+					case 6: $status = "dangerous syscall"; break;
+					case 7: $status = "Oh, you should find VFK!!";
+				}
 			}
 
-			switch ($status)
-			{
-				case 0: $status = "normal"; break;
-				case 2: $status = "run time error"; break;
-				case 3: $status = "memory limit exceeded (1G)"; break;
-				case 4: $status = "time limit exceeded (10s)"; break;
-				case 5: $status = "output limit exceeded"; break;
-				case 6: $status = "dangerous syscall"; break;
-				case 7: $status = "Oh, you should find VFK!!";
-			}
 			
 			$data = array(
 				'language' => $language,

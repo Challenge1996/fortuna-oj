@@ -11,7 +11,7 @@
 		<fieldset>
 			<legend><h5>Title</h5></legend>
 			<h3><div class="well" id="title" style="padding: 5px; text-align:center" contenteditable="true">
-				<?=set_value('title', isset($title) ? $title : '', false)?>
+				<?php if (isset($title)) echo $title; ?>
 			</div></h3>
 		</fieldset>
 
@@ -19,7 +19,7 @@
 		<fieldset>
 			<legend><h5>Description</h5></legend>
 			<div class="well" id="problemDescription" contenteditable="true">
-				<?=set_value('problemDescription', isset($problemDescription) ? html_entity_decode($problemDescription) : '', false)?>
+				<?php if (isset($problemDescription)) echo $problemDescription; ?>
 			</div>
 		</fieldset>
 
@@ -27,7 +27,7 @@
 		<fieldset class="span6" style="margin-left:0; clear:both">
 			<legend><h5>Input</h5></legend>
 			<div class="well" id="inputDescription" contenteditable="true">
-				<?=set_value('inputDescription', isset($inputDescription) ? $inputDescription : '', false)?>
+				<?php if (isset($inputDescription)) echo $inputDescription; ?>
 			</div>
 		</fieldset>
 		
@@ -35,7 +35,7 @@
 		<fieldset class="span6">
 			<legend><h5>Output</h5></legend>
 			<div class="well" id="outputDescription" contenteditable="true">
-				<?=set_value('outputDescription', isset($outputDescription) ? $outputDescription : '', false)?>
+				<?php if (isset($outputDescription)) echo $outputDescription; ?>
 			</div>
 		</fieldset>
 		<div class="clearfix"></div>
@@ -44,7 +44,7 @@
 		<fieldset class="span6" style="margin-left:0">
 			<legend><h5>Sample Input</h5></legend>
 			<div class="well" id="inputSample" contenteditable="true">
-				<?=set_value('inputSample', isset($inputSample) ? $inputSample : '', false)?>
+				<?php if (isset($inputSample)) echo $inputSample; ?>
 			</div>
 		</fieldset>
 		
@@ -52,7 +52,7 @@
 		<fieldset class="span6">
 			<legend><h5>Sample Output</h5></legend>
 			<div class="well" id="outputSample" contenteditable="true">
-				<?=set_value('outputSample', isset($outputSample) ? $outputSample : '', false)?>
+				<?php if (isset($outputSample)) echo $outputSample; ?>
 			</div>
 		</fieldset>
 		<div class="clearfix"></div>
@@ -61,7 +61,7 @@
 		<fieldset>
 			<legend><h5>Data Constraint</h5></legend>
 			<div class="well" id="dataConstraint" contenteditable="true">
-				<?=set_value('dataConstraint', isset($dataConstraint) ? $dataConstraint : '', false)?>
+				<?php if (isset($dataConstraint)) echo $dataConstraint; ?>
 			</div>
 		</fieldset>
 		
@@ -69,7 +69,7 @@
 		<fieldset>
 			<legend><h5>Hint</h5></legend>
 			<div class="well" id="hint" contenteditable="true">
-				<?=set_value('hint', isset($hint) ? $hint : '', false)?>
+				<?php if (isset($hint)) echo $hint; ?>
 			</div>
 		</fieldset>
 			

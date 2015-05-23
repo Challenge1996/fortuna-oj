@@ -431,6 +431,12 @@ class Problems extends CI_Model{
 					$run .= '  result[i]["message"] = "";'."\n";
 					$run .= '  for (k=0; k<len(tmp)-1; k++) result[i]["message"] += tmp[k]+" ";'."\n";
 					$run .= '  if (score[i]-result[i]["score"]<0.01) result[i]["status"]="accepted"; else if (result[i]["score"]>0.01) result[i]["status"]="partially accepted"; else result[i]["status"]="wrong answer";'."\n";
+					break;
+				case 5 : // lemon
+					$run .= '  exec(i,"' . $form->spjFile + '","/dev/null","/dev/null","/dev/null",input[i]+" "+userOut[i]+" "+output[i]+" "+score[i]+" .score .message");'."\n";
+					$run .= '  result[i]["score"] = split(read(".score"))[0];'."\n";
+					$run .= '  result[i]["message"] = read(".message");'."\n";
+					$run .= '  if (score[i]-result[i]["score"]<0.01) result[i]["status"]="accepted"; else if (result[i]["score"]>0.01) result[i]["status"]="partially accepted"; else result[i]["status"]="wrong answer";'."\n";
 			}
 		$run .= "} catch {}\n";
 		$group = json_encode($group);

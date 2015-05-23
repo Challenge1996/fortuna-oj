@@ -58,6 +58,7 @@ class myjob
 			unset($serverstatus['version']);
 			foreach ($servers as $server)
 			{
+				echo "try $server\n";
 				$status = 'unsynced';
 				if (isset($serverstatus[$server])) $status = $serverstatus[$server];
 				if ($status != $version)
@@ -75,7 +76,7 @@ class myjob
 					return;
 				}
 			}
-			usleep(100000);
+			usleep(500000);
 		}
 	}
 }
