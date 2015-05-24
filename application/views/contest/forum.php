@@ -108,5 +108,6 @@
 		$('#cancel').show();
 		title.setData($(".title[data-id='"+$(this).attr('data-id')+"']").html());
 		content.setData($(".content[data-id='"+$(this).attr('data-id')+"']").html());
+		window.scrollTo(0,1e10);
 	});
 </script>
