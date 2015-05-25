@@ -196,7 +196,7 @@ class Problems extends CI_Model{
 	function delete_solution($idSolution) {
 		$data = $this->db->query("SELECT pid, filename FROM Solution WHERE idSolution=?",
 									array($idSolution))->row();
-		$target_file = $this->config->item('data_path') . $data->pid . '/solution/' . $data->filename;
+		$target_path = $this->config->item('solution_path') . $pid . '/' . $data->filename;
 		
 		if (file_exists($target_file)) unlink($target_file);
 		
