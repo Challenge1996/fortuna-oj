@@ -182,7 +182,7 @@
 			$(".submit-editor").each(function(){
 				if ($(this).parents('.textarea-part').css('display')=='none') return true;
 				var name = $(this).attr('data-file');
-				var lang = $(this).parents('.one-file').find('.language');
+				var lang = $(this).parents('.one-file').find('.language').val();
 				var str = $(this).val();
 				if (!str.length && !confirm("My friend, are you surely going to submit an empty '"+name+"'?"))
 					throw 'err';
