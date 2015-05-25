@@ -192,12 +192,12 @@
 				if (!fileIO[name])
 				{
 					if ((lang=='c' || lang=='c++' || lang=='c++11') && (str.indexOf('freopen')!=-1 || str.indexOf('FILE')!=-1 || str.indexOf('fstream')!=-1)
-						|| lang=='pascal' && str.toLowerCase.indexOf('assign')!=-1)
+						|| lang=='pascal' && str.toLowerCase().indexOf('assign')!=-1)
 						if (!confirm("Please confirm you are NOT using FILE IO. Sure to submit?"))  throw 'err';
 				} else
 						{
 							if ((lang=='c' || lang=='c++' || lang=='c++11') && str.indexOf('freopen')==-1 && str.indexOf('FILE')==-1 && str.indexOf('fstream')==-1
-								|| lang=='pascal' && str.toLowerCase.indexOf('assign')==-1)
+								|| lang=='pascal' && str.toLowerCase().indexOf('assign')==-1)
 								if (!confirm("Please confirm you are NOT using FILE IO. Sure to submit?")) throw 'err';
 						}
 			});
