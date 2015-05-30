@@ -371,10 +371,14 @@ class Problems extends CI_Model{
 		}
 		$run .= "for (i=0; i<$cnt; i++) try {\n";
 			if ($form->IOMode == 0)
+			{
+				$run .= "  remove(userOut[i]);\n";
 				$run .= "  exec(i,\"EXE\",input[i],userOut[i]); // throw when error.\n";
+			}
 			if ($form->IOMode == 1)
 			{
 				$run .= "  copy(input[i],userIn[i]);\n";
+				$run .= "  remove(userOut[i]);\n";
 				$run .= "  exec(i,\"EXE\"); // throw when error.\n";
 			}
 			if (!isset($form->spjMode))
