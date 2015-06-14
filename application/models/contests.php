@@ -664,6 +664,9 @@ class Contests extends CI_Model{
 	
 	function upd_estimate($cid, $pid, $score)
 	{
+		$endTime = $this->db->query("SELECT endTime FROM Contest WHERE cid=?", array($cid))->row()->endTime;
+		$now = strtotime('now');
+		if ($now > strtotime($endTime)) return false;
 		$uid = $this->user->uid();
 		$cnt = $this->db->query(
 			"SELECT COUNT(*) AS cnt FROM Estimate WHERE cid=? AND pid=? AND uid=?",
@@ -678,6 +681,7 @@ class Contests extends CI_Model{
 			"INSERT INTO Estimate (cid, pid, uid, score) VALUES (?, ?, ?, ?)",
 			array($cid, $pid, $uid, $score)
 		);
+		return true;
 	}
 
 	function load_estimate($cid)
