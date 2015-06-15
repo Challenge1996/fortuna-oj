@@ -321,7 +321,7 @@ function loaded() {
 			$("#div_progress").css('width', progress + '%');
 			if (data.loaded == data.total){
 				$(".progress").css('display', 'none');
-				$("#btn_scan").click();
+				if (!use_script) $("#btn_scan").click();
 			}
 		},
 		done: function(e, data) {
@@ -363,10 +363,10 @@ function loaded() {
 	
 	$(".case_close").live('click', function() {
 		$(this).parent().fadeOut("normal", function() {
-			var data = $("#traditional").val();
-			var id = Number($(this).attr(id));
+			var data = eval('('+$("#traditional").val()+')');
+			var id = Number($(this).attr('id'));
 			data.cases.splice(id,1);
-			initialize(data);
+			initialize(JSON.stringify(data));
 		});
 		return false;
 	});
