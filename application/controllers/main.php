@@ -453,10 +453,10 @@ class Main extends CI_Controller {
 			
 		} else {
 			$language = $this->input->post('cookie-language');
+			$uid = $this->user->uid();
 			if ($language && $language!='txt')
 			{
 				$this->input->set_cookie(array('name' => 'language', 'value' => $language, 'expire' => '10000000'));
-				$uid = $this->session->userdata('uid');
 				$this->user->save_language($uid, $language);
 			}
 
