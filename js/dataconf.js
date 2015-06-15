@@ -16,7 +16,7 @@ function upd_gs(data, group)
 
 function clean_data(data)
 {
-	if (data.cases === undefined) return data;
+	if (data.cases === undefined || data.cases === null) return data;
 	data.cases = data.cases.filter(function(x){
 		if (x === undefined || x === null) return false;
 		if (x.tests === undefined || x.tests === null) return false;
@@ -297,7 +297,7 @@ function loaded() {
 	// UPLOPAD PART BEGIN
 	
 	$("#file_upload").fileupload({
-		dataType: 'json',
+		//dataType: 'json',    remove this line to solve the problem that `done` is not called
 		add: function(e, data) {
 			$.each(data.files, function(index, file) {
 				file.context = $('<p class="alert alert-info file_' + (++fileId).toString() + '"><strong>' + file.name + '</strong></p> ')
@@ -362,7 +362,12 @@ function loaded() {
 	});
 	
 	$(".case_close").live('click', function() {
-		$(this).parent().fadeOut("normal", function() { $(this).remove(); getDataFromElement(); });
+		$(this).parent().fadeOut("normal", function() {
+			var data = $("#traditional").val();
+			var id = Number($(this).attr(id));
+			data.cases.splice(id,1);
+			initialize(data);
+		});
 		return false;
 	});
 
@@ -441,12 +446,15 @@ function loaded() {
 		return false;
 	});
 	$(".panel-close").live('click',function() {
-		var group = eval('('+$("#submit-group").val()+')');
 		var caseid = Number($(this).parents('.gc').attr('data-case'));
-		if (!use_script) $("#"+caseid).find('.case_close').click();
-		group.splice(caseid,1);
-		$("#submit-group").val(JSON.stringify(group));
-		$(this).parents('.gc').remove();
+		if (!use_script)
+			$("#"+caseid).find('.case_close').click();
+		else
+		{
+			var group = eval('('+$("#submit-group").val()+')');
+			group.splice(caseid,1);
+			init_group(group);
+		}
 		return false;
 	});
 	
