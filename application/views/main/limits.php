@@ -7,6 +7,7 @@
 	}
 	foreach ($group as $case_id => $case)
 	{
+		if (!isset($case)) continue;
 		if (!$simple)
 			echo "<tr><td>Case $case_id</td></tr>";
 		else

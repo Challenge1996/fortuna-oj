@@ -106,6 +106,7 @@
 	</tr>
 
 	<?php foreach ($group as $case => $tests): ?>
+		<?php if (!isset($tests)) continue; ?>
 		<tr><td rowspan="<?=count($tests)?>"><?=$case?></td>
 		<?php foreach ($tests as $x => $test): ?>
 			<?php if ($x) echo "<tr>"; ?>
