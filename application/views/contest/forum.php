@@ -17,6 +17,13 @@
 			<?php endif; ?>
 			<br /><hr />
 			<div class='content' data-id='<?=$row->id?>'><?=$row->content?></div>
+			<div class='span12'>
+				<span class='pull-right btn btn-link hide-reply' style='display:none' data-id='<?=$row->id?>'>Hide</span>
+				<span class='pull-right btn btn-link show-reply' data-id='<?=$row->id?>'>Reply(<?=$row->replyCnt?>)</span>
+			</div>
+			<div class='span12'>
+				<div class='span10 offset1 reply-area' style='display:none' data-id='<?=$row->id?>'></div>
+			</div>
 		</div>
 	</div>
 <?php endforeach; ?>
@@ -109,5 +116,92 @@
 		title.setData($(".title[data-id='"+$(this).attr('data-id')+"']").html());
 		content.setData($(".content[data-id='"+$(this).attr('data-id')+"']").html());
 		window.scrollTo(0,1e10);
+	});
+
+	$('.show-reply').click(function(){
+		var id = Number($(this).attr('data-id'));
+		$(".reply-area[data-id='"+id+"']").load('index.php/contest/reply/<?=$cid?>/'+id);
+		$(".reply-area[data-id='"+id+"']").show();
+		$(this).hide();
+		$(this).parent().children('.hide-reply').show();
+	});
+
+	$('.hide-reply').click(function(){
+		var id = Number($(this).attr('data-id'));
+		$(".reply-area[data-id='"+id+"']").hide();
+		$(this).hide();
+		$(this).parent().children('.show-reply').show();
+	});
+
+	$('.reply-button').live('click',function(){
+		var id = Number($(this).attr('data-id'));
+		var to = Number($(this).attr('data-to'));
+		var content = $(".reply-input[data-id='"+id+"']").val();
+		$(".reply-area[data-id='"+id+"']").load('index.php/contest/reply/<?=$cid?>/'+id+'/'+to+'?post=1',{'content':content});
+	});
+
+	$('.del-reply').live('click',function(){
+		if (!confirm('Sure to delete?')) return;
+		$(this).addClass('disabled');
+		var id = Number($(this).attr('data-id'));
+		var root = Number($(this).attr('data-root'));
+		$(".reply-area[data-id='"+root+"']").load('index.php/contest/reply/<?=$cid?>/'+root+'?del='+id);
+	});
+
+	$('.mdfy-reply').live('click',function(){
+		var id = Number($(this).attr('data-id'));
+		var root = Number($(this).attr('data-root'));
+		var content = $(".reply-content[data-id='"+id+"']").html();
+		$(".reply-button[data-id='"+root+"']").hide();
+		$(".reply-body[data-id='"+id+"']").css('background-color','#ffff66');
+		$(".reply-input[data-id='"+root+"']").val(content);
+		$(".reply-input[data-id='"+root+"']").focus();
+		$(".reply-input[data-id='"+root+"']").removeClass('span10');
+		$(".reply-input[data-id='"+root+"']").addClass('span9');
+		$(".reply-modify[data-id='"+root+"']").attr('data-to',id);
+		$(".reply-cancelm[data-id='"+root+"']").attr('data-to',id);
+		$(".reply-modify[data-id='"+root+"']").show();
+		$(".reply-cancelm[data-id='"+root+"']").show();
+	});
+
+	$('.reply-modify').live('click',function(){
+		var id = Number($(this).attr('data-id'));
+		var to = Number($(this).attr('data-to'));
+		var content = $(".reply-input[data-id='"+id+"']").val();
+		$(".reply-area[data-id='"+id+"']").load('index.php/contest/reply/<?=$cid?>/'+id+'?mdfy='+to,{'content':content});
+	});
+
+	$('.reply-cancelm').live('click',function(){
+		var id = Number($(this).attr('data-id'));
+		var to = Number($(this).attr('data-to'));
+		$(".reply-modify[data-id='"+id+"']").hide();
+		$(".reply-cancelm[data-id='"+id+"']").hide();
+		$(".reply-body[data-id='"+to+"']").css('background-color','transparent');
+		$(".reply-input[data-id='"+id+"']").val('');
+		$(".reply-input[data-id='"+id+"']").removeClass('span9');
+		$(".reply-input[data-id='"+id+"']").addClass('span10');
+		$(".reply-button[data-id='"+id+"']").show();
+	});
+
+	$('.reply-reply').live('click',function(){
+		var id = Number($(this).attr('data-id'));
+		var root = Number($(this).attr('data-root'));
+		$(".reply-body[data-id='"+id+"']").css('background-color','#ffff66');
+		$(".reply-input[data-id='"+root+"']").focus();
+		$(".reply-input[data-id='"+root+"']").removeClass('span10');
+		$(".reply-input[data-id='"+root+"']").addClass('span9');
+		$(".reply-button[data-id='"+root+"']").attr('data-to',id);
+		$(".reply-cancelr[data-id='"+root+"']").attr('data-to',id);
+		$(".reply-cancelr[data-id='"+root+"']").show();
+	});
+
+	$('.reply-cancelr').live('click',function(){
+		var id = Number($(this).attr('data-id'));
+		var to = Number($(this).attr('data-to'));
+		$(".reply-cancelr[data-id='"+id+"']").hide();
+		$(".reply-body[data-id='"+to+"']").css('background-color','transparent');
+		$(".reply-input[data-id='"+id+"']").val('');
+		$(".reply-input[data-id='"+id+"']").removeClass('span9');
+		$(".reply-input[data-id='"+id+"']").addClass('span10');
 	});
 </script>

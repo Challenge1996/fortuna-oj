@@ -621,21 +621,44 @@ class Contests extends CI_Model{
 
 	function load_forum($cid)
 	{
-		$data = $this->db->query("SELECT * FROM Contest_Forum WHERE cid=?", array($cid))->result();
+		$data = $this->db->query("SELECT * FROM Contest_Forum WHERE cid=? AND replyTo IS NULL", array($cid))->result();
 		$this->load->model('user');
 		foreach ($data as &$row)
 			$row->avatar = $this->user->load_avatar($row->uid);
 		return $data;
 	}
 
-	function add_post($cid, $title, $content)
+	function load_reply($id)
+	{
+		$data = $this->db->query("SELECT * FROM Contest_Forum WHERE replyTo=?", array($id))->result();
+		foreach ($data as &$row)
+			$row->reply = $this->load_reply($row->id);
+		return $data;
+	}
+	
+	function add_post($cid, $title, $content, $replyTo = NULL)
 	{
 		$this->load->model('user');
 		$this->db->query("INSERT INTO Contest_Forum
-			(cid, uid, user, date, title, content) VALUE
-			(?,   ?,   ?,    NOW(),    ?,     ?)",
-			array($cid,$this->user->uid(),$this->user->username(),$title,$content)
+			(cid, uid, user, date, title, content, replyTo) VALUE
+			(?,   ?,   ?,    NOW(),    ?,     ?,     ?)",
+			array($cid,$this->user->uid(),$this->user->username(),$title,$content,$replyTo)
 		);
+		if (isset($replyTo))
+		{
+			$username = $this->user->username();
+			$tmp = $this->db->query("SELECT uid, user FROM Contest_Forum WHERE id=?", array($replyTo))->row();
+			$this->db->query("UPDATE Contest_Forum SET replyCnt=replyCnt+1 WHERE id=?", array($replyTo));
+			$this->user->save_mail(array(
+				'title' => 'You have new reply',
+				'content' => "<span class='label label-info'>$username</span> replied `$content` to you at <a href='#contest/forum/$cid'>this page</a>",
+				'to_user' => $tmp->user,
+				'to_uid' => $tmp->uid,
+				'from_user' => 'root',
+				'from_uid' => $this->user->load_uid('root'),
+				'sendTime' => date("Y-m-d H:i:s")
+			));
+		}
 	}
 
 	function modify_post($id, $title, $content)
@@ -652,11 +675,15 @@ class Contests extends CI_Model{
 
 	function del_post($id)
 	{
-		$uid = $this->db->query("SELECT uid FROM Contest_Forum WHERE id=?", array($id))->row()->uid;
+		$tmp = $this->db->query("SELECT uid, replyTo FROM Contest_Forum WHERE id=?", array($id))->row();
+		$uid = $tmp->uid;
+		$replyTo = $tmp->replyTo;
 		$this->load->model('user');
 		if ($this->user->uid()==$uid || $this->user->is_admin())
 		{
 			$this->db->query("DELETE FROM Contest_Forum WHERE id=?", array($id));
+			if (isset($replyTo))
+				$this->db->query("UPDATE Contest_Forum SET replyCnt=replyCnt-1 WHERE id=?", array($replyTo));
 			return TRUE;
 		}
 		return FALSE;

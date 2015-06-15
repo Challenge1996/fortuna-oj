@@ -16,7 +16,7 @@ class Contest extends CI_Controller {
 		
 		if ($this->user->is_logged_in()){
 			if ($method == 'index' || (isset($params[0]) && $this->contests->is_valid($params[0]))){
-				if ($method != 'index' && $method != 'result'){
+				if ($method != 'index' && $method != 'result' && $method != 'reply'){
 					$declaration_count = $this->contests->declaration_count($params[0]);
 					$this->load->view('contest/navigation', array('cid' => $params[0], 'declaration_count' => $declaration_count));
 				}
@@ -321,6 +321,37 @@ class Contest extends CI_Controller {
 		$this->load->view('contest/forum', array('data' => $data));
 	}
 
+	public function reply($cid, $id, $to=-1)
+	{
+		if ($to == -1) $to = $id;
+		$del = $this->input->get('del');
+		$post = $this->input->get('post');
+		$mdfy = $this->input->get('mdfy');
+		$content = $this->input->post('content');
+		if ($del)
+			$this->contests->del_post($del);
+		else if ($post)
+		{
+			if (!$content)
+			{
+				$this->load->view('error', array('message' => 'Cannot post an empty post'));
+				return;
+			}
+			$this->contests->add_post($cid,'',$content,$to);
+		} else if ($mdfy)
+		{
+			if (!$content)
+			{
+				$this->load->view('error', array('message' => 'Cannot post an empty post'));
+				return;
+			}
+			$this->contests->modify_post($mdfy,'',$content);
+		}
+		
+		$data = $this->contests->load_reply($id);
+		$this->load->view('contest/reply', array('data' => $data, 'id' => $id));
+	}
+	
 	public function estimate($cid, $pid, $score)
 	{
 		$this->contests->upd_estimate($cid, $pid, $score);
