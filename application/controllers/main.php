@@ -139,8 +139,8 @@ class Main extends CI_Controller {
 
 		$count = $this->problems->count(FALSE, FALSE,
 		    	$keyword, $filter, $show_starred, $show_note, $search_note);
-		if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
-			$page = ($count + $problems_per_page - 1) / $problems_per_page;
+		if ($count > 0 && ceil($count / $problems_per_page) < $page)
+			$page = ceil($count / $problems_per_page);
 		$row_begin = ($page - 1) * $problems_per_page;
 		$data = $this->problems->load_problemset($row_begin, $problems_per_page, FALSE, FALSE, FALSE, 
 			$keyword, $filter, $show_starred, $show_note, $search_note);
@@ -209,7 +209,7 @@ class Main extends CI_Controller {
 			$this->load->view('error', array('message'=>$e->getMessage()));
 			return;
 		}	
-		if ($data != FALSE && ($data->isShowed || $this->user->is_admin())) {
+		if ($data != FALSE && ($data->isShowed && $this->problems->allow($pid) || $this->user->is_admin())) {
 			
 			$data->filemode = json_decode($data->confCache);
 			unset($data->confCache);

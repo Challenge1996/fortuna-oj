@@ -295,6 +295,10 @@ class User extends CI_Model{
 						WHERE uid=?",
 						array($uid));
 	}
+
+	function change_priviledge($uid, $priviledge) {
+		$this->db->query("UPDATE User SET priviledge=? WHERE uid=?", array($priviledge, $uid));
+	}
 	
 	function delete($uid) {
 		$this->db->query("DELETE FROM User

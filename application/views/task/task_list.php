@@ -15,7 +15,7 @@
 			?>
 					<table class="table table-condensed table-bordered table-hover clear">
 						<caption>
-							<h5 style="margin-bottom: 3px"><a class="title" title="<?=$task->description?>"><?php
+							<h5 style="margin-bottom: 3px"><a class="title" title="<?=$task->description?>" href="#task/statistic/<?=$group->gid?>/<?=$task->tid?>"><?php
 								if ($task->new_title != 'NULL' && $task->new_title != '') echo $task->new_title; else echo $task->title;
 							?></a>
 							<?=strtotime($task->endTime) >= time() ?

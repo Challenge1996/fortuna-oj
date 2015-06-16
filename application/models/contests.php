@@ -25,6 +25,12 @@ class Contests extends CI_Model{
 	}
 	
 	function is_valid($cid){
+		$uid = $this->session->userdata('uid');
+		if (
+			$this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge == 'restricted' &&
+			$this->db->query("SELECT COUNT(*) AS cnt FROM Contest_has_ProblemSet WHERE pid NOT IN (SELECT pid FROM Allowed_Problem WHERE uid=?)", array($uid))->row()->cnt
+		) return FALSE;
+		
 		if ($this->db->query("SELECT * FROM Contest
 							WHERE cid=? AND private=0",
 							array($cid))

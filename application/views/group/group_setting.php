@@ -88,7 +88,7 @@
 	<fieldset>
 		<legend><h5>
 			Members
- 			<button id="add_member" class="btn btn-mini btn-primary pull-right">Add</button>
+ 			<!--<button id="add_member" class="btn btn-mini btn-primary pull-right">Add</button>-->
 		</h5></legend>
 		
 		<div class="span4 well" style="margin-left:0px">

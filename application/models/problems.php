@@ -18,6 +18,13 @@ class Problems extends CI_Model{
 		return $this->db->query("SELECT uid FROM ProblemSet WHERE pid=?", array($pid))->row()->uid;
 	}
 
+	function allow($pid){
+		$uid = $this->session->userdata('uid');
+		if ($this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge != 'restricted') return true;
+		if ($this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt) return true;
+		return false;
+	}
+
 	function gen_keyword_lim($keyword)
 	{
 		if (!$keyword) return 'TRUE';
@@ -63,6 +70,16 @@ class Problems extends CI_Model{
 		else
 			return 'isShowed=1';
 	}
+
+	function gen_restricted_lim()
+	{
+		$uid = $this->session->userdata('uid');
+		$priv = $this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge;
+		if ($priv == 'restricted')
+			return "pid IN (SELECT pid FROM Allowed_Problem WHERE uid=$uid)";
+		else
+			return 'TRUE';
+	}
 	
 	function count($uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
 	{
@@ -71,10 +88,11 @@ class Problems extends CI_Model{
 		$bookmark_lim = $this->gen_bookmark_lim($show_starred, $show_note, $search_note);
 		$uid_lim = $this->gen_uid_lim($uid);
 		$admin_lim = $this->gen_admin_lim($admin);
+		$restricted_lim = $this->gen_restricted_lim();
 
 		return $this->db->query("
 			SELECT COUNT(*) AS count FROM ProblemSet
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim)
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
 			")->row()->count;
 	}
 
@@ -86,11 +104,12 @@ class Problems extends CI_Model{
 		$uid_lim = $this->gen_uid_lim($uid);
 		$admin_lim = $this->gen_admin_lim($admin);
 		$rev_str = ($rev?"DESC":"");
+		$restricted_lim = $this->gen_restricted_lim();
 
 		return $this->db->query("
 			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, noSubmit, uname AS author
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim)
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
 			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?
 			", array($row_begin, $count))->result();
 	}
