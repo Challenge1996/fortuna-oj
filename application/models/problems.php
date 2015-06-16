@@ -285,7 +285,7 @@ class Problems extends CI_Model{
 
 		$ret = 0; $out = array();
 		file_put_contents("/tmp/foj/dataconf/$ojname/$pid.$rand/makefile","include /home/judge/resource/makefile");
-		exec("make > compile.log 2>&1", $out, $ret);
+		exec("make -B > compile.log 2>&1", $out, $ret);
 		if ($ret)
 		{
 			$err = file_get_contents('compile.log');
