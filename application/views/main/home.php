@@ -1,6 +1,6 @@
 <div class="hero-unit" style="text-align:center; padding: 5px">
 	<h2 class="text-error">Welcome to Fortuna Online Judge System!</h2>
-	<p>This OJ is based on GNU/Linux Debian sid.</p>
+	<p>This OJ is based on Ubuntu Server 14.04 LTS amd64.</p>
 	<p>Powered by Codeigniter / Bootstrap.</p>
 	<div class="row-fluid">
 		<div class="span3">

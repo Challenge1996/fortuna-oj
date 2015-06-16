@@ -94,8 +94,7 @@
 			<div class="span12" id="copyleft">
 				<p>Project fortuna-oj hosting on <a href="http://github.com/roastduck/fortuna-oj">Github</a>.
 				Powered by Codeigniter / Bootstrap<br />
-				Author: moreD (<?=safe_mailto('moreDatPublic@gmail.com', 'Contact me');?>)<br />
-				Collaborator: RD</p>
+				Author: <?=safe_mailto('moreDatPublic@gmail.com', 'moreD');?>, <?=safe_mailto('beantang.tang@gmail.com','RD')?><br />
 				<label id="server_time"></label>
 			</div>
 		</div>
