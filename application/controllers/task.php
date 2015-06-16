@@ -57,53 +57,65 @@ class Task extends CI_Controller {
 	}
 	
 	public function show($pid, $gid, $tid){
-		// temp
-		$this->load->view('error',array('message' => 'this page has not been updated after migrating to YAUJ'));
-		return;
-		// temp
-		
 		$this->load->model('problems');
 		$this->load->model('misc');
-		
-		if ( ! $this->misc->is_in_group($this->user->uid(), $gid)) {
-			$this->load->view('information', array('data' => '<p class="alert alert-error">You are not in this group!<p>'));
+
+		if (! $this->misc->is_in_group($this->user->uid(), $gid)) {
+			$this->load->view('error', array('message' => 'You are not in this group!'));
 			return;
 		}
 		
-		$data = $this->problems->load_problem($pid);
-		if ($data != FALSE){
-			$data->data = json_decode($data->dataConfiguration);
+		$data = null;
+		try {	
+			$data = $this->problems->load_problem($pid);
+		} catch (MyException $e) {
+			$this->load->view('error', array('message'=>$e->getMessage()));
+			return;
+		}	
+		if ($data != FALSE) {
 			
-			$data->timeLimit = $data->memoryLimit = 0;
-			if (isset($data->data)){
-				foreach ($data->data->cases as $case){
-					foreach ($case->tests as $test){
-						if ($data->timeLimit == 0){
-							$data->timeLimit = $test->timeLimit;
-							$data->memoryLimit = $test->memoryLimit;
-						} elseif ($data->timeLimit != $test->timeLimit || $data->memoryLimit != $test->memoryLimit)
-							$data->timeLimit = -1;
-							
-						if ($data->timeLimit < 0) break;
-					}
-					if ($data->timeLimit < 0) break;
+			$data->filemode = json_decode($data->confCache);
+			unset($data->confCache);
+
+			$noTime = $noMemory = false;
+			if (isset($data->filemode[4]))
+				foreach ($data->filemode[4] as $executable => $conf)
+				{
+					if (!$noTime && isset($conf->time))
+						foreach ($conf->time as $time)
+							if (!isset($data->timeLimit) || $data->timeLimit == $time)
+								$data->timeLimit = $time;
+							else
+							{
+								unset($data->timeLimit);
+								$noTime = true;
+								break;
+							}
+					if (!$noMemory && isset($conf->memory))
+						foreach ($conf->memory as $memory)
+							if (!isset($data->memoryLimit) || $data->memoryLimit == $memory)
+								$data->memoryLimit = $memory;
+							else
+							{
+								unset($data->memoryLimit);
+								$noMemory = true;
+								break;
+							}
 				}
-			}
-			if ($data->timeLimit < 0){
-				unset($data->timeLimit);
-				unset($data->memoryLimit);
-			}
 		}
 		$data->tid = $tid;
 		$data->gid = $gid;
-		
+
 		$endTime = $this->misc->load_task_info($gid, $tid)->endTime;
 		$data->timeout = strtotime($endTime) < time();
-		
+
 		if ($data == FALSE)
 			$this->load->view('error', array('message' => 'Problem not available!'));
 		else
-			$this->load->view('task/show', array('data' => $data));
+			$this->load->view('task/show', array(
+				'data' => $data,
+				'noSubmit' => $this->problems->no_submit($pid)
+			));
 	}
 
 	function statistic($gid, $tid) {
