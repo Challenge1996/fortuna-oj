@@ -279,4 +279,23 @@ class Misc extends CI_Model{
 		return $data;
 	}
 
+	function add_allowing($uid, $pid)
+	{
+		if (! $this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt)
+			$this->db->query("INSERT INTO Allowed_Problem (uid, pid) VALUES (?, ?)", array($uid, $pid));
+	}
+
+	function del_allowing($id)
+	{
+		$this->db->query("DELETE FROM Allowed_Problem WHERE id=?", array($id));
+	}
+
+	function load_allowing($uid)
+	{
+		return $this->db->query("
+				SELECT Allowed_Problem.id, Allowed_Problem.pid, ProblemSet.title, ProblemSet.source
+				FROM Allowed_Problem
+				INNER JOIN ProblemSet ON Allowed_Problem.pid=ProblemSet.pid WHERE Allowed_Problem.uid=?
+			", array($uid))->result();
+	}
 }

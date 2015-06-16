@@ -14,8 +14,24 @@
 			if ($row->isEnabled) echo 'class="label label-success">Enabled';
 			else echo 'class="label label-important">Disabled';
 			echo '</span></td><td>';
-			if ($row->priviledge == 'admin') echo '<span class="label label-warning">Administrator</span>';
-			else echo '<span class="label">User</span>';
+			echo '<div class="dropdown">';
+			$display = "style='display:none'";
+			if ($row->priviledge == 'admin')
+				echo "<span id='bt$row->uid' class='label label-warning dropdown-toggle' data-toggle='dropdown' role='button'>Administrator</span>";
+			else if ($row->priviledge == 'user')
+				echo "<span id='bt$row->uid' class='label dropdown-toggle' data-toggle='dropdown' role='button'>User</span>";
+			else {
+				echo "<span id='bt$row->uid' class='label label-inverse dropdown-toggle' data-toggle='dropdown' role='button'>Restricted</span>";
+				$display = '';
+			}
+			echo "<ul class='dropdown-menu' role='menu' aria-labelledby='bt$row->uid'>";
+			echo "<li role='presentation'><a onclick='change_user_priviledge($row->uid,\"admin\",$(\"#bt$row->uid\"),$(\".op$row->uid\"));'>Administrator</a></li>";
+			echo "<li role='presentation'><a onclick='change_user_priviledge($row->uid,\"user\",$(\"#bt$row->uid\"),$(\".op$row->uid\"));'>User</a></li>";
+			echo "<li role='presentation'><a onclick='change_user_priviledge($row->uid,\"restricted\",$(\"#bt$row->uid\"),$(\".op$row->uid\"));'>Restricted</a></li>";
+			echo "<li role='presentation' class='divider op$row->uid' $display></li>";
+			echo "<li role='presentation' class='op$row->uid' $display><a href='#admin/setallowing/$row->uid'>Set Allowing</a></li>";
+			echo '</ul>';
+			echo '</div>';
 			echo '</td><td>';
 			foreach ($row->groups as $group) echo "<span class=\"label\">$group->name</span> ";
 			echo "<td>$row->lastIP</td>";
@@ -60,6 +76,27 @@
 				selector.removeClass('label-important');
 				selector.addClass('label-success');
 				selector.html('Enabled');
+			}
+		}, false);
+	}
+
+	function change_user_priviledge(uid, priviledge, button, option)
+	{
+		access_page('admin/change_user_priviledge/' + uid + '/' + priviledge, function(){
+			button.removeClass('label-inverse');
+			button.removeClass('label-warning');
+			option.hide();
+			if (priviledge == 'admin')
+			{
+				button.addClass('label-warning');
+				button.html('Administrator');
+			} else if (priviledge == 'user')
+				button.html('User');
+			else
+			{
+				button.addClass('label-inverse');
+				button.html('Restricted');
+				option.show();
 			}
 		}, false);
 	}

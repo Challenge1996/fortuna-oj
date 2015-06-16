@@ -13,11 +13,11 @@ class Admin extends CI_Controller {
 		$this->load->model('user');
 		
 		$allowed_methods = array('addproblem', 'problemset');
-		$restrcited_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_status');
+		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_status');
 		
 		if ($this->user->is_logged_in()){
 			if ($this->user->is_admin() || in_array($method, $allowed_methods)) $this->_redirect_page($method, $params);
-			else if (in_array($method, $restrcited_methods)){
+			else if (in_array($method, $restricted_methods)){
 				$this->load->model('problems');
 				if (isset($params[0]) && $this->problems->uid($params[0]) == $this->user->uid())
 					$this->_redirect_page($method, $params);
@@ -448,11 +448,28 @@ class Admin extends CI_Controller {
 	function change_user_status($uid){
 		$this->user->change_status($uid);
 	}
+
+	function change_user_priviledge($uid, $priviledge)
+	{
+		$this->user->change_priviledge($uid, $priviledge);
+	}
 	
 	function delete_user($uid){
 		$this->user->delete($uid);
 	}
-	
+
+	function setallowing($uid){
+		$this->load->model('misc');
+		$add = $this->input->get('add');
+		$del = $this->input->get('del');
+		if (isset($add) && $add)
+			$this->misc->add_allowing($uid, $add);
+		if (isset($del) && $del)
+			$this->misc->del_allowing($del);
+		$data = $this->misc->load_allowing($uid);
+		$this->load->view('admin/setallowing', array('data' => $data, 'uid' => $uid));
+	}
+
 	function new_task($tid = 0){
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
