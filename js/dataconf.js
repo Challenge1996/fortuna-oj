@@ -294,7 +294,7 @@ function loaded() {
 	cases_cnt = tests_cnt = 0;
 	use_script = (!$("#traditional").val() && $("#editor-init").val());
 	
-	// UPLOPAD PART BEGIN
+	// UPLOAD PART BEGIN
 	
 	$("#file_upload").fileupload({
 		//dataType: 'json',    remove this line to solve the problem that `done` is not called
@@ -321,7 +321,8 @@ function loaded() {
 			$("#div_progress").css('width', progress + '%');
 			if (data.loaded == data.total){
 				$(".progress").css('display', 'none');
-				if (!use_script) $("#btn_scan").click();
+				if (!use_script)
+					setTimeout('$("#btn_scan").click();',2000);
 			}
 		},
 		done: function(e, data) {

@@ -162,12 +162,10 @@ class Admin extends CI_Controller {
 		
 		$datapath = $this->config->item('data_path').$pid;
 		
+		$post = $this->input->post(NULL, FALSE);
 		try
 		{
 			if ($this->form_validation->run() == FALSE) throw new MyException();
-
-			$post = $this->input->post(NULL, FALSE);
-
 			$confCache = $this->problems->save_script($pid, $post["script-init"], $post["script-run"]);
 			$this->problems->mark_update($pid);
 			$this->problems->save_dataconf($pid, $post["traditional"], $post["group"], $confCache);
@@ -185,10 +183,10 @@ class Admin extends CI_Controller {
 			$pass = array();
 			$pass['title'] = $data->title;
 			$pass['pid'] = $pid;
-		    	$pass['traditional'] = $data->dataConfiguration;
-			$pass['group'] = $data->dataGroup;
-			$pass['init'] = file_exists($datapath.'/init.src')?file_get_contents($datapath.'/init.src'):'';
-			$pass['run'] = file_exists($datapath.'/run.src')?file_get_contents($datapath.'/run.src'):'';
+			$pass['traditional'] = isset($post['traditional'])?$post['traditional']:$data->dataConfiguration;
+			$pass['group'] = isset($post['group'])?$post['group']:$data->dataGroup;
+			$pass['init'] = isset($post['script-init'])?$post['script-init']:file_exists($datapath.'/init.src')?file_get_contents($datapath.'/init.src'):'';
+			$pass['run'] = isset($post['script-run'])?$post['script-run']:file_exists($datapath.'/run.src')?file_get_contents($datapath.'/run.src'):'';
 			$pass['errmsg'] = $e->getMessage();
 
 			$this->load->view('admin/dataconf', $pass);
