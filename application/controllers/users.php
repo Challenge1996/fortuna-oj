@@ -137,6 +137,7 @@ class Users extends CI_Controller {
 		$resized = imagecreatetruecolor($width, $height);
 		imagecopyresampled($resized, $image, 0, 0, 0, 0, $width, $height, $info[0], $info[1]);
 		
+		mkdir('/tmp/foj');
 		$target_file = '/tmp/foj/' . $user->uid . '.' . $extension;
 		switch ($info[2]) {
 			case 1:	imagegif($resized, $target_file); break;
