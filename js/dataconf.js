@@ -455,6 +455,7 @@ function loaded() {
 			var group = eval('('+$("#submit-group").val()+')');
 			group.splice(caseid,1);
 			init_group(group);
+			$("#submit-group").val(JSON.stringify(group));
 		}
 		return false;
 	});

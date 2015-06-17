@@ -269,7 +269,7 @@ class Submission extends CI_Model{
 			{
 				$this->db->query("UPDATE User SET solvedCount=solvedCount+1 WHERE uid=?", array($uid));
 				$this->db->query("UPDATE ProblemSet SET solvedCount=solvedCount+1 WHERE pid=?", array($pid));
-				if ($this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE uid=? AND status=0", array($uid))->row()->cnt==1)
+				if ($this->db->query("SELECT COUNT(*) AS cnt FROM Submission WHERE uid=? AND status=0 AND pid=?", array($uid, $pid))->row()->cnt==1)
 					$this->db->query("UPDATE User SET acCount=acCount+1 WHERE uid=?", array($uid));
 			}
 		}
