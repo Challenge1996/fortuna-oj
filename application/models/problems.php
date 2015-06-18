@@ -154,6 +154,16 @@ class Problems extends CI_Model{
 		$result = $this->db->query("SELECT * from ProblemSet WHERE pid=?", array($pid));
 		if ($result->num_rows() == 0) return FALSE;
 		$data = $result->row();
+		
+		$path = $this->config->item('problem_path') . $pid;
+		$data->problemDescription   = file_get_contents("$path/problemDescription.html");
+		$data->inputDescription     = file_get_contents("$path/inputDescription.html");
+		$data->outputDescription    = file_get_contents("$path/outputDescription.html");
+		$data->inputSample          = file_get_contents("$path/inputSample.html");
+		$data->outputSample         = file_get_contents("$path/outputSample.html");
+		$data->dataConstraint       = file_get_contents("$path/dataConstraint.html");
+		$data->hint                 = file_get_contents("$path/hint.html");
+		
 		if (!isset($data->dataGroup) || !$data->dataGroup || !isset($data->confCache) || !$data->confCache)
 		{
 			$got = $this->form2script(json_decode($data->dataConfiguration));
@@ -166,6 +176,22 @@ class Problems extends CI_Model{
 	}
 	
 	function add($data, $pid = 0){
+		$problemDescription = $data['problemDescription'];
+		$inputDescription = $data['inputDescription'];
+		$outputDescription = $data['outputDescription'];
+		$inputSample = $data['inputSample'];
+		$outputSample = $data['outputSample'];
+		$dataConstraint = $data['dataConstraint'];
+		$hint = $data['hint'];
+		unset($data['problemDescription']);
+		unset($data['inputDescription']);
+		unset($data['outputDescription']);
+		unset($data['outputDescription']);
+		unset($data['inputSample']);
+		unset($data['outputSample']);
+		unset($data['dataConstraint']);
+		unset($data['hint']);
+		
 		$cnt = $this->db->query('SELECT MAX(pid) AS cnt FROM ProblemSet')->row()->cnt + 1;
 		if ($cnt == 1) $cnt = 1000;
 		$this->db->query('ALTER TABLE ProblemSet AUTO_INCREMENT=?', array($cnt));
@@ -173,8 +199,22 @@ class Problems extends CI_Model{
 		if ($pid == 0){
 			$data['uid'] = $this->user->uid();
 			$sql = $this->db->insert_string('ProblemSet', $data);
-		}else $sql = $this->db->update_string('ProblemSet', $data, "pid=$pid");
-		$this->db->query($sql);
+			$this->db->query($sql);
+			$pid = $this->db->query("SELECT MAX(pid) AS max FROM ProblemSet")->row()->max;
+		} else {
+			$sql = $this->db->update_string('ProblemSet', $data, "pid=$pid");
+			$this->db->query($sql);
+		}
+
+		$path = $this->config->item('problem_path') . $pid;
+		mkdir($path, 0777, true);
+		file_put_contents("$path/problemDescription.html",      $problemDescription);
+		file_put_contents("$path/inputDescription.html",        $inputDescription);
+		file_put_contents("$path/outputDescription.html",       $outputDescription);
+		file_put_contents("$path/inputSample.html",             $inputSample);
+		file_put_contents("$path/outputSample.html",            $outputSample);
+		file_put_contents("$path/dataConstraint.html",          $dataConstraint);
+		file_put_contents("$path/hint.html",                    $hint);
 		
 		return $pid == 0 ? $this->db->insert_id() : $pid;
 	}

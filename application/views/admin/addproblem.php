@@ -87,6 +87,7 @@
 				$('#editor_help').tooltip({placement: 'bottom'});
 			});
 		
+			CKEDITOR.config.extraPlugins = "base64image";
 			CKEDITOR.disableAutoInline = true;
 			CKEDITOR.config.forcePasteAsPlainText = true;
 			CKEDITOR.config.htmlEncodeOutput = true;
@@ -105,12 +106,7 @@
 			var sod = CKEDITOR.inline('outputSample');
 			var dc = CKEDITOR.inline('dataConstraint');
 			var hint = CKEDITOR.inline('hint');
- 			//CKFinder.setupCKEditor(pd, "application/third_party/ckfinder/");
- 			//CKFinder.setupCKEditor(id, "application/third_party/ckfinder/");
- 			//CKFinder.setupCKEditor(od, "application/third_party/ckfinder/");
- 			//CKFinder.setupCKEditor(dc, "application/third_party/ckfinder/");
- 			//CKFinder.setupCKEditor(hint, "application/third_party/ckfinder/");
- 			CKFinder.setupCKEditor(null, "application/third_party/ckfinder/");
+ 			//CKFinder.setupCKEditor(null, "application/third_party/ckfinder/");
 			
 			function add_problem(){
 				$('#title_data').val(td.getData());
