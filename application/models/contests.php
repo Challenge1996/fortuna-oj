@@ -28,7 +28,7 @@ class Contests extends CI_Model{
 		$uid = $this->session->userdata('uid');
 		if (
 			$this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge == 'restricted' &&
-			$this->db->query("SELECT COUNT(*) AS cnt FROM Contest_has_ProblemSet WHERE pid NOT IN (SELECT pid FROM Allowed_Problem WHERE uid=?)", array($uid))->row()->cnt
+			$this->db->query("SELECT COUNT(*) AS cnt FROM Contest_has_ProblemSet WHERE cid=? AND pid NOT IN (SELECT pid FROM Allowed_Problem WHERE uid=?)", array($cid, $uid))->row()->cnt
 		) return FALSE;
 		
 		if ($this->db->query("SELECT * FROM Contest

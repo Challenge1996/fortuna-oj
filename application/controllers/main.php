@@ -549,7 +549,7 @@ class Main extends CI_Controller {
 	
 	public function statistic($pid, $page = 1){
 		$this->load->model('problems');
-		if ( ! $this->problems->is_showed($pid) && ! $this->user->is_admin()) {
+		if ( ! $this->problems->is_showed($pid) && ! $this->user->is_admin() || ! $this->problems->allow($pid)) {
 			$this->load->view('error', array('message' => 'You have NO priviledge to see the statistic.'));
 			return;
 		}

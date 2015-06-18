@@ -167,9 +167,11 @@ class Submission extends CI_Model{
 
 	function allow_view_code($sid)
 	{
+		$this->load->model('problems');
 		$result = $this->db->query("SELECT uid, pid, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
 		$uid = $this->session->userdata('uid');
+		if (!$this->problems->allow($result->pid)) return FALSE;
 		$accepted = $this->db->query("SELECT * FROM Submission WHERE pid=? AND uid=? AND status=0", array($result->pid, $uid))->num_rows() > 0;
 		if ($this->db->query("SELECT pid FROM ProblemSet WHERE pid=? AND isShowed=1", array($result->pid))->num_rows() == 0)
 			$accepted = FALSE;
@@ -206,7 +208,8 @@ class Submission extends CI_Model{
 		if ($result->num_rows() == 0) return FALSE;
 		
 		$result = $result->row();
-		if ($result->uid == $this->session->userdata('uid') || $this->session->userdata('priviledge') == 'admin') {
+		$this->load->model('problems');
+		if ($result->uid == $this->session->userdata('uid') && $this->problems->allow($result->pid) || $this->session->userdata('priviledge') == 'admin') {
 			if ( ! is_null($result->cid)) {
 				$this->load->model('contests');
 				$info = $this->contests->load_contest_status($result->cid);
