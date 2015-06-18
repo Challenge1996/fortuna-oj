@@ -85,6 +85,16 @@ class Admin extends CI_Controller {
 			if ($pid > 0){
 				$data = (array)$this->db->query("SELECT * FROM ProblemSet WHERE pid=?", array($pid))->row();
 				$data['pid'] = $pid;
+
+				$path = $this->config->item('problem_path') . $pid;
+				$data['problemDescription']   = file_get_contents("$path/problemDescription.html");
+				$data['inputDescription']     = file_get_contents("$path/inputDescription.html");
+				$data['outputDescription']    = file_get_contents("$path/outputDescription.html");
+				$data['inputSample']          = file_get_contents("$path/inputSample.html");
+				$data['outputSample']         = file_get_contents("$path/outputSample.html");
+				$data['dataConstraint']       = file_get_contents("$path/dataConstraint.html");
+				$data['hint']                 = file_get_contents("$path/hint.html");
+
 			}else $data = NULL;
 
 			$this->load->view("admin/addproblem", $data);
