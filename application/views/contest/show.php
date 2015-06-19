@@ -64,7 +64,7 @@
 		echo '<span id="trigger"><i class="icon-chevron-down"></i></span></a>';
 		if ($spj) echo "&nbsp;&nbsp;<span class=\"label label-important\">Special Judge</span>";
 		if ($needDownload)
-			echo "&nbsp;&nbsp;&nbsp; <a href='#main/showdownload/$data->pid'><strong>Downloads</strong></a>";
+			echo "&nbsp;&nbsp;&nbsp; <a href='#main/showdownload/$data->pid'><strong style='color:red'>Downloads</strong></a>";
 		echo '</div>';
 		
 		if ($info->contestMode != 'OI' && $info->contestMode != 'OI Traditional'){
