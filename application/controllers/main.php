@@ -278,6 +278,7 @@ class Main extends CI_Controller {
 		foreach ($data->filemode[3] as $name => $property)
 			if (isset($property->download) && $property->download)
 				$files[] = $name;
+		natsort($files);
 		$this->session->set_userdata('download',implode('|',$files));
 		$this->load->view('main/showdownload', array('pid' => $pid, 'files' => $files));
 	}
@@ -497,7 +498,7 @@ class Main extends CI_Controller {
 
 			$language = $this->input->post('language');
 			$editor = $this->input->post('texteditor',FALSE);
-			foreach ($editor as &$code) $code = urldecode($code);
+			foreach ((array)$editor as &$code) $code = urldecode($code);
 			$upload = array('name'=>array());
 			if (isset($_FILES['file'])) $upload = $_FILES['file'];
 			$arg_lang = array();
