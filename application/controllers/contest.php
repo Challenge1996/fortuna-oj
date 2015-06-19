@@ -16,7 +16,7 @@ class Contest extends CI_Controller {
 		
 		if ($this->user->is_logged_in()){
 			if ($method == 'index' || (isset($params[0]) && $this->contests->is_valid($params[0]))){
-				if ($method != 'index' && $method != 'result' && $method != 'reply'){
+				if ($method != 'index' && $method != 'result' && $method != 'fullresult' && $method != 'reply'){
 					$declaration_count = $this->contests->declaration_count($params[0]);
 					$this->load->view('contest/navigation', array('cid' => $params[0], 'declaration_count' => $declaration_count));
 				}
@@ -282,6 +282,21 @@ class Contest extends CI_Controller {
 				$data = $this->contests->load_contest_ranklist_ACM($cid);
 			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
 				$data = $this->contests->load_contest_ranklist_OI($cid, $info);
+			}
+		}
+		
+		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
+			$this->load->view("information", array('data' => 'Contest NOT start!'));
+		else if ($data != FALSE) $this->load->view('contest/result', array('data' => $data, 'info' => $info));
+	}
+	
+	public function fullresult($cid){
+		$info = $this->contests->load_contest_status($cid);
+		if ($info != FALSE){
+			if ($info->contestMode == 'ACM')
+				$data = $this->contests->load_contest_statistic_ACM($cid);
+			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
+				$data = $this->contests->load_contest_statistic_OI($cid, $info);
 			}
 		}
 		
