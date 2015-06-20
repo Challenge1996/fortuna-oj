@@ -429,6 +429,7 @@ class Main extends CI_Controller {
 			$this->load->model('contests');
 			$cstat = $this->contests->load_contest_status($cid);
 			$lang = explode(',',strtolower($cstat->language));
+			$lang[] = 'txt';
 			foreach ($toSubmit as $file => &$property)
 				$property->language = array_intersect($property->language,$lang);
 		}
