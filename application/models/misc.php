@@ -290,6 +290,15 @@ class Misc extends CI_Model{
 		$this->db->query("DELETE FROM Allowed_Problem WHERE id=?", array($id));
 	}
 
+	function alter_allowing($uid, $pid)
+	{
+		$ret = $this->db->query("SELECT id FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid));
+		if (! $ret->num_rows())
+			$this->add_allowing($uid, $pid);
+		else
+			$this->del_allowing($ret->row()->id);
+	}
+
 	function load_allowing($uid)
 	{
 		return $this->db->query("
@@ -297,5 +306,24 @@ class Misc extends CI_Model{
 				FROM Allowed_Problem
 				INNER JOIN ProblemSet ON Allowed_Problem.pid=ProblemSet.pid WHERE Allowed_Problem.uid=?
 			", array($uid))->result();
+	}
+
+	function load_allowings($users, $probs)
+	{
+		$ret = array();
+		if ($users && $probs)
+		{
+			$this->db->select('id,uid AS user,pid')->from('Allowed_Problem')->where_in('uid',$users)->where_in('pid',$probs);
+			$ret = $this->db->get()->result();
+			foreach ($ret as &$row)
+				$row->user = strtolower($this->db->query("SELECT name FROM User WHERE uid=?", array($row->user))->row()->name);
+		}
+		$data = array();
+		foreach ($ret as $row2)
+		{
+			if (!isset($data[$row2->user])) $data[$row2->user] = array();
+			$data[$row2->user][$row2->pid] = $row2->id;
+		}
+		return $data;
 	}
 }

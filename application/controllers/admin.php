@@ -480,6 +480,46 @@ class Admin extends CI_Controller {
 		$this->load->view('admin/setallowing', array('data' => $data, 'uid' => $uid));
 	}
 
+	function setallowings(){
+		$this->load->model('misc');
+		$this->load->model('user');
+		$names = $this->input->post('users');
+		$probs = $this->input->post('probs');
+		if (!$names) $names = array();
+		if (!$probs) $probs = array();
+		$alter_user = $this->input->post('alter_user');
+		$alter_prob = $this->input->post('alter_prob');
+		$all = $this->input->post('all');
+		$users = array();
+		foreach ($names as $id => $name)
+		{
+			$uid = $this->user->load_uid($name);
+			if ($uid === false || $this->user->load_priviledge($uid)!='restricted')
+				unset($names[$id]);
+			else
+				$users[] = $uid;
+		}
+		if ($alter_user) $alter_user = $this->user->load_uid($alter_user);
+		if ($alter_user && $alter_prob)
+			$this->misc->alter_allowing($alter_user, $alter_prob);
+		$data = $this->misc->load_allowings($users, $probs);
+		foreach ($names as $id => $user)
+			foreach ($probs as $prob)
+			{
+				if ($all == 'add' && !isset($data[$user][$prob]))
+					$this->misc->add_allowing($users[$id],$prob);
+				if ($all == 'del' && isset($data[$user][$prob]))
+					$this->misc->del_allowing($data[$user][$prob]);
+			}
+		if ($all == 'add' || $all == 'del')
+			$data = $this->misc->load_allowings($users, $probs);
+		$this->load->view('admin/setallowings', array(
+			'data' => $data,
+			'users' => $names,
+			'probs' => $probs
+		));
+	}
+
 	function new_task($tid = 0){
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');

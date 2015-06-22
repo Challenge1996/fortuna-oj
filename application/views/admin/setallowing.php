@@ -4,10 +4,13 @@
 
 	<div class="row-fluid">
 		<div class="span8"><h3>Set Allowed Problems</h3></div>
-		<form id="form-add" class="form-inline span4" action="index.php/admin/setallowing/<?=$uid?>">
-			<input type="number" placeholder="pid" name="add"></input>
-			<span class="btn btn-primary" id="add">Add</span>
-		</form>
+		<div class='span4'>
+			<a class='btn btn-link' href='#admin/setallowings'>Set Allowed Problems in Volume</a>
+			<form id="form-add" class="form-inline" action="index.php/admin/setallowing/<?=$uid?>">
+				<input type="number" placeholder="pid" name="add"></input>
+				<span class="btn btn-primary" id="add">Add</span>
+			</form>
+		</div>
 	</div>
 
 	<div class="row-fluid">

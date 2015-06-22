@@ -70,6 +70,7 @@
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/contestlist">Contest List</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/task_list">Task List</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/users">Manage User</a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/setallowings">Manage Viewing Permissions</a></li>
  									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/statistic">Statistic</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/rejudge">Rejudge</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/functions">Misc Functions</a></li>
