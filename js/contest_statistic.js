@@ -4,6 +4,10 @@ function download_result(cid){
 	$("#downloader").attr('src', 'index.php/contest/result/' + cid);
 }
 
+function download_statistic(cid){
+	$("#downloader").attr('src', 'index.php/contest/fullresult/' + cid);
+}
+
 function toggle_previous(){
 	if (show_previous)
 	{

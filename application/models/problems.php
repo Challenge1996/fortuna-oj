@@ -207,7 +207,7 @@ class Problems extends CI_Model{
 		}
 
 		$path = $this->config->item('problem_path') . $pid;
-		mkdir($path, 0777, true);
+		if (!is_dir($path)) mkdir($path, 0777, true);
 		file_put_contents("$path/problemDescription.html",      $problemDescription);
 		file_put_contents("$path/inputDescription.html",        $inputDescription);
 		file_put_contents("$path/outputDescription.html",       $outputDescription);

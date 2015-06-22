@@ -284,7 +284,7 @@ class User extends CI_Model{
 	
 	function load_users_list(){
 		return $this->db->query("SELECT uid, name, school, isEnabled, priviledge, lastIP, lastLogin FROM User
-								ORDER BY lastLogin DESC")
+								ORDER BY uid DESC")
 								->result();
 	}
 	
