@@ -92,25 +92,32 @@ class Customtest extends CI_Controller {
 			$status=$memory=$time=$retcode=false;
 			switch ($language) {
 				case 'C':	
-					$cmd = 'gcc Main.c -o Main -O2 -DONLINE_JUDGE >data.out 2>&1';
+					$cmd = 'gcc Main.c -o Main';
 					$source = 'Main.c';
+					$flags = ' -DONLINE_JUDGE';
 					break;
 				case 'C++':
-					$cmd = 'g++ Main.cpp -o Main -O2 -DONLINE_JUDGE >data.out 2>&1';
+					$cmd = 'g++ Main.cpp -o Main';
 					$source = 'Main.cpp';
+					$flags = ' -DONLINE_JUDGE';
 					break;
 				case 'C++11':
-					$cmd = 'g++ Main.cpp --std=c++11 -o Main -O2 -DONLINE_JUDGE >data.out 2>&1';
+					$cmd = 'g++ Main.cpp --std=c++11 -o Main';
 					$source = 'Main.cpp';
+					$flags = ' -DONLINE_JUDGE';
 					break;
 				case 'Pascal':
-					$cmd = 'fpc Main.pas -oMain -O2 -Co -Ci >data.out 2>&1';
+					$cmd = 'fpc Main.pas -oMain -Co -Ci';
 					$source = 'Main.pas';
+					$flags = ' -dONLINE_JUDGE';
 					break;
 			}
 			$file = fopen("$path/$source", 'w');
 			fwrite($file, $code);
 			fclose($file);
+			if ($this->input->post('with_o2')) $flags .= ' -O2';
+			$cmd .= $flags;
+			$cmd .=' >data.out 2>&1';
 			system("cd $path; $cmd", $CE);
 			if ($CE)
 			{
