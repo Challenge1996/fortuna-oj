@@ -14,7 +14,7 @@
 				<h3>Message #<?=$id?></h3>
 			</div>
 			<div class="modal-body">
-				<p><?=htmlentities($detail->message)?></p>
+				<p><?=nl2br(htmlentities($detail->message))?></p>
 			</div>
 		</div>
 	<?php

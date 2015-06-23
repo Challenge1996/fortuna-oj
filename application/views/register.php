@@ -37,7 +37,7 @@
 	);
 ?>
 	
-<div id="register_field" class="modal">
+<div id="register_field" class="modal" style="width:700px;max-height:100%;max-width:100%;overflow-Y:auto">
 	<div class="modal-header"><h3><em>Register</em></h3></div>
 	
 	<form action="index.php/main/register" id="register_form" class="form" method="post">
@@ -59,7 +59,7 @@
 				<div class="controls"><?=form_password($data['confirm_password']) . form_error('confirm_password')?></div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="confirm_password"><i class="icon-home"></i>School</label>
+				<label class="control-label" for="school"><i class="icon-home"></i>School</label>
 				<div class="controls"><?=form_input($data['school']) . '<br />'?></div>
 			</div>
 			<div class="control-group">
