@@ -128,8 +128,8 @@ class Misc extends CI_Model{
 	}
 	
 	function is_in_group($uid, $gid) {
-		return $this->db->query("SELECT COUNT(*) AS count FROM Group_has_User WHERE uid=? AND gid=?",
-								array($uid, $gid))->row()->count > 0;
+		return $this->db->query("SELECT isAccepted FROM Group_has_User WHERE uid=? AND gid=?",
+								array($uid, $gid))->row()->isAccepted > 0;
 	}
 	
 	function is_group_admin($gid){

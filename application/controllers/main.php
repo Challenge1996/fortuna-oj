@@ -440,6 +440,7 @@ class Main extends CI_Controller {
 			$this->load->model('misc');
 			$tstat = $this->misc->load_task_info($gid, $tid);
 			$lang = explode(',',strtolower($tstat->language));
+			$lang[] = 'txt';
 			foreach ($toSubmit as $file => &$property)
 				$property->language = array_intersect($property->language,$lang);
 		}
@@ -479,6 +480,7 @@ class Main extends CI_Controller {
 			if (isset($data['tid']))
 			{
 				$this->load->model('misc');
+				if (!$this->misc->is_in_group($data['uid'],$data['gid'])) exit('you are not team member');
 				$info = $this->misc->load_task_info($data['gid'], $data['tid']);
 				if (strtotime($info->startTime) > time() || strtotime($info->endTime) < time()) exit('not yet');
 				//unset($data['gid']);
