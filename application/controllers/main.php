@@ -91,7 +91,9 @@ class Main extends CI_Controller {
 	}
 	
 	public function home(){
-		$this->load->view('main/home');
+		$this->load->model('user');
+		$online = $this->user->load_online_users();
+		$this->load->view('main/home', array("online" => $online));
 	}
 	
 	static function _convert_status($status){

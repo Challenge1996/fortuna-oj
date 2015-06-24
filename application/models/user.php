@@ -438,4 +438,20 @@ class User extends CI_Model{
 		if (!$ret->num_rows()) return FALSE;
 		return $ret->row()->email;
 	}
+
+	function load_online_users()
+	{
+		$ret = array();
+		$redis = new Redis();
+		$redis->connect($this->config->item('redis_host'), $this->config->item('redis_port'));
+		$redis->setOption(Redis::OPT_PREFIX, 'online_users:'.$this->config->item('oj_name').':'); 
+		$uids = $redis->keys('*');
+		foreach ($uids as $uid)
+		{
+			$uid = array_pop(explode(':',$uid));
+			$ret[$uid] = $redis->get($uid);
+		}
+		$redis->close();
+		return $ret;
+	}
 }
