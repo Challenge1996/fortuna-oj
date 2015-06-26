@@ -251,9 +251,8 @@ class Admin extends CI_Controller {
 		
 	public function wipedata($pid){
 		$target_path = $this->config->item('data_path') . $pid . '/';
-		chdir($target_path);
 		echo $target_path;
-		exec("rm -f *");
+		exec("rm -f $target_path*");
 	}
 
 	public function scan($pid){
