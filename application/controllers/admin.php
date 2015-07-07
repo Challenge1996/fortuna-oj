@@ -220,8 +220,8 @@ class Admin extends CI_Controller {
 			//$file_parts = pathinfo($_FILES['files']['name'][$i]);
 			//$basename = $file_parts['basename'];
 			//$filename = $file_parts['filename'];
-			//if (isset($file_parts['extension'])) $extension = $file_parts['extension'];
-			//else $extension = '';
+			if (isset($file_parts['extension'])) $extension = $file_parts['extension'];
+			else $extension = '';
 		
 		//	if (in_array($file_parts['extension'],$file_types))
 			//if ( ! is_executable($temp_file))

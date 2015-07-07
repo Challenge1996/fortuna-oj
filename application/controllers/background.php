@@ -37,8 +37,8 @@ class Background extends CI_Controller {
 				return;
 			}
 
-			if (++$count > 20) return;
-			sleep(3);
+			if (++$count > 10) return;
+			sleep(6);
 		}
 	}
 }
