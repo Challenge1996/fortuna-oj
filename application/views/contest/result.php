@@ -4,7 +4,7 @@
 	
 	foreach ($info->problemset as $row) $pid[] = $row->pid;
 	
-	if ($info->contestMode =='OI'){
+	if ($info->contestMode =='OI' || $info->contestMode == 'OI Traditional'){
 		echo "Name\tScore\t";
 		foreach ($info->problemset as $row) echo "$row->title\t";
 		echo "Rank\t\n";
