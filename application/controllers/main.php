@@ -524,17 +524,17 @@ class Main extends CI_Controller {
 				exit('error when mkdir');
 			foreach ($language as $file => $lang)
 			{
-				if (isset($editor[$file]))
-				{
-					$handle = fopen($this->config->item('code_path') . "$front/$back" . '/' . $file, 'w');
-					fwrite($handle, $editor[$file]);
-					fclose($handle);
-				}
 				if (isset($upload['name'][$file]))
 				{
 					if ($upload['error'][$file]>0) exit('upload error');
 					if ($upload['size'][$file]>67108864) exit('too large');
 					move_uploaded_file($upload['tmp_name'][$file], $this->config->item('code_path') . "$front/$back" . '/' . $file);
+				}
+				else
+				{
+					$handle = fopen($this->config->item('code_path') . "$front/$back" . '/' . $file, 'w');
+					if (isset($editor[$file])) fwrite($handle, $editor[$file]);
+					fclose($handle);
 				}
 			}
 
