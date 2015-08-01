@@ -344,7 +344,9 @@ class Problems extends CI_Model{
 
 		$ret = 0; $out = array();
 		file_put_contents("/tmp/foj/dataconf/$ojname/$pid.$rand/makefile","include /home/judge/resource/makefile");
+		syslog(LOG_INFO, "started compiling scripts for pid=$pid in OJ $ojname");
 		exec("make -B > compile.log 2>&1", $out, $ret);
+		syslog(LOG_INFO, "ended compiling scripts for pid=$pid in OJ $ojname");
 		if ($ret)
 		{
 			$err = file_get_contents('compile.log');
