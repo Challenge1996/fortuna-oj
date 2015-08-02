@@ -325,13 +325,37 @@ class Problems extends CI_Model{
 
 	function save_script($pid, $script_init, $script_run) // this function may throw MyException
 	{
+		$ojname = $this->config->item('oj_name');
 		$datapath = $this->config->item('data_path').$pid;
+
+		$script = $script_init . '###' . $script_run;
+
+		$redis = new Redis();
+		if (!$redis->connect($this->config->item('redis_host'), $this->config->item('redis_port'))) throw new MyException('Error when connecting to redis server');
+		$redis->select(1);
+		$redis->setOption(Redis::OPT_PREFIX, $ojname . ':');
+
+		while ($redis->exists($pid)) sleep(1);
+
+		if ((file_get_contents($datapath . '/init.src') . '###' . file_get_contents($datapath . '/run.src')) == $script)
+		{
+			$redis->close();
+			syslog(LOG_INFO, "Duplicate compile request for pid=$pid in OJ $ojname");
+			return;
+		}
+
+		$redis->set($pid, '', array('ex'=>120));
+
 		if (!is_dir($datapath)) mkdir($datapath,0777,true);
 		$cwd = getcwd();
-		$ojname = $this->config->item('oj_name');
 		$rand = rand();
 		if (!is_dir("/tmp/foj/dataconf/$ojname/$pid.$rand")) mkdir("/tmp/foj/dataconf/$ojname/$pid.$rand",0777,true);
-		if (!chdir("/tmp/foj/dataconf/$ojname/$pid.$rand")) throw new MyException('Error when changing directory');
+		if (!chdir("/tmp/foj/dataconf/$ojname/$pid.$rand"))
+		{
+			$redis->del($pid);
+			$redis->close();
+			throw new MyException('Error when changing directory');
+		}
 		exec('rm -r *');
 
 		file_put_contents("init.src",$script_init);
@@ -339,6 +363,8 @@ class Problems extends CI_Model{
 		if (!copy("init.src",$datapath.'/init.src') || !copy("run.src",$datapath.'/run.src'))
 		{
 			chdir($cwd);
+			$redis->del($pid);
+			$redis->close();
 			throw new MyException('Error when copying');
 		}
 
@@ -351,6 +377,8 @@ class Problems extends CI_Model{
 		{
 			$err = file_get_contents('compile.log');
 			chdir($cwd);
+			$redis->del($pid);
+			$redis->close();
 			throw new MyException($err);
 		}
 
@@ -360,11 +388,17 @@ class Problems extends CI_Model{
 		{
 			$err = file_get_contents('err.log');
 			chdir($cwd);
+			$redis->del($pid);
+			$redis->close();
 			throw new MyException($err);
 		}
 		$confCache = str_replace(array(" ","\t","\n","\r"),array(),file_get_contents('conf.log'));
 		
 		chdir($cwd);
+
+		$redis->del($pid);
+		$redis->close();
+
 		return $confCache;
 	}
 	
