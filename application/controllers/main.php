@@ -503,7 +503,7 @@ class Main extends CI_Controller {
 
 			$language = $this->input->post('language');
 			$editor = (array)$this->input->post('texteditor',FALSE);
-			foreach ($editor as &$code) $code = urldecode($code);
+			foreach ($editor as &$code) $code = base64_decode($code);
 			$upload = array('name'=>array());
 			if (isset($_FILES['file'])) $upload = $_FILES['file'];
 			$arg_lang = array();
