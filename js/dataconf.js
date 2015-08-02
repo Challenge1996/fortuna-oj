@@ -105,18 +105,18 @@ function getDataFromElement()
 	for (var i=0; i<tests_cnt; i++) if ($("#test"+i).length > 0)
 	{
 		var x = $("#test"+i), f = Number(x.parent().parent().attr('id')), cur = {};
-		if (x.find("input.in").val())
-			cur.input = x.find("input.in").val();
-		if (x.find("input.out").val())
-			cur.output = x.find("input.out").val();
-		if (x.find("input.user_input").val())
-			cur.userInput = x.find("input.user_input").val();
-		if (x.find("input.user_output").val())
-			cur.userOutput = x.find("input.user_output").val();
-		if (x.find("input.time").val())
-			cur.timeLimit = Number(x.find("input.time").val());
-		if (x.find("input.memory").val())
-			cur.memoryLimit = Number(x.find("input.memory").val());
+		if (x.find("input.in:not([disabled])").val())
+			cur.input = x.find("input.in:not([disabled])").val();
+		if (x.find("input.out:not([disabled])").val())
+			cur.output = x.find("input.out:not([disabled])").val();
+		if (x.find("input.user_input:not([disabled])").val())
+			cur.userInput = x.find("input.user_input:not([disabled])").val();
+		if (x.find("input.user_output:not([disabled])").val())
+			cur.userOutput = x.find("input.user_output:not([disabled])").val();
+		if (x.find("input.time:not([disabled])").val())
+			cur.timeLimit = Number(x.find("input.time:not([disabled])").val());
+		if (x.find("input.memory:not([disabled])").val())
+			cur.memoryLimit = Number(x.find("input.memory:not([disabled])").val());
 		data.cases[f].tests.push(cur);
 		group[f].push(i);
 	}
@@ -192,8 +192,10 @@ function add_case()
 function upd_IOmode()
 {
 	if ($("#IOMode").val() == 1) {
+		$(".user_input").removeAttr('disabled');
 		$(".user_input").show();
 	} else {
+		$(".user_input").attr('disabled', '');
 		$(".user_input").hide();
 	}
 
