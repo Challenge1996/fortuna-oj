@@ -88,7 +88,7 @@
 		</div>
 	<?php endforeach; ?>
 
-	<span type="submit" class="btn btn-primary pull-right" id="submit_button" onclick='return check_on_submit()'>Submit</span>
+	<span type="submit" class="btn btn-primary pull-right" id="submit_button">Submit</span>
 </form>
 
 <div id='est-modal' class='modal hide fade'>
@@ -131,7 +131,9 @@
 
 	$(document).ready(function(){
 		<?php if (isset($cid) && $cid): ?>
-			$('#est-submit').click(function(){
+			$('#est-submit').live('click',function(){
+				$(this).die('click');
+				$(this).addClass('disabled');
 				$.ajax({ url:"index.php/contest/estimate/<?=$cid?>/<?=$pid?>/"+$("#est-input").val(), success: final_submit});
 			});
 		<?php endif; ?>
@@ -169,7 +171,7 @@
 		});
 	});
 	
-	function check_on_submit(){
+	$("#submit_button").live('click',function(){
 		for (file in editor)
 			if ($(".toggle_editor[data-file='"+file+"']").attr('checked'))
 				$(".submit-editor[data-file='"+file+"']").val(editor[file].getValue());
@@ -202,6 +204,7 @@
 						}
 			});
 		} catch (err) { return false; }
+		$('#submit_button').die('click');
 		$('#submit_button').attr('disabled','true');
 		$('.textarea-part:hidden,.upload-part:hidden').remove();
 
@@ -219,7 +222,7 @@
 		<?php endif; ?>
 		
 		return false;
-	}
+	});
 
 </script>
 <!--  End of file submit.php -->
