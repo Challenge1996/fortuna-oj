@@ -328,8 +328,6 @@ class Problems extends CI_Model{
 		$ojname = $this->config->item('oj_name');
 		$datapath = $this->config->item('data_path').$pid;
 
-		$script = $script_init . '###' . $script_run;
-
 		$redis = new Redis();
 		if (!$redis->connect($this->config->item('redis_host'), $this->config->item('redis_port'))) throw new MyException('Error when connecting to redis server');
 		$redis->select(1);
@@ -337,7 +335,7 @@ class Problems extends CI_Model{
 
 		while ($redis->exists($pid)) sleep(1);
 
-		if ((file_get_contents($datapath . '/init.src') . '###' . file_get_contents($datapath . '/run.src')) == $script)
+		if (file_exists($datapath . '/init.src') && file_exists($datapath . '/run.src') && file_get_contents($datapath . '/init.src') == $script_init && file_get_contents($datapath . '/run.src') == $script_run)
 		{
 			$redis->close();
 			syslog(LOG_INFO, "Duplicate compile request for pid=$pid in OJ $ojname");
