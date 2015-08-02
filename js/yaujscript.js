@@ -99,7 +99,7 @@ function form2script(form)
 				run += '  exec_ret = exec(i,"' + form.spjFile + '","/dev/null","/dev/null","/dev/null",score[i]+" "+output[i]);\n';
 				run += '  if (exec_ret["exitcode"]) { result[i]["status"]="spj error"; result[i]["score"]=0; throw; }\n';
 				run += '  result[i]["score"] = split(read("score.log"))[0];\n';
-				run += '  result[i]["message"] = split(read("report.log"))[0];\n';
+				run += '  result[i]["message"] = read("report.log");\n';
 				run += '  if (score[i]-result[i]["score"]<0.01) result[i]["status"]="accepted"; else if (result[i]["score"]>0.01) result[i]["status"]="partially accepted"; else result[i]["status"]="wrong answer";\n';
 				break;
 			case 2 : // tsinsen
