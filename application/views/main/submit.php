@@ -118,11 +118,15 @@
 					else load_page('main/status');
 				} else {
 					alert('Failed to submit!');
+					$('#est-submit').die('click');
+					$('#submit_button').die('click');
 					location.reload();
 				}
 			},
 			error: function() {
 				alert('Failed to submit!');
+				$('#est-submit').die('click');
+				$('#submit_button').die('click');
 				location.reload();
 			}
 		});
@@ -131,6 +135,7 @@
 
 	$(document).ready(function(){
 		<?php if (isset($cid) && $cid): ?>
+			$('#est-submit').die('click');
 			$('#est-submit').live('click',function(){
 				$(this).die('click');
 				$(this).addClass('disabled');
@@ -171,6 +176,7 @@
 		});
 	});
 	
+	$('#submit_button').die('click');
 	$("#submit_button").live('click',function(){
 		for (file in editor)
 			if ($(".toggle_editor[data-file='"+file+"']").attr('checked'))
