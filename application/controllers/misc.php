@@ -36,6 +36,12 @@ class Misc extends CI_Controller {
 	}
 
 	function newmail($username = '') {
+		if (! $this->config->item('allow_message'))
+		{
+			$this->load->view('error', array('message' => 'The Message System has been disabled'));
+			return;
+		}
+
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
