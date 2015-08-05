@@ -133,6 +133,7 @@
 		$(this).parent().children('.show-reply').show();
 	});
 
+	$('.reply-button').die('click');
 	$('.reply-button').live('click',function(){
 		var id = Number($(this).attr('data-id'));
 		var to = Number($(this).attr('data-to'));
@@ -140,6 +141,7 @@
 		$(".reply-area[data-id='"+id+"']").load('index.php/contest/reply/<?=$cid?>/'+id+'/'+to+'?post=1',{'content':content});
 	});
 
+	$('.del-reply').die('click');
 	$('.del-reply').live('click',function(){
 		if (!confirm('Sure to delete?')) return;
 		$(this).addClass('disabled');
@@ -148,6 +150,7 @@
 		$(".reply-area[data-id='"+root+"']").load('index.php/contest/reply/<?=$cid?>/'+root+'?del='+id);
 	});
 
+	$('.mdfy-reply').die('click');
 	$('.mdfy-reply').live('click',function(){
 		var id = Number($(this).attr('data-id'));
 		var root = Number($(this).attr('data-root'));
@@ -164,6 +167,7 @@
 		$(".reply-cancelm[data-id='"+root+"']").show();
 	});
 
+	$('.reply-modify').die('click');
 	$('.reply-modify').live('click',function(){
 		var id = Number($(this).attr('data-id'));
 		var to = Number($(this).attr('data-to'));
@@ -171,6 +175,7 @@
 		$(".reply-area[data-id='"+id+"']").load('index.php/contest/reply/<?=$cid?>/'+id+'?mdfy='+to,{'content':content});
 	});
 
+	$('.reply-cancelm').die('click');
 	$('.reply-cancelm').live('click',function(){
 		var id = Number($(this).attr('data-id'));
 		var to = Number($(this).attr('data-to'));
@@ -183,6 +188,7 @@
 		$(".reply-button[data-id='"+id+"']").show();
 	});
 
+	$('.reply-reply').die('click');
 	$('.reply-reply').live('click',function(){
 		var id = Number($(this).attr('data-id'));
 		var root = Number($(this).attr('data-root'));
@@ -195,6 +201,7 @@
 		$(".reply-cancelr[data-id='"+root+"']").show();
 	});
 
+	$('.reply-cancelr').die('click');
 	$('.reply-cancelr').live('click',function(){
 		var id = Number($(this).attr('data-id'));
 		var to = Number($(this).attr('data-to'));
