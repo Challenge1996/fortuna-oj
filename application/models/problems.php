@@ -333,13 +333,16 @@ class Problems extends CI_Model{
 		$redis->select(1);
 		$redis->setOption(Redis::OPT_PREFIX, $ojname . ':');
 
-		while ($redis->exists($pid)) sleep(1);
-
-		if (file_exists($datapath . '/init.src') && file_exists($datapath . '/run.src') && file_get_contents($datapath . '/init.src') == $script_init && file_get_contents($datapath . '/run.src') == $script_run)
+		if ($redis->exists($pid))
 		{
-			$redis->close();
-			syslog(LOG_INFO, "Duplicate compile request for pid=$pid in OJ $ojname");
-			return;
+			while ($redis->exists($pid)) sleep(1);
+
+			if (file_exists($datapath . '/init.src') && file_exists($datapath . '/run.src') && file_get_contents($datapath . '/init.src') == $script_init && file_get_contents($datapath . '/run.src') == $script_run)
+			{
+				$redis->close();
+				syslog(LOG_INFO, "Duplicate compile request for pid=$pid in OJ $ojname");
+				return;
+			}
 		}
 
 		$redis->set($pid, '', array('ex'=>120));

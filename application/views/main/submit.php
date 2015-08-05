@@ -176,17 +176,18 @@
 		});
 	});
 	
-	$('#submit_button').die('click');
-	$("#submit_button").live('click',function(){
+	function submit_onclick(){
+		$('#submit_button').die('click');
+		$('#submit_button').addClass('disabled');
 		for (file in editor)
 			if ($(".toggle_editor[data-file='"+file+"']").attr('checked'))
 				$(".submit-editor[data-file='"+file+"']").val(editor[file].getValue());
-		if ($('#pid').val() == ''){
-			alert("You should specify the Problem ID!");
-			return false;
-		}
 		try
 		{
+			if ($('#pid').val() == ''){
+				alert("You should specify the Problem ID!");
+				throw 'err';
+			}
 			$(".submit-editor").each(function(){
 				if ($(this).parents('.textarea-part').css('display')=='none') return true;
 				var name = $(this).attr('data-file');
@@ -209,9 +210,11 @@
 								if (!confirm("Please confirm you are NOT using FILE IO. Sure to submit?")) throw 'err';
 						}
 			});
-		} catch (err) { return false; }
-		$('#submit_button').die('click');
-		$('#submit_button').attr('disabled','true');
+		} catch (err) {
+			$('#submit_button').live('click', submit_onclick);
+			$('#submit_button').removeClass('disabled');
+			return false;
+		}
 		$('.textarea-part:hidden,.upload-part:hidden').remove();
 
 		var new_lang = undefined;
@@ -228,7 +231,9 @@
 		<?php endif; ?>
 		
 		return false;
-	});
+	}
+	$('#submit_button').die('click');
+	$('#submit_button').live('click', submit_onclick);
 
 </script>
 <!--  End of file submit.php -->
