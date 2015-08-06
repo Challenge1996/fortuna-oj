@@ -108,7 +108,7 @@
 	function final_submit()
 	{
 		$('#est-modal').modal('hide');
-		$('.submit-editor').each(function() { $(this).val(btoa($(this).val())); }); // prevent % escape
+		$('.submit-editor').each(function() { $(this).val(btoa(unescape(encodeURIComponent($(this).val())))); }); // prevent % escape
 		$('#cookie-language').val($('.language').first().val());
 		$('#submit-form').ajaxSubmit({
 			url: 'index.php/main/submit/' + $('#pid').val(),
