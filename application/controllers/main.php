@@ -15,7 +15,7 @@ class Main extends CI_Controller {
 	public function _remap($method, $params = array()){
 		$this->load->model('user');
 		
-		$allowed_methods = array('index', 'register', 'userinfo', 'logout');
+		$allowed_methods = array('index', 'register', 'userinfo', 'logout', 'reset_password');
 		if ($this->user->is_logged_in() || in_array($method, $allowed_methods))
 			$this->_redirect_page($method, $params);
 		else
@@ -65,11 +65,13 @@ class Main extends CI_Controller {
 	
 	public function register(){
 		$this->load->library('form_validation');
+		$this->load->model('user');
+
 		$this->form_validation->set_error_delimiters('<span class="alert add-on alert-error">', '</span>');
 		
 		$this->form_validation->set_rules('username', 'Username', 'required|is_unique[User.name]');
-		$this->form_validation->set_rules('password', 'Password', 'required|matches[confirm_password]');
-		$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required');
+		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[password]');
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[User.email]');
 
 		$this->form_validation->set_message('is_unique', '%s not available!');
@@ -80,6 +82,55 @@ class Main extends CI_Controller {
 		else {
 			$this->user->registion_success($this->input->post(NULL, TRUE));
 			
+			$this->load->view('success');
+		}
+	}
+
+	public function reset_password($name, $key) {
+		if ($this->user->is_logged_in()) $this->user->logout();
+		$this->load->library('form_validation');
+		$this->load->model('user');
+
+		$user = $this->user->load_user($name);
+
+		if (!isset($user->uid)) {
+			$this->load->view('error', array('message' => 'User not found!'));
+			return;
+		}
+
+		$uid = $user->uid;
+		$email = $user->email;
+		$school = $user->school;
+		$description = $user->description;
+		$verification_key = $user->verificationKey;
+
+		if (!isset($verification_key)) {
+			$this->load->view('error', array('message' => 'You didn\'t request a verification key!'));
+			return;
+		}
+
+		if ($key != $verification_key) {
+			$this->load->view('error', array('message' => 'Your verification key is invalid or incorrect!'));
+			return;
+		}
+
+		$this->form_validation->set_error_delimiters('<span class="alert add-on alert-error">', '</span>');
+
+		$this->form_validation->set_rules('password', 'New Password', 'required');
+		$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[password]');
+
+		$this->form_validation->set_message('required', '%s is required!');
+
+		if ($this->form_validation->run() == FALSE) {
+			$this->load->view('reset_password', array(
+				'name' => $name,
+				'email' => $email,
+				'key' => $verification_key,
+			));
+		} else {
+			$data = $this->input->post(NULL, TRUE);
+			$this->user->set_verification_key($uid, NULL);
+			$this->user->save_password($uid, md5(md5($data['password']) . $this->config->item('password_suffix')));
 			$this->load->view('success');
 		}
 	}

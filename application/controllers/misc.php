@@ -67,19 +67,30 @@ class Misc extends CI_Controller {
 	{
 		$this->load->model('user');
 		$this->load->helper('email');
+		$this->load->helper('string');
+
 		$name = $this->input->get('name', TRUE);
 		if (!$name || !$this->user->username_check($name)) exit('No such user');
-		$password = '';
-		for ($i=0; $i<10; $i++) $password .= chr(mt_rand(97,122));
+
 		$address = $this->user->load_email($name);
 		if (!$address || !valid_email($address)) exit('You did not leave us a valid email address');
+
+		$uid = $this->user->load_uid($name);
+		$base_url = $this->config->item('base_url');
+		$key = random_string('alnum', 32);
+
+		$this->user->set_verification_key($uid, $key);
+
+		syslog(LOG_INFO, "[" . $this->config->item('oj_name') . "] IP " . $this->input->ip_address() . " attempts to reset $name's password");
+
+		$url = "$base_url/#main/reset_password/$name/$key";
 
 		$query = array
 			(
 				'to' => $this->user->load_email($name),
 				'toname' => $name,
 				'subject' => 'Reset Your JZOJ Password',
-				'html' => "Your password for JZOJ account <i>$name</i> is now <i>$password</i>. Change your password after you log in.",
+				'html' => "Click this link <a href='$url'>$url</a> to reset your password for JZOJ.<br />If you didn't request to reset your password, please contact root for this incident.",
 				'from' => $this->config->item('admin_email'),
 				'fromname' => $this->config->item('admin_email_name'),
 				'api_user' => $this->config->item('sendgrid_api_user'),
@@ -95,9 +106,6 @@ class Misc extends CI_Controller {
 		$result = json_decode($result);
 		if (!isset($result->message) || $result->message != "success") exit('Error (4)');
 
-		
-		$password = md5(md5($password) . $this->config->item('password_suffix'));
-		$this->user->save_password($this->user->load_uid($name), $password);
 		exit("OK. An Email is on the way to $address. It may take some time to process.");
 	}
 	

@@ -207,7 +207,7 @@ class User extends CI_Model{
 	
 	function load_user($uname){
 		return $this->db->query("SELECT uid, email, description, school,
-								acCount, submitCount, solvedCount, avatar FROM User
+								acCount, submitCount, solvedCount, avatar, verificationKey FROM User
 								WHERE name=?",
 								array($uname))->row();
 	}
@@ -453,5 +453,9 @@ class User extends CI_Model{
 		}
 		$redis->close();
 		return $ret;
+	}
+
+	function set_verification_key($uid, $key) {
+		$this->db->query("UPDATE User SET verificationKey=? WHERE uid=?", array($key, $uid));
 	}
 }
