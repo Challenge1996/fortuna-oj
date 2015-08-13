@@ -637,6 +637,7 @@ class Main extends CI_Controller {
 		
 		$filter = (array)$this->input->get(NULL, TRUE);
 		
+		$this->load->model('problems');
 		$this->load->model('submission');
 		$row_begin = ($page - 1) * $submission_per_page;
 		$count = $this->submission->count($filter);

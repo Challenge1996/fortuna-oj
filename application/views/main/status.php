@@ -133,7 +133,7 @@
 		
 		<tbody><?php
 		foreach ($data as $row){
-			if ($row->isShowed == 0 && ! $this->user->is_admin()) continue;
+			if (($row->isShowed == 0 || !$this->problems->is_showed($row->pid)) && !$this->user->is_admin()) continue;
 				
 			echo "<tr><td>$row->sid</td>";
 			
