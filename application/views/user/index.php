@@ -19,7 +19,7 @@
 				<button class="btn btn-small btn-success" id="btn_change">Change Avatar</button>
 				<?php } ?>
 				<?php if ($data->blogURL != '') { ?>
-				<a href=<?=$data->blogURL?> class="btn btn-small btn-info" type="button">Visit <?=$data->name?>'s Blog</a>
+				<a href="<?=$data->blogURL?>" class="btn btn-small btn-info" type="button">Visit <?=$data->name?>'s Blog</a>
 				<?php } ?>
 			</div>
 			
