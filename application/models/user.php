@@ -264,7 +264,7 @@ class User extends CI_Model{
 	}
 	
 	function load_configuration($uid){
-		return $this->db->query('SELECT showCategory, email, description, submissionPerPage, problemsPerPage FROM User
+		return $this->db->query('SELECT showCategory, email, blogURL, description, submissionPerPage, problemsPerPage FROM User
 								WHERE uid=?', array($uid))
 								->row();
 	}
@@ -457,5 +457,11 @@ class User extends CI_Model{
 
 	function set_verification_key($uid, $key) {
 		$this->db->query("UPDATE User SET verificationKey=? WHERE uid=?", array($key, $uid));
+	}
+
+	function load_blog_url($uid) {
+		$ret = $this->db->query("SELECT blogURL FROM User WHERE uid=?", array($uid));
+		if (!$ret->num_rows()) return FALSE;
+		return $ret->row()->blogURL;
 	}
 }

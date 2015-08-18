@@ -33,6 +33,13 @@
 			<input type="text" name="email" id="email" class="input-large" value="<?=set_value('email', $config->email)?>" />
 		</div>
 	</div>
+
+	<div class="control-group">
+		<label for="blog_url" class="control-label">Blog URL</label>
+		<div class="controls controls-row">
+			<input type="text" name="blog_url" id="blog_url" class="input-large" value="<?=set_value('blog_url', $config->blogURL)?>" />
+		</div>
+	</div>
 	
 	<div class="control-group">
 		<label for="description" class="control-label">Description</label>

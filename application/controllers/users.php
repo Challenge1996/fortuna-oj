@@ -28,6 +28,7 @@ class Users extends CI_Controller {
 		$user->rank = $this->user->load_rank($user->uid);
 		$user->count = $this->user->load_statistic($user->uid);
 		$user->userPicture = $this->user->load_userPicture($user->uid);
+		$user->blogURL = $this->user->load_blog_url($user->uid);
 		
 		$this->load->view('user/index', array('data' => $user));
 	}
@@ -45,6 +46,7 @@ class Users extends CI_Controller {
 		$this->form_validation->set_rules('old_password', 'Old Password', 'callback_password_check');
 		$this->form_validation->set_rules('show_category', 'Show Category', '');
 		$this->form_validation->set_rules('email', 'Email', 'email');
+		$this->form_validation->set_rules('blog_url', 'Blog URL', 'max_length[256]|prep_url');
 		$this->form_validation->set_rules('problems_per_page', 'Problems', 'required');
 		$this->form_validation->set_rules('submission_per_page', 'Submission', 'required');
 		
@@ -61,6 +63,7 @@ class Users extends CI_Controller {
 			else $config['showCategory'] = 0;
 			
 			if (isset($raw['email'])) $config['email'] = $raw['email'];
+			if (isset($raw['blog_url'])) $config['blogURL']=$raw['blog_url'];
 			if (isset($raw['description'])) $config['description'] = $raw['description'];
 			
 			$config['problemsPerPage'] = (int)$raw['problems_per_page'];
