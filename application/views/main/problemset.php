@@ -57,7 +57,7 @@
 	<?php
 		$category = $this->session->userdata('show_category') == 1;
 		foreach ($data as $row){
-			if ($row->isShowed == 0) continue;
+			if (!$row->isShowed && !$this->user->is_admin()) continue;
 			$pid = $row->pid;
 	?>
 			<tr>

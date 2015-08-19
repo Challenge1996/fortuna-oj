@@ -29,8 +29,8 @@
 						switch ($row->status) {
 							case -3: $tag = 'label-success'; break;
 							case 0: $tag = 'label-success'; break;
-							case 1: ;
-							case 2: ;
+							case 1:
+							case 2:
 							case 7: $tag = 'label-important'; break;
 							case 3: $tag = 'label-info'; break;
 							case 4:
@@ -40,18 +40,18 @@
 						}
 						$sname = "$row->result <span class=\"label $tag\">" . round($row->score, 1) . '</span>';
 						
-						echo "<a href=\"#main/result/$row->sid\">$sname</a>"; //
+						echo "<a href=\"#main/result/$row->sid\">$sname</a>";
 					} else {
 						$sname = $row->result;
 						
-						echo "<a href=\"#main/result/$row->sid\">$sname</a>"; //
+						echo "<a href=\"#main/result/$row->sid\">$sname</a>";
 					}
 				}
 			}
 			//echo "<td><a href=\"#main/code/$row->sid\">$row->language</a>";
 			if ($row->codeLength > 0) {
 				if ($info->running && $info->contestMode == 'OI Traditional' && ! $is_admin){
-					echo "</td>---<td></td><td>---</td>";
+					echo "<td>---</td><td>---</td>";
 					
 				}else if ($row->status == -3 || ($row->status >= 0 && $row->status <= 7)) {
 					echo "</td><td><span class=\"label label-info\">$row->time</span></td>";

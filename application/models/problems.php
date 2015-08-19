@@ -20,7 +20,10 @@ class Problems extends CI_Model{
 
 	function allow($pid){
 		$uid = $this->session->userdata('uid');
-		if ($this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge != 'restricted') return true;
+		$this->load->model('user');
+		if ($this->user->is_admin()) return true;
+		if (!$this->is_showed($pid)) return false;
+		if ($this->user->load_priviledge($uid) != 'restricted') return true;
 		if ($this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt) return true;
 		return false;
 	}
@@ -300,7 +303,7 @@ class Problems extends CI_Model{
 		$this->load->model('user');
 		$this->load->model('contests');
 		if ($this->user->is_admin()) return true;
-		if ($this->db->query('SELECT isShowed FROM ProblemSet WHERE pid=?',array($pid))->row()->isShowed==1) return true;
+		if ($this->is_showed($pid)) return true;
 		$data = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
 		$now = strtotime('now');
 		foreach ($data as $row)
