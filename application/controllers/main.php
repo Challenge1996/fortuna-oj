@@ -227,6 +227,7 @@ class Main extends CI_Controller {
 			$row->ac = FALSE;
 			
 			if (isset($status["$row->pid"])){
+				if ($this->misc->is_accepted($uid, $row->pid)) $status["$row->pid"] = 0;
 				$row->status = self::_convert_status($status["$row->pid"]);
 				if ($status["$row->pid"] == 0) $row->ac = TRUE;
 			}
