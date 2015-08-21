@@ -12,8 +12,9 @@
 	</tr></thead>
 	
 	<tbody><?php
+		$this->load->model('problems');
 		foreach ($data as $row){
-			if ($row->isShowed = 0 && ! $is_admin) continue;
+			if (($row->isShowed = 0 || (!$this->problems->is_showed($row->pid) && !$info->running)) && !$is_admin) continue;
 			
 			echo "<tr><td>$row->sid</td><td><a href='#contest/show/$info->cid/$row->id'>" . 
 				($info->contestMode == 'ACM' ? chr(65 + $row->id) : $row->id) . '</a></td><td>' . 
