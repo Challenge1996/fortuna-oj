@@ -11,25 +11,25 @@
 			<th><?=lang('register')?></th>
 		</tr></thead>
 		<tbody><?php
-			foreach ($data as $row){
-				$cid = $row->cid;
-				echo "<tr><td>$cid</td>";
-				echo "<td class=\"title\">" . 
-					(isset($row->running) ?
+			foreach ($data as $row):
+				$cid = $row->cid; ?>
+				<tr><td><?=$cid?></td>
+				<td class="title"> 
+				<?=(isset($row->running) && !$row->isTemplate ?
 						"<a href=\"#contest/problems/$cid\">$row->title</a>" : 
-						"<a href=\"#contest/home/$cid\">$row->title</a>") . '</td>';
-				echo "<td><span class=\"label label-info\">$row->contestMode</span></td>";
-				echo "<td>$row->startTime</td>";
-				echo "<td>$row->submitTime</td>";
-				echo "<td>$row->endTime</td>";
-				echo "<td>$row->status</td>";
-				echo "<td>";
-				if ($row->private)
+						"<a href=\"#contest/home/$cid\">$row->title</a>")?>
+				</td>
+				<td><span class="label label-info"><?=$row->contestMode?></span></td>
+				<td><?=$row->startTime?></td>
+				<td><?=$row->submitTime?></td>
+				<td><?=$row->endTime?></td>
+				<td><?=$row->status?></td>
+				<td><?php if ($row->private)
 					echo anchor("#contest/register/$cid", "<span class=\"btn btn-success btn-mini\" style=\"font-weight:bold\">" . 
 													lang('register') . "</span><span class=\"badge badge-info\">x$row->count</span>");
-				echo '</td></tr>';
-			}
-		?></tbody>
+				?></td></tr>
+			<?php endforeach; ?>
+		</tbody>
 	</table>
 	<?=$this->pagination->create_links()?>
 </div>

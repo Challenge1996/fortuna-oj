@@ -326,4 +326,8 @@ class Misc extends CI_Model{
 		}
 		return $data;
 	}
+
+	function format_datetime($datetime) {
+		return date("Y-m-d H:i:s", $datetime);
+	}
 }

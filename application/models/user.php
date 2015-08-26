@@ -23,7 +23,7 @@ class User extends CI_Model{
 		return FALSE;
 	}
 
-	function uid(){
+	function uid() {
 		return $this->session->userdata('uid');
 	}
 
@@ -41,13 +41,12 @@ class User extends CI_Model{
 		return $this->db->query("SELECT name FROM User WHERE uid=?", array($uid))->row()->name;
 	}
 	
-	function is_admin(){
-		if ($this->session->userdata('priviledge') == 'admin') return TRUE;
-		return FALSE;
-	}
-
 	function load_priviledge($uid){
 		return $this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge;
+	}
+
+	function is_admin() {
+		return $this->session->userdata('priviledge') == 'admin';
 	}
 
 	function permission($method) {

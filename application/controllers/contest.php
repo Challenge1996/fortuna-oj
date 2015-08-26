@@ -16,7 +16,7 @@ class Contest extends CI_Controller {
 		
 		if ($this->user->is_logged_in()){
 			if ($method == 'index' || (isset($params[0]) && $this->contests->is_valid($params[0]))){
-				if ($method != 'index' && $method != 'result' && $method != 'fullresult' && $method != 'reply'){
+				if ($method != 'index' && $method != 'result' && $method != 'fullresult' && $method != 'reply' && $method != 'start'){
 					$declaration_count = $this->contests->declaration_count($params[0]);
 					$this->load->view('contest/navigation', array('cid' => $params[0], 'declaration_count' => $declaration_count));
 				}
@@ -93,15 +93,23 @@ class Contest extends CI_Controller {
 
 	public function home($cid){
 		$data = $this->contests->load_contest_status($cid);
-		
-		if ($data == FALSE)
+		$uid = $this->user->uid();
+
+		if ($data == FALSE) {
 			$this->load->view("error", array('message' => 'Contest NOT exist!'));
-		else 
-			$this->load->view("contest/home", array('data' => $data));
+		} else {
+			$custom = $this->contests->load_template_contest_status($cid, $uid);;
+			$this->load->view("contest/home", array('data' => $data, 'custom' => $custom));
+		}
 	}
 	
 	public function problems($cid){
-		if ($info = $this->contests->load_contest_status($cid)){
+		if ($this->contests->is_template_contest($cid))
+			$info = $this->contests->load_template_contest_status($cid, $this->user->uid());
+		else
+			$info = $this->contests->load_contest_status($cid);
+
+		if ($info) {
 			$data = $this->contests->load_contest_problemset($cid);
 			foreach ($data as $row){
 				$row->problem = $this->contests->load_contest_problem_name($row->pid);
@@ -110,12 +118,18 @@ class Contest extends CI_Controller {
 			}
 		}
 
-		if ($info == FALSE){
-			$this->load->view("error", array('message' => 'Contest NOT exist!'));
-		} else if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin()) {
-			$this->load->view("information", array('data' => 'Contest NOT start!'));
+
+		if ($info == FALSE) {
+			if ($this->contests->is_template_contest($cid))
+				$this->load->view("information", array('data' => 'Contest NOT start!'));
+			else
+				$this->load->view("error", array('message' => 'Contest NOT exist!'));
 		} else {
-			$this->load->view("contest/problems", array('data' => $data, 'info' => $info, 'cid' => $cid));
+			if (strtotime($info->startTime) > strtotime('now') && !$this->user->is_admin()) {
+				$this->load->view("information", array('data' => 'Contest NOT start!'));
+			} else {
+				$this->load->view("contest/problems", array('data' => $data, 'info' => $info, 'cid' => $cid));
+			}
 		}
 	}
 
@@ -123,7 +137,12 @@ class Contest extends CI_Controller {
 		$submission_per_page = 20;
 		
 		$this->load->model('submission');
-		$info = $this->contests->load_contest_status($cid);
+
+		if ($this->contests->is_template_contest($cid))
+			$info = $this->contests->load_template_contest_status($cid, $this->user->uid());
+		else
+			$info = $this->contests->load_contest_status($cid);
+
 		if ($info != FALSE){
 			$row_begin = ($page - 1) * $submission_per_page;
 			$count = $this->contests->load_contest_submission_count($cid);
@@ -156,7 +175,12 @@ class Contest extends CI_Controller {
 	
 	public function show($cid, $id = 0){
 		$this->load->model('problems');
-		$info = $this->contests->load_contest_status($cid);
+
+		if ($this->contests->is_template_contest($cid))
+			$info = $this->contests->load_template_contest_status($cid, $this->user->uid());
+		else
+			$info = $this->contests->load_contest_status($cid);
+
 		if ($info != FALSE){
 			$pid = $this->contests->load_contest_pid($cid, $id);
 			if ($pid != FALSE){
@@ -214,34 +238,46 @@ class Contest extends CI_Controller {
 		}
 	}
 	
-	public function standing($cid){
-		$info = $this->contests->load_contest_status($cid);
-		if ($info != FALSE){
+	public function standing($cid) {
+		if ($this->contests->is_template_contest($cid))
+			$info = $this->contests->load_template_contest_status($cid, $this->user->uid());
+		else
+			$info = $this->contests->load_contest_status($cid);
+
+		if ($info != FALSE) {
 			if ($info->contestMode == 'ACM')
 				$data = $this->contests->load_contest_ranklist_ACM($cid);
-			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
+			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional')
 				$data = $this->contests->load_contest_ranklist_OI($cid, $info);
-			}
+		} else {
+			$this->load->view("error", array('message' => 'Contest NOT start!'));
+			return;
 		}
 
 		$est = $this->contests->load_estimate($cid);
-		
-		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
+
+		if  (strtotime($info->startTime) > strtotime('now') && !$this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
 		else $this->load->view('contest/standing', array('data' => $data, 'info' => $info, 'est' => $est));
 	}
 	
-	public function statistic($cid){
-		$info = $this->contests->load_contest_status($cid);
-		if ($info != FALSE){
+	public function statistic($cid) {
+		if ($this->contests->is_template_contest($cid))
+			$info = $this->contests->load_template_contest_status($cid, $this->user->uid());
+		else
+			$info = $this->contests->load_contest_status($cid);
+
+		if ($info != FALSE) {
 			if ($info->contestMode == 'ACM')
 				$data = $this->contests->load_contest_statistic_ACM($cid);
-			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
+			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional')
 				$data = $this->contests->load_contest_statistic_OI($cid, $info);
-			}
+		} else {
+			$this->load->view("error", array('message' => 'Contest NOT start!'));
+			return;
 		}
-		
-		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
+
+		if  (strtotime($info->startTime) > strtotime('now') && !$this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
 		else $this->load->view('contest/standing', array('data' => $data, 'info' => $info, 'startTime' => $this->contests->load_contest_start_time($cid)));
 	}
@@ -371,5 +407,10 @@ class Contest extends CI_Controller {
 	{
 		$this->contests->upd_estimate($cid, $pid, $score);
 		$this->load->view('success');
+	}
+
+	public function start($cid)
+	{
+		if ($this->contests->start_contest($cid, $this->user->uid())) $this->load->view('success');
 	}
 }

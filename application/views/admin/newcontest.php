@@ -20,21 +20,21 @@
 			<label class="control-label">Contest Time</label>
 			<div class="controls controls-row">
 				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">Start Time</span>
-				<input type="date" name="start_date" class="input-medium" value="<?=set_value('start_date', isset($startTime) ? date('Y-m-d', strtotime($startTime)) : date('Y-m-d'))?>"/>
-				<input type="time" name="start_time" class="input-medium" value="<?=set_value('start_time', isset($startTime) ? date('H:i', strtotime($startTime)) : date('H:i', time()))?>"/>
+					<span class="label" style="width: 75px; text-align:center">Start Time</span>
+					<input type="date" name="start_date" class="input-medium" value="<?=set_value('start_date', isset($startTime) ? date('Y-m-d', strtotime($startTime)) : date('Y-m-d'))?>"/>
+					<input type="time" name="start_time" class="input-medium" value="<?=set_value('start_time', isset($startTime) ? date('H:i', strtotime($startTime)) : date('H:i', time()))?>"/>
 				</div>
 				<br />
-				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">Submit Time</span>
-				<input type="date" name="submit_date" class="input-medium" value="<?=set_value('submit_date', isset($submitTime) ? date('Y-m-d', strtotime($submitTime)) : date('Y-m-d'))?>"/>
-				<input type="time" name="submit_time" class="input-medium" value="<?=set_value('submit_time', isset($submitTime) ? date('H:i', strtotime($submitTime)) : date('H:m', time() + 18000))?>"/>
+				<div id="submit-time" style="display:inline">
+					<span class="label" style="width: 75px; text-align:center">Submit Time</span>
+					<input type="date" name="submit_date" class="input-medium" value="<?=set_value('submit_date', isset($submitTime) ? date('Y-m-d', strtotime($submitTime)) : date('Y-m-d'))?>"/>
+					<input type="time" name="submit_time" class="input-medium" value="<?=set_value('submit_time', isset($submitTime) ? date('H:i', strtotime($submitTime)) : date('H:m', time() + 18000))?>"/>
+					<br />
 				</div>
-				<br />
 				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">End Time</span>
-				<input type="date" name="end_date" class="input-medium" value="<?=set_value('end_date', isset($endTime) ? date('Y-m-d', strtotime($endTime)) : date('Y-m-d'))?>"/>
-				<input type="time" name="end_time" class="input-medium" value="<?=set_value('end_time', isset($endTime) ? date('H:i', strtotime($endTime)) : date('H:m', time() + 18000))?>"/>
+					<span class="label" style="width: 75px; text-align:center">End Time</span>
+					<input type="date" name="end_date" class="input-medium" value="<?=set_value('end_date', isset($endTime) ? date('Y-m-d', strtotime($endTime)) : date('Y-m-d'))?>"/>
+					<input type="time" name="end_time" class="input-medium" value="<?=set_value('end_time', isset($endTime) ? date('H:i', strtotime($endTime)) : date('H:m', time() + 18000))?>"/>
 				</div>
 			</div>
 			
@@ -71,6 +71,36 @@
 					<input type="radio" name="contestType" id="private" value="1" <?=set_radio('contestType', '1', isset($private) ? ($private == '1' ? TRUE : FALSE) : FALSE)?> />
 					Private
 				</label>
+			</div>
+
+			<label class="control-label">Template Mode</label>
+			<div class="controls controls-row">
+				<label class="checkbox inline">
+					<input type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', $isTemplate == '1')?> onclick="$('#ex-time').toggle(); $('#submit-time').toggle()"/>
+				</label>
+			</div>
+
+			<div id="ex-time">
+			<label class="control-label">Example Time</label>
+			<div class="controls controls-row">
+				<div style="display:inline">
+				<span class="label" style="width: 75px; text-align:center">Start Time</span>
+				<input type="date" name="ex_start_date" class="input-medium" value="<?=set_value('ex_start_date', isset($exStartTime) ? date('Y-m-d', strtotime($exStartTime)) : date('Y-m-d'))?>"/>
+				<input type="time" name="ex_start_time" class="input-medium" value="<?=set_value('ex_start_time', isset($exStartTime) ? date('H:i', strtotime($exStartTime)) : date('H:i', time()))?>"/>
+				</div>
+				<br />
+				<div style="display:inline">
+				<span class="label" style="width: 75px; text-align:center">Submit Time</span>
+				<input type="date" name="ex_submit_date" class="input-medium" value="<?=set_value('ex_submit_date', isset($exSubmitTime) ? date('Y-m-d', strtotime($exSubmitTime)) : date('Y-m-d'))?>"/>
+				<input type="time" name="ex_submit_time" class="input-medium" value="<?=set_value('ex_submit_time', isset($exSubmitTime) ? date('H:i', strtotime($exSubmitTime)) : date('H:m', time() + 18000))?>"/>
+				</div>
+				<br />
+				<div style="display:inline">
+				<span class="label" style="width: 75px; text-align:center">End Time</span>
+				<input type="date" name="ex_end_date" class="input-medium" value="<?=set_value('ex_end_date', isset($exEndTime) ? date('Y-m-d', strtotime($exEndTime)) : date('Y-m-d'))?>"/>
+				<input type="time" name="ex_end_time" class="input-medium" value="<?=set_value('ex_end_time', isset($exEndTime) ? date('H:i', strtotime($exEndTime)) : date('H:m', time() + 18000))?>"/>
+				</div>
+			</div>
 			</div>
 
 			<?php
@@ -134,12 +164,22 @@
 </div> 
 
 <script type="text/javascript">
-	$('.delete_problem_from_contest').live('click', function(){
+	$(document).ready(function() {
+		<?php if ($isTemplate): ?>
+		$('#ex-time').show();
+		$('#submit-time').hide();
+		<?php else: ?>
+		$('#ex-time').hide();
+		$('#submit-time').show();
+		<?php endif; ?>
+	});
+
+	$('.delete_problem_from_contest').live('click', function() {
 		$(this).parent().parent().remove();
 		return false;
 	});
-	
-	function new_contest(){
+
+	function new_contest() {
 		$('#newcontest').ajaxSubmit({
 			success: function login_success(responseText, statusText){
 				if (responseText == 'success') load_page('admin/contestlist');
@@ -149,7 +189,7 @@
 		return false;
 	}
 
-	function add_problem_to_contest(){
+	function add_problem_to_contest() {
 		$('#problems').append('<tr> \
 			<td><input type="number" name="pid[]" min="1000" class="input-small"/></td> \
 			<td><input type="text" name="title[]" class="input-xxlarge" /></td> \
@@ -158,5 +198,4 @@
 			<td><button class="close delete_problem_from_contest">&times;</button></td></tr>');
 		return false;
 	}
-
 </script>

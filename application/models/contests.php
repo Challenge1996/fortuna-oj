@@ -79,7 +79,7 @@ class Contests extends CI_Model{
 	}
 	
 	function load_contests_list($row_begin, $count){
-		return $this->db->query("SELECT cid, title, startTime, submitTime, endTime, contestMode, private FROM Contest
+		return $this->db->query("SELECT cid, title, startTime, submitTime, endTime, contestMode, private, isTemplate FROM Contest
 								WHERE isShowed=1 ORDER BY cid DESC LIMIT ?,?",
 								array($row_begin, $count))
 								->result();
@@ -183,7 +183,7 @@ class Contests extends CI_Model{
 								->row();
 		$teamMode = $info->teamMode;
 		$startTime = strtotime($info->startTime);
-		if ($teamMode == TRUE){
+		if ($teamMode == TRUE) {
 			$data = $this->db->query("SELECT * FROM Team
 									WHERE cid=? ORDER BY score DESC, penalty DESC",
 									array($cid))
@@ -195,14 +195,13 @@ class Contests extends CI_Model{
 				$result[$row->idTeam]->isFormal = $row->isFormal;
 			}
 			
-		}else {
+		} else {
 			$data = $this->db->query("SELECT uid, name, pid, submitTime, status FROM Submission
 									  WHERE cid=? ORDER BY sid",
 									  array($cid))
 									  ->result();
-			//var_dump($data);
 			foreach ($data as $row){
-				if ( ! isset($result[$row->uid])){
+				if (!isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
 					$result[$row->uid]->uid = $row->uid;
 					$result[$row->uid]->name = $row->name;
@@ -212,7 +211,7 @@ class Contests extends CI_Model{
 				}
 				if (isset($result[$row->uid]->acList[$row->pid])) continue;
 				
-				if ( ! isset($result[$row->uid]->attempt[$row->pid])) $result[$row->uid]->attempt[$row->pid] = 0;
+				if (!isset($result[$row->uid]->attempt[$row->pid])) $result[$row->uid]->attempt[$row->pid] = 0;
 				if ($row->status == 0){
 					$result[$row->uid]->acList[$row->pid] = round((strtotime($row->submitTime) - $startTime) / 60, 0);
 					$result[$row->uid]->score++;
@@ -226,10 +225,10 @@ class Contests extends CI_Model{
 			if (isset($result)) usort($result, "team_cmp_ACM");
 		}
 		
-		if (isset($result)){
+		if (isset($result)) {
 			$rank = $cnt = $score = $penalty = 0;
 			foreach ($result as $row){
-				if ( ! $row->isFormal) continue;
+				if (!$row->isFormal) continue;
 				if ($score == $row->score && $penalty == $row->penalty) $cnt++;
 				else{
 					$rank += $cnt + 1;
@@ -246,33 +245,45 @@ class Contests extends CI_Model{
 	
 	function load_contest_ranklist_OI($cid, $info){
 		$now = strtotime('now');
-		if ($now <= strtotime($info->endTime) && ! $this->user->is_admin() && $info->contestMode == 'OI Traditional') return FALSE;
-		
+
+		$allEndTime = $this->load_contest_status($cid)->endTime;
+
+		if ($now <= strtotime($info->endTime) && !$this->user->is_admin() && $info->contestMode == 'OI Traditional') return FALSE;
+
 		$info = $this->db->query("SELECT teamMode, startTime FROM Contest
 								WHERE cid=?",
 								array($cid))
 								->row();
+
 		$teamMode = $info->teamMode;
 		$startTime = strtotime($info->startTime);
-		if ($teamMode == TRUE){
+		if ($teamMode) {
 			$data = $this->db->query("SELECT * FROM Team
 									WHERE cid=? ORDER BY score DESC",
 									array($cid))
 									->result();
-			foreach ($data as $row){
+			foreach ($data as $row) {
 				$result[$row->idTeam]->name = $row->name;
 				$result[$row->idTeam]->score = $row->score;
 				$result[$row->idTeam]->penalty = $row->penalty;
 				$result[$row->idTeam]->isFormal = $row->isFormal;
 			}
-			
-		}else {
-			$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
-									  WHERE cid=? ORDER BY sid DESC",
-									  array($cid))
-									  ->result();
-			foreach ($data as $row){
-				if ( ! isset($result[$row->uid])){
+		} else {
+			$data = new stdClass();
+			if ($now > strtotime($allEndTime) || $this->user->is_admin()) {
+				$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
+										  WHERE cid=? ORDER BY sid DESC",
+										  array($cid))
+										  ->result();
+			} else {
+				$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
+										  WHERE cid=? AND uid=? ORDER BY sid DESC",
+										  array($cid, $this->user->uid()))
+										  ->result();
+			}
+
+			foreach ($data as $row) {
+				if (!isset($result[$row->uid])) {
 					$result[$row->uid] = new Participant;
 					$result[$row->uid]->uid = $row->uid;
 					$result[$row->uid]->name = $row->name;
@@ -287,8 +298,8 @@ class Contests extends CI_Model{
 			}
 			if (isset($result)) usort($result, "team_cmp_OI");
 		}
-		
-		if (isset($result)){
+
+		if (isset($result)) {
 			$rank = $cnt = $score = 0;
 			foreach ($result as $row){
 				if ( ! $row->isFormal) continue;
@@ -381,7 +392,7 @@ class Contests extends CI_Model{
 	
 	function load_contest_statistic_OI($cid, $info){
 		$now = strtotime('now');
-		if ($now <= strtotime($info->endTime) && ! $this->user->is_admin() && $info->contestMode == 'OI Traditional') return FALSE;
+		if ($now <= strtotime($info->endTime) && !$this->user->is_admin() && $info->contestMode == 'OI Traditional') return FALSE;
 		
 		$info = $this->db->query("SELECT teamMode, startTime FROM Contest
 								WHERE cid=?",
@@ -389,7 +400,7 @@ class Contests extends CI_Model{
 								->row();
 		$teamMode = $info->teamMode;
 		$startTime = strtotime($info->startTime);
-		if ($teamMode == TRUE){
+		if ($teamMode == TRUE) {
 			$data = $this->db->query("SELECT * FROM Team
 									WHERE cid=? ORDER BY score DESC",
 									array($cid))
@@ -400,8 +411,8 @@ class Contests extends CI_Model{
 				$result[$row->idTeam]->penalty = $row->penalty;
 				$result[$row->idTeam]->isFormal = $row->isFormal;
 			}
-			
-		}else {
+
+		} else {
 			$result_pids = $this->db->query("SELECT pid FROM Contest_has_ProblemSet WHERE cid=?",
 				array($cid))->result_array();
 			$pids = array();
@@ -412,7 +423,7 @@ class Contests extends CI_Model{
 			else
 				$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
 			foreach ($data as $row){
-				if ( ! isset($result[$row->uid])){
+				if (!isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
 					$result[$row->uid]->name = $row->name;
 					$result[$row->uid]->score = 0;
@@ -435,7 +446,7 @@ class Contests extends CI_Model{
 		if (isset($result)){
 			$rank = $cnt = $score = 0;
 			foreach ($result as $row){
-				if ( ! $row->isFormal) continue;
+				if (!$row->isFormal) continue;
 				if ($score == $row->score) $cnt++;
 				else{
 					$rank += $cnt + 1;
@@ -464,7 +475,7 @@ class Contests extends CI_Model{
 		}
 		
 		foreach ($data as $row) {
-			if ( ! isset($result[$row->uid])){
+			if (!isset($result[$row->uid])){
 				$result[$row->uid] = new Participant;
 				$result[$row->uid]->name = $row->name;
 				$result[$row->uid]->score = 0;
@@ -482,12 +493,12 @@ class Contests extends CI_Model{
 		}
 		if (isset($result)) usort($result, "team_cmp_OI");
 		
-		if (isset($result)){
+		if (isset($result)) {
 			$rank = $cnt = $score = 0;
-			foreach ($result as $row){
-				if ( ! $row->isFormal) continue;
+			foreach ($result as $row) {
+				if (!$row->isFormal) continue;
 				if ($score == $row->score) $cnt++;
-				else{
+				else {
 					$rank += $cnt + 1;
 					$cnt = 0;
 				}
@@ -558,7 +569,11 @@ class Contests extends CI_Model{
 			'isShowed' => $raw['isShowed'],
 			'private' => (int)$raw['contestType'],
 			'teamMode' => (int)$raw['teamMode'],
-			'language' => $languages
+			'language' => $languages,
+			'isTemplate' => $raw['isTemplate'],
+			'exStartTime' => $raw['ex_start_date'] . ' ' . $raw['ex_start_time'],
+			'exSubmitTime' => $raw['ex_submit_date'] . ' ' . $raw['ex_submit_time'],
+			'exEndTime' => $raw['ex_end_date'] . ' ' . $raw['ex_end_time'],
 		);
 		if ($cid != FALSE) $sql = $sql = $this->db->update_string('Contest', $data, "cid=$cid");
 		else $sql = $this->db->insert_string('Contest', $data);
@@ -739,5 +754,70 @@ class Contests extends CI_Model{
 	function load_contest_mode($cid)
 	{
 		return $this->db->query("SELECT contestMode FROM Contest WHERE cid=?", array($cid))->row()->contestMode;
+	}
+
+	function is_template_contest($cid)
+	{
+		$temp = $this->db->query("SELECT isTemplate FROM Contest WHERE cid=?", array($cid));
+		if (!$temp->num_rows()) return FALSE;
+		return $temp->row()->isTemplate == 1;
+	}
+
+	private function load_template_contest_info($cid)
+	{
+		return $this->db->query("SELECT exStartTime, exSubmitTime, exEndTime FROM Contest WHERE cid=?", array($cid))->row();
+	}
+
+	function load_relative_time($cid)
+	{
+		$info = $this->load_template_contest_info($cid);
+		$res = new stdClass();
+		$res->submitTime = strtotime($info->exSubmitTime) - strtotime($info->exStartTime);
+		$res->endTime = strtotime($info->exEndTime) - strtotime($info->exStartTime);
+		return $res;
+	}
+
+	function load_template_contest_status($cid, $uid)
+	{
+		$res = $this->load_contest_status($cid);
+		if ($this->user->is_admin()) return $res;
+
+ 		if (!$this->is_template_contest($cid)) return FALSE;
+		$temp = $this->db->query("SELECT startTime FROM Contest_has_User WHERE cid=? AND uid=?", array($cid, $uid));
+		if (!$temp->num_rows()) return FALSE;
+
+		$res->startTime = $temp->row()->startTime;
+		$det = $this->load_relative_time($cid);
+
+		$res->submitTime = strtotime($res->startTime) + $det->submitTime;
+		$res->endTime = strtotime($res->startTime) + $det->endTime;
+
+		$res->now = strtotime('now');
+		if ($res->now > $res->endTime) {
+			$res->status = '<span class="label label-success">Ended</span>';
+		} else {
+			$res->status = '<span class="label label-important">Running</span>';
+			$res->running = TRUE;
+		}
+
+		$this->load->model('misc');
+		$res->submitTime = $this->misc->format_datetime($res->submitTime);
+		$res->endTime = $this->misc->format_datetime($res->endTime);
+
+		return $res;
+	}
+
+	function start_contest($cid, $uid)
+	{
+		if (!$this->is_template_contest($cid)) return FALSE;
+		if ($this->load_template_contest_status($cid, $uid)) return FALSE;
+		$this->db->query("INSERT INTO Contest_has_User (cid, uid, startTime) VALUES (?, ?, NOW())", array($cid, $uid));
+		$endTime = strtotime($this->load_contest_status($cid)->endTime);
+		$actEndTime = strtotime($this->load_template_contest_status($cid, $uid)->endTime);
+		if ($actEndTime > $endTime) {
+			$this->db->query("DELETE FROM Contest_has_User WHERE cid=? AND uid=?", array($cid, $uid));
+			return FALSE;
+		}
+		return TRUE;
 	}
 }

@@ -542,6 +542,10 @@ class Main extends CI_Controller {
 				$this->load->model('contests');
 				$info = $this->contests->load_contest_status($data['cid']);
 				if (max(strtotime($info->startTime), strtotime($info->submitTime)) > time() || strtotime($info->endTime) < time()) exit('not yet');
+				if ($info->isTemplate) {
+					$info = $this->contests->load_template_contest_status($data['cid'], $data['uid']);
+					if (!$info || max(strtotime($info->startTime), strtotime($info->submitTime)) > time() || strtotime($info->endTime) < time()) exit('not yet');
+				}
 			}			
 			else
 			{

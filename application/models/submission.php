@@ -171,14 +171,22 @@ class Submission extends CI_Model{
 		$this->load->model('contests');
 		$result = $this->db->query("SELECT uid, pid, cid, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
+		if ($this->user->is_admin()) return TRUE;
 		$uid = $this->session->userdata('uid');
-		if (isset($result->cid)) $contest_status = $this->contests->load_contest_status($result->cid);
-		if (!(isset($contest_status) && $contest_status->running) && !$this->problems->allow($result->pid)) return FALSE;
+
+		if (isset($result->cid)) {
+			$cid = $result->cid;
+			$contest_status = 
+				($this->contests->is_template_contest($cid) ?
+				 $this->contests->load_template_contest_status($cid, $uid) :
+				 $this->contest->load_contest_status($cid));
+			if (!$contest_status || $contest_status->running) return FALSE;
+		}
+
+		if (!$this->problems->allow($result->pid)) return FALSE;
 		$accepted = $this->db->query("SELECT * FROM Submission WHERE pid=? AND uid=? AND status=0", array($result->pid, $uid))->num_rows() > 0;
 		if ($this->db->query("SELECT pid FROM ProblemSet WHERE pid=? AND isShowed=1", array($result->pid))->num_rows() == 0) $accepted = FALSE;
-		if (isset($contest_status) && $contest_status->running) $accepted = FALSE;
-		if ($result->uid != $uid && !$this->user->is_admin() && $result->private != 0 && !$accepted)
-			return FALSE;
+		if ($result->uid != $uid && $result->private != 0 && !$accepted) return FALSE;
 		return TRUE;
 	}
 	

@@ -35,7 +35,7 @@
 		if ($data != FALSE){
 			foreach ($data as $row){
 				$uid = $row->uid;
-				$s=(isset($startTime) && $row->submitTime<$startTime)?' class="submitted_before" style="display:none" ':'';
+				$s=(isset($startTime) && $row->submitTime < $startTime)?' class="submitted_before" style="display:none" ':'';
 				echo "<tr".$s.">";
 				echo "<td><div ".$s."><span class=\"label\">$row->rank</span></div></td>";
 				echo "<td><div ".$s."><a href='#users/$row->name'><span class=\"label label-info\">$row->name</span></a></div></td>";
