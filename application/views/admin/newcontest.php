@@ -76,7 +76,7 @@
 			<label class="control-label">Template Mode</label>
 			<div class="controls controls-row">
 				<label class="checkbox inline">
-					<input type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', $isTemplate == '1')?> onclick="$('#ex-time').toggle(); $('#submit-time').toggle()"/>
+					<input type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', isset($isTemplate) && $isTemplate == '1')?> onclick="$('#ex-time').toggle(); $('#submit-time').toggle()"/>
 				</label>
 			</div>
 
@@ -165,7 +165,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		<?php if ($isTemplate): ?>
+		<?php if (isset($isTemplate) && $isTemplate): ?>
 		$('#ex-time').show();
 		$('#submit-time').hide();
 		<?php else: ?>
