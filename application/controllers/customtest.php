@@ -92,7 +92,7 @@ class Customtest extends CI_Controller {
 			$status=$memory=$time=$retcode=false;
 			switch ($language) {
 				case 'C':	
-					$cmd = 'gcc Main.c -o Main';
+					$cmd = 'gcc Main.c -o Main -lm';
 					$source = 'Main.c';
 					$flags = ' -DONLINE_JUDGE';
 					break;
