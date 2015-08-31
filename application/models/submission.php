@@ -179,7 +179,7 @@ class Submission extends CI_Model{
 			$contest_status = 
 				($this->contests->is_template_contest($cid) ?
 				 $this->contests->load_template_contest_status($cid, $uid) :
-				 $this->contest->load_contest_status($cid));
+				 $this->contests->load_contest_status($cid));
 			if (!$contest_status || $contest_status->running) return FALSE;
 		}
 
