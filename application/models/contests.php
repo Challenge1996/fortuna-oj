@@ -269,18 +269,10 @@ class Contests extends CI_Model{
 				$result[$row->idTeam]->isFormal = $row->isFormal;
 			}
 		} else {
-			$data = new stdClass();
-			if ($now > strtotime($allEndTime) || $this->user->is_admin()) {
-				$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
-										  WHERE cid=? ORDER BY sid DESC",
-										  array($cid))
-										  ->result();
-			} else {
-				$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
-										  WHERE cid=? AND uid=? ORDER BY sid DESC",
-										  array($cid, $this->user->uid()))
-										  ->result();
-			}
+			$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
+									  WHERE cid=? ORDER BY sid DESC",
+									  array($cid))
+									  ->result();
 
 			foreach ($data as $row) {
 				if (!isset($result[$row->uid])) {
@@ -300,7 +292,8 @@ class Contests extends CI_Model{
 		}
 
 		if (isset($result)) {
-			$rank = $cnt = $score = 0;
+			$rank = $cnt = 0;
+			$score = -1;
 			foreach ($result as $row){
 				if ( ! $row->isFormal) continue;
 				if ($score == $row->score) $cnt++;
@@ -571,9 +564,8 @@ class Contests extends CI_Model{
 			'teamMode' => (int)$raw['teamMode'],
 			'language' => $languages,
 			'isTemplate' => $raw['isTemplate'],
-			'exStartTime' => $raw['ex_start_date'] . ' ' . $raw['ex_start_time'],
-			'exSubmitTime' => $raw['ex_submit_date'] . ' ' . $raw['ex_submit_time'],
-			'exEndTime' => $raw['ex_end_date'] . ' ' . $raw['ex_end_time'],
+			'submitAfter' => $raw['submitAfter'],
+			'endAfter' => $raw['endAfter'],
 		);
 		if ($cid != FALSE) $sql = $sql = $this->db->update_string('Contest', $data, "cid=$cid");
 		else $sql = $this->db->insert_string('Contest', $data);
@@ -763,34 +755,27 @@ class Contests extends CI_Model{
 		return $temp->row()->isTemplate == 1;
 	}
 
-	private function load_template_contest_info($cid)
-	{
-		return $this->db->query("SELECT exStartTime, exSubmitTime, exEndTime FROM Contest WHERE cid=?", array($cid))->row();
-	}
-
 	function load_relative_time($cid)
 	{
-		$info = $this->load_template_contest_info($cid);
-		$res = new stdClass();
-		$res->submitTime = strtotime($info->exSubmitTime) - strtotime($info->exStartTime);
-		$res->endTime = strtotime($info->exEndTime) - strtotime($info->exStartTime);
+		$res = $this->db->query("SELECT submitAfter, endAfter FROM Contest WHERE cid=?", array($cid))->row();
+		$res->submitAfter = strtotime('1970-01-01 ' . $res->submitAfter . ' +0000');
+		$res->endAfter = strtotime('1970-01-01 ' . $res->endAfter . ' +0000');
 		return $res;
 	}
 
 	function load_template_contest_status($cid, $uid)
 	{
-		$res = $this->load_contest_status($cid);
-		if ($this->user->is_admin()) return $res;
-
  		if (!$this->is_template_contest($cid)) return FALSE;
+
+		$res = $this->load_contest_status($cid);
 		$temp = $this->db->query("SELECT startTime FROM Contest_has_User WHERE cid=? AND uid=?", array($cid, $uid));
 		if (!$temp->num_rows()) return FALSE;
 
 		$res->startTime = $temp->row()->startTime;
 		$det = $this->load_relative_time($cid);
 
-		$res->submitTime = strtotime($res->startTime) + $det->submitTime;
-		$res->endTime = strtotime($res->startTime) + $det->endTime;
+		$res->submitTime = strtotime($res->startTime) + $det->submitAfter;
+		$res->endTime = strtotime($res->startTime) + $det->endAfter;
 
 		$res->now = strtotime('now');
 		if ($res->now > $res->endTime) {

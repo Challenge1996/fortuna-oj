@@ -422,12 +422,8 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('teamMode', 'Team Mode', 'required');
 		$this->form_validation->set_rules('contestMode', 'Contest Mode', 'required');
 		$this->form_validation->set_rules('contestType', 'Contest Type', 'required');
-		$this->form_validation->set_rules('ex_start_date', 'Start Date', 'required');
-		$this->form_validation->set_rules('ex_start_time', 'Start Time', 'required');
-		$this->form_validation->set_rules('ex_submit_date', 'Submit Date', 'required');
-		$this->form_validation->set_rules('ex_submit_time', 'Submit Time', 'required');
-		$this->form_validation->set_rules('ex_end_date', 'End Date', 'required');
-		$this->form_validation->set_rules('ex_end_time', 'End Time', 'required');
+		$this->form_validation->set_rules('submitAfter', 'Submit After', 'required');
+		$this->form_validation->set_rules('endAfter', 'End After', 'required');
 		
 		$this->load->model('contests');
 		if ($this->form_validation->run() == FALSE){
@@ -442,7 +438,7 @@ class Admin extends CI_Controller {
 
 			if ($cid == 0) $this->contests->add($data);
 			else $this->contests->add($data, $cid);
-			
+
 			$this->load->view('success');
 		}
 	}

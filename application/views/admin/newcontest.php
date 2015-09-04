@@ -76,29 +76,21 @@
 			<label class="control-label">Template Mode</label>
 			<div class="controls controls-row">
 				<label class="checkbox inline">
-					<input type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', isset($isTemplate) && $isTemplate == '1')?> onclick="$('#ex-time').toggle(); $('#submit-time').toggle()"/>
+					<input type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', isset($isTemplate) && $isTemplate == '1')?> onclick="$('#relative-time').toggle(); $('#submit-time').toggle()"/>
 				</label>
 			</div>
 
-			<div id="ex-time">
-			<label class="control-label">Example Time</label>
+			<div id="relative-time">
+			<label class="control-label">Relative Time</label>
 			<div class="controls controls-row">
 				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">Start Time</span>
-				<input type="date" name="ex_start_date" class="input-medium" value="<?=set_value('ex_start_date', isset($exStartTime) ? date('Y-m-d', strtotime($exStartTime)) : date('Y-m-d'))?>"/>
-				<input type="time" name="ex_start_time" class="input-medium" value="<?=set_value('ex_start_time', isset($exStartTime) ? date('H:i', strtotime($exStartTime)) : date('H:i', time()))?>"/>
+				<span class="label" style="width: 75px; text-align:center">Submit After</span>
+				<input type="time" name="submitAfter" class="input-medium" value="<?=set_value('submitAfter', isset($submitAfter) ? $submitAfter : '05:00:00')?>"/>
 				</div>
 				<br />
 				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">Submit Time</span>
-				<input type="date" name="ex_submit_date" class="input-medium" value="<?=set_value('ex_submit_date', isset($exSubmitTime) ? date('Y-m-d', strtotime($exSubmitTime)) : date('Y-m-d'))?>"/>
-				<input type="time" name="ex_submit_time" class="input-medium" value="<?=set_value('ex_submit_time', isset($exSubmitTime) ? date('H:i', strtotime($exSubmitTime)) : date('H:m', time() + 18000))?>"/>
-				</div>
-				<br />
-				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">End Time</span>
-				<input type="date" name="ex_end_date" class="input-medium" value="<?=set_value('ex_end_date', isset($exEndTime) ? date('Y-m-d', strtotime($exEndTime)) : date('Y-m-d'))?>"/>
-				<input type="time" name="ex_end_time" class="input-medium" value="<?=set_value('ex_end_time', isset($exEndTime) ? date('H:i', strtotime($exEndTime)) : date('H:m', time() + 18000))?>"/>
+				<span class="label" style="width: 75px; text-align:center">End After</span>
+				<input type="time" name="endAfter" class="input-medium" value="<?=set_value('endAfter', isset($endAfter) ? $endAfter : '05:00:00')?>"/>
 				</div>
 			</div>
 			</div>
@@ -166,10 +158,10 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		<?php if (isset($isTemplate) && $isTemplate): ?>
-		$('#ex-time').show();
+		$('#relative-time').show();
 		$('#submit-time').hide();
 		<?php else: ?>
-		$('#ex-time').hide();
+		$('#relative-time').hide();
 		$('#submit-time').show();
 		<?php endif; ?>
 	});
