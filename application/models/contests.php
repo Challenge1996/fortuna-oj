@@ -567,6 +567,12 @@ class Contests extends CI_Model{
 			'submitAfter' => $raw['submitAfter'],
 			'endAfter' => $raw['endAfter'],
 		);
+
+		if ($raw['isTemplate']) {
+			$this->load->model('misc');
+			$data['endTime'] = $this->misc->format_datetime(strtotime($data['endTime']) + strtotime('1970-01-01 ' . $data['endAfter'] . ' +0000'));
+		}
+
 		if ($cid != FALSE) $sql = $sql = $this->db->update_string('Contest', $data, "cid=$cid");
 		else $sql = $this->db->insert_string('Contest', $data);
 		$this->db->query($sql);

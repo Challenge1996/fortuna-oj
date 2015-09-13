@@ -411,7 +411,7 @@ class Admin extends CI_Controller {
 	public function newcontest($cid = 0){
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
-		
+
 		$this->form_validation->set_rules('contest_title', 'Title', 'required');
 		$this->form_validation->set_rules('start_date', 'Start Date', 'required');
 		$this->form_validation->set_rules('start_time', 'Start Time', 'required');
@@ -424,11 +424,18 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('contestType', 'Contest Type', 'required');
 		$this->form_validation->set_rules('submitAfter', 'Submit After', 'required');
 		$this->form_validation->set_rules('endAfter', 'End After', 'required');
-		
+
 		$this->load->model('contests');
 		if ($this->form_validation->run() == FALSE){
 			if ($cid > 0) $data = $this->contests->load_contest_configuration($cid);
 			else $data = NULL;
+
+			if (isset($data) && $data['isTemplate']) {
+				$temp = strtotime($data['endTime']);
+				$temp -= strtotime('1970-01-01 ' . $data['endAfter'] . ' +0000');
+				$this->load->model('misc');
+				$data['endTime'] = $this->misc->format_datetime($temp);
+			}
 
 			$this->load->view('admin/newcontest', $data);
 		}else{

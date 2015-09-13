@@ -16,23 +16,30 @@
 			<div class="controls controls-row">
 				<textarea name="description" rows="5" id="description" class="span6"><?=set_value('description', isset($description) ? $description : '')?></textarea>
 			</div>
-			
+
+			<label class="control-label">Template Mode</label>
+			<div class="controls controls-row">
+				<label class="checkbox inline">
+					<input id="template-mode" type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', isset($isTemplate) && $isTemplate == '1')?> onclick="toggle_template_mode()"/>
+				</label>
+			</div>
+
 			<label class="control-label">Contest Time</label>
 			<div class="controls controls-row">
 				<div style="display:inline">
-					<span class="label" style="width: 75px; text-align:center">Start Time</span>
+					<span id="start-time-label" class="label" style="width: 85px; text-align:center">Start Time</span>
 					<input type="date" name="start_date" class="input-medium" value="<?=set_value('start_date', isset($startTime) ? date('Y-m-d', strtotime($startTime)) : date('Y-m-d'))?>"/>
 					<input type="time" name="start_time" class="input-medium" value="<?=set_value('start_time', isset($startTime) ? date('H:i', strtotime($startTime)) : date('H:i', time()))?>"/>
 				</div>
 				<br />
 				<div id="submit-time" style="display:inline">
-					<span class="label" style="width: 75px; text-align:center">Submit Time</span>
+					<span class="label" style="width: 85px; text-align:center">Submit Time</span>
 					<input type="date" name="submit_date" class="input-medium" value="<?=set_value('submit_date', isset($submitTime) ? date('Y-m-d', strtotime($submitTime)) : date('Y-m-d'))?>"/>
 					<input type="time" name="submit_time" class="input-medium" value="<?=set_value('submit_time', isset($submitTime) ? date('H:i', strtotime($submitTime)) : date('H:m', time() + 18000))?>"/>
 					<br />
 				</div>
 				<div style="display:inline">
-					<span class="label" style="width: 75px; text-align:center">End Time</span>
+					<span id="end-time-label" class="label" style="width: 85px; text-align:center">End Time</span>
 					<input type="date" name="end_date" class="input-medium" value="<?=set_value('end_date', isset($endTime) ? date('Y-m-d', strtotime($endTime)) : date('Y-m-d'))?>"/>
 					<input type="time" name="end_time" class="input-medium" value="<?=set_value('end_time', isset($endTime) ? date('H:i', strtotime($endTime)) : date('H:m', time() + 18000))?>"/>
 				</div>
@@ -73,23 +80,16 @@
 				</label>
 			</div>
 
-			<label class="control-label">Template Mode</label>
-			<div class="controls controls-row">
-				<label class="checkbox inline">
-					<input type="checkbox" name="isTemplate" value="1" <?=set_checkbox('isTemplate', '1', isset($isTemplate) && $isTemplate == '1')?> onclick="$('#relative-time').toggle(); $('#submit-time').toggle()"/>
-				</label>
-			</div>
-
 			<div id="relative-time">
 			<label class="control-label">Relative Time</label>
 			<div class="controls controls-row">
 				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">Submit After</span>
+				<span class="label" style="width: 85px; text-align:center">Submit After</span>
 				<input type="time" name="submitAfter" class="input-medium" value="<?=set_value('submitAfter', isset($submitAfter) ? $submitAfter : '05:00:00')?>"/>
 				</div>
 				<br />
 				<div style="display:inline">
-				<span class="label" style="width: 75px; text-align:center">End After</span>
+				<span class="label" style="width: 85px; text-align:center">End After</span>
 				<input type="time" name="endAfter" class="input-medium" value="<?=set_value('endAfter', isset($endAfter) ? $endAfter : '05:00:00')?>"/>
 				</div>
 			</div>
@@ -156,14 +156,26 @@
 </div> 
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		<?php if (isset($isTemplate) && $isTemplate): ?>
+	function template_mode() {
 		$('#relative-time').show();
 		$('#submit-time').hide();
-		<?php else: ?>
+		$('#start-time-label').text('Min Start Time');
+		$('#end-time-label').text('Max Start Time');
+	}
+
+	function not_template_mode() {
 		$('#relative-time').hide();
 		$('#submit-time').show();
-		<?php endif; ?>
+		$('#start-time-label').text('Start Time');
+		$('#end-time-label').text('End Time');
+	}
+
+	function toggle_template_mode() {
+		if ($('#template-mode').is(':checked')) template_mode(); else not_template_mode();
+	}
+
+	$(document).ready(function() {
+		toggle_template_mode();
 	});
 
 	$('.delete_problem_from_contest').live('click', function() {
