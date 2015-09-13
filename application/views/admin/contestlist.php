@@ -12,25 +12,30 @@
 		</thead>
 		
 		<tbody><?php
-			foreach ($data as $row){
-				$cid = $row->cid;
-				echo "<tr><td>$cid</td><td>"; 
-				echo (isset($row->running) ? "<a class='title' href=\"#contest/problems/$cid\">$row->title</a>"
-											: "<a class='title' href=\"#contest/home/$cid\">$row->title</a>");
-				echo "</td><td>$row->startTime</td><td>$row->submitTime</td><td>$row->endTime</td>";
+			foreach ($data as $row):
+				$cid = $row->cid; ?>
+				<tr><td><?=$cid?></td><td>
+				<?=isset($row->running) ? "<a class='title' href=\"#contest/problems/$cid\">$row->title</a>"
+							: "<a class='title' href=\"#contest/home/$cid\">$row->title</a>"?>
+				</td>
+				<td><?=$row->startTime?></td>
+				<td><?=$row->isTemplate ? 'N/A' : $row->submitTime?></td>
+				<td><?=$row->endTime?></td>
 				
-				echo "<td>$row->status";
-				if (strpos($row->status, 'Ended'))
-					echo " <i class='icon-arrow-right' onclick='contest_to_task($cid, $(this))'></i>";
-				echo '</td>';
+				<td><?=$row->status?>
+				<?=(strpos($row->status, 'Ended')) ? "<i class='icon-arrow-right' onclick='contest_to_task($cid, $(this))'></i>" : ''?>
+				</td>
 				
-				echo "<td><div class=\"badge badge-info\">$row->contestMode</div></td>";
-				echo '<td><div class="badge badge-info">' . ($row->private ? 'Private' : 'Public') . '</div></td>';
-//				echo "<td><div class=\"badge badge-info\"><i class=\"icon-user icon-white\"></i>x$row->count</div></td>";
-				echo "<td><button class=\"btn btn-mini\" onclick='window.location.href=\"#admin/newcontest/$cid\"'>Edit</button></td>"; 
-				echo "<td><button class=\"close\" onclick=\"delete_contest($cid, $(this))\">&times;</button></td></tr>";
-			}
-		?></tbody>
+				<td><div class="badge badge-info"><?=$row->contestMode?></div></td>
+				<td><div class="badge badge-info"><?=$row->private ? 'Private' : 'Public'?></div></td>
+
+<!--
+				<td><div class="badge badge-info"><i class="icon-user icon-white"></i><?=$row->count?></div></td>";
+-->
+				<td><button class="btn btn-mini" onclick='window.location.href="#admin/newcontest/$cid"'>Edit</button></td>
+				<td><button class="close" onclick="delete_contest($cid, $(this))">&times;</button></td></tr>
+			<?php endforeach; ?>
+		</tbody>
 	</table>
 	<?=$this->pagination->create_links()?>
 </div>

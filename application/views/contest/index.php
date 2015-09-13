@@ -1,7 +1,7 @@
 <div class="contest_list">
 	<table id="contest_table" class="table table-condensed table-bordered table-striped">
 		<thead><tr>
-			<th><?=lang('contest_id')?></th>
+			<th align="center"><?=lang('contest_id')?></th>
 			<th><?=lang('title')?></th>
 			<th><?=lang('mode')?></th>
 			<th><?=lang('start_time')?></th>
@@ -21,7 +21,7 @@
 				</td>
 				<td><span class="label label-info"><?=$row->contestMode?></span></td>
 				<td><?=$row->startTime?></td>
-				<td><?=$row->submitTime?></td>
+				<td><?=$row->isTemplate ? 'N/A' : $row->submitTime?></td>
 				<td><?=$row->endTime?></td>
 				<td><?=$row->status?></td>
 				<td><?php if ($row->private)
