@@ -55,7 +55,7 @@ class Contests extends CI_Model{
 			$data = $result->row();
 			$startTime = strtotime($data->startTime);
 			$endTime = strtotime($data->endTime);
-			$data->now = strtotime('now');
+			$data->now = time();
 			$data->running = FALSE;
 			if ($data->now > $endTime) $data->status = '<span class="label label-success">Ended</span>';
 			else if ($data->now < $startTime) $data->status = '<span class="label label-info">Pending</span>';
@@ -68,6 +68,12 @@ class Contests extends CI_Model{
 												array($cid));
 			$data->count = $data->problemset->num_rows();
 			$data->problemset = $data->problemset->result();
+
+			if ($data->isTemplate) {
+				$this->load->model('misc');
+				$data->maxStartTime = $this->misc->format_datetime($endTime - $this->load_relative_time($cid)->endAfter);
+			}
+
 			return $data;
 		}
 	}
@@ -244,7 +250,7 @@ class Contests extends CI_Model{
 	}
 	
 	function load_contest_ranklist_OI($cid, $info){
-		$now = strtotime('now');
+		$now = time();
 
 		$allEndTime = $this->load_contest_status($cid)->endTime;
 
@@ -384,7 +390,7 @@ class Contests extends CI_Model{
 	}
 	
 	function load_contest_statistic_OI($cid, $info){
-		$now = strtotime('now');
+		$now = time();
 		if ($now <= strtotime($info->endTime) && !$this->user->is_admin() && $info->contestMode == 'OI Traditional') return FALSE;
 		
 		$info = $this->db->query("SELECT teamMode, startTime FROM Contest
@@ -570,6 +576,7 @@ class Contests extends CI_Model{
 
 		if ($raw['isTemplate']) {
 			$this->load->model('misc');
+			$data['submitTime'] = $data['startTime'];
 			$data['endTime'] = $this->misc->format_datetime(strtotime($data['endTime']) + strtotime('1970-01-01 ' . $data['endAfter'] . ' +0000'));
 		}
 
@@ -598,7 +605,7 @@ class Contests extends CI_Model{
 
 				$sql = $this->db->insert_string('Contest_has_ProblemSet', $problem);
 				$this->db->query($sql);
-				if (strtotime($data['endTime'])>strtotime('now'))
+				if (strtotime($data['endTime'])>time())
 					$this->db->query("UPDATE ProblemSet SET isShowed=0 WHERE pid=?", array($pid));
 			}
 		}
@@ -711,7 +718,7 @@ class Contests extends CI_Model{
 	function upd_estimate($cid, $pid, $score)
 	{
 		$endTime = $this->db->query("SELECT endTime FROM Contest WHERE cid=?", array($cid))->row()->endTime;
-		$now = strtotime('now');
+		$now = time();
 		if ($now > strtotime($endTime)) return false;
 		$uid = $this->user->uid();
 		$cnt = $this->db->query(
@@ -783,7 +790,7 @@ class Contests extends CI_Model{
 		$res->submitTime = strtotime($res->startTime) + $det->submitAfter;
 		$res->endTime = strtotime($res->startTime) + $det->endAfter;
 
-		$res->now = strtotime('now');
+		$res->now = time();
 		if ($res->now > $res->endTime) {
 			$res->status = '<span class="label label-success">Ended</span>';
 		} else {
@@ -798,10 +805,19 @@ class Contests extends CI_Model{
 		return $res;
 	}
 
-	function start_contest($cid, $uid)
-	{
+	function can_start_contest($cid, $uid) {
 		if (!$this->is_template_contest($cid)) return FALSE;
 		if ($this->load_template_contest_status($cid, $uid)) return FALSE;
+		$info = $this->load_contest_status($cid);
+		if ($info->now < strtotime($info->startTime)) return FALSE;
+		$this->load->model('misc');
+		if ($info->now + $this->load_relative_time($cid)->endAfter > strtotime($info->endTime)) return FALSE;
+		return TRUE;
+	}
+
+	function start_contest($cid, $uid)
+	{
+		if (!$this->can_start_contest($cid, $uid)) return FALSE;
 		$this->db->query("INSERT INTO Contest_has_User (cid, uid, startTime) VALUES (?, ?, NOW())", array($cid, $uid));
 		$endTime = strtotime($this->load_contest_status($cid)->endTime);
 		$actEndTime = strtotime($this->load_template_contest_status($cid, $uid)->endTime);

@@ -529,16 +529,13 @@ class Main extends CI_Controller {
 			if ($this->input->post('gid') != '') $data['gid'] = $this->input->post('gid');
 			if ($this->input->post('tid') != '') $data['tid'] = $this->input->post('tid');			
 			
-			if (isset($data['tid']))
-			{
+			if (isset($data['tid'])) {
 				$this->load->model('misc');
 				if (!$this->misc->is_in_group($data['uid'],$data['gid'])) exit('you are not team member');
 				$info = $this->misc->load_task_info($data['gid'], $data['tid']);
 				if (strtotime($info->startTime) > time() || strtotime($info->endTime) < time()) exit('not yet');
 				//unset($data['gid']);
-			}
-			else if (isset($data['cid']))
-			{
+			} elseif (isset($data['cid'])) {
 				$this->load->model('contests');
 				$info = $this->contests->load_contest_status($data['cid']);
 				if (max(strtotime($info->startTime), strtotime($info->submitTime)) > time() || strtotime($info->endTime) < time()) exit('not yet');
@@ -546,12 +543,10 @@ class Main extends CI_Controller {
 					$info = $this->contests->load_template_contest_status($data['cid'], $data['uid']);
 					if (!$info || max(strtotime($info->startTime), strtotime($info->submitTime)) > time() || strtotime($info->endTime) < time()) exit('not yet');
 				}
-			}			
-			else
-			{
+			} else {
 				$this->load->model('problems');
 				$showed = $this->problems->is_showed($data['pid']);
-				if ($showed == 0){
+				if ($showed == 0) {
 					if ($this->user->is_admin()) $data['isShowed'] = 0;
 					else exit('hidden');
 				}

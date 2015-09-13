@@ -98,8 +98,8 @@ class Contest extends CI_Controller {
 		if ($data == FALSE) {
 			$this->load->view("error", array('message' => 'Contest NOT exist!'));
 		} else {
-			$custom = $this->contests->load_template_contest_status($cid, $uid);;
-			$this->load->view("contest/home", array('data' => $data, 'custom' => $custom));
+			$custom = $this->contests->load_template_contest_status($cid, $uid);
+			$this->load->view("contest/home", array('data' => $data, 'uid' => $uid, 'custom' => $custom));
 		}
 	}
 	
@@ -411,6 +411,10 @@ class Contest extends CI_Controller {
 
 	public function start($cid)
 	{
-		if ($this->contests->start_contest($cid, $this->user->uid())) $this->load->view('success');
+		if ($this->contests->start_contest($cid, $this->user->uid())) {
+			$this->load->view('success');
+			return;
+		}
+		$this->load->view('error', array('message' => "Can't start contest!"));
 	}
 }
