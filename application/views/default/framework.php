@@ -101,8 +101,10 @@
 		</div>
 		
 		<script type="text/javascript">
-			timer = <?=mktime() * 1000?>;
-			setInterval("$('#server_time').html('Server Time: ' + (new Date(timer).toString())); timer += 1000;", 1000);
+			delta = 1000 * <?=time()?> - $.now();
+
+			setInterval("$('#server_time').html('Server Time: ' + (new Date($.now() + delta).toString()));", 1000);
+
 			//var remain = (new Date("2013/5/18,8:00:00").getTime() - new Date(timer).getTime());
 			//setInterval("$('#countdown').html('Time to GDOI:<br/><p style=\"text-align:center\">' + Math.floor(remain / (1000 * 86400)) + ' Days</p>'); remain += 1000;", 1000);
 			

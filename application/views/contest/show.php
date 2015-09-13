@@ -72,14 +72,12 @@
 			echo "Submit: <span class=\"badge badge-info\">$data->submitCount</span></div>";
 		}
 		
+		echo "<span id='time-remaining'></span>";
 		if (strtotime($info->submitTime) <= time() && strtotime($info->endTime) > time())
 			echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/submit/$data->pid/$cid')\">" . lang('submit') . "</button>";
-		else
-			if (strtotime($info->submitTime) <= time())
-				echo "<a href='#main/show/$data->pid'>Goto ProblemSet</a>";
-			else
-				echo "<p>Please wait until <strong>$info->submitTime</strong> to make a submission</p>";
-		
+		elseif (strtotime($info->submitTime) <= time())
+			echo "<a href='#main/show/$data->pid'>Goto ProblemSet</a>";
+
 		echo '</div>';
 	?></div>
 </div>
@@ -141,6 +139,8 @@
 			echo "<button style='margin-top:3px' class='btn btn-primary' onclick=\"load_page('main/submit/$data->pid/$cid')\">" . lang('submit') . "</button>";
 ?></div>
 
+<script src="js/moment-with-locales.min.js"></script>
+
 <script type="text/javascript">
 	$.get('index.php/main/limits/<?=$data->pid?>?simple', function(data) {
 		data = '<pre>'+data+'</pre>';
@@ -149,12 +149,35 @@
 	
 	$(document).ready(function(){
 		$('#trigger').click(function(){
-			$('#trigger').popover('hide')
+			$('#trigger').popover('hide');
 		}),
 		$('#page_content').one('DOMNodeInserted', function(){
 			document.title = "<?=OJ_TITLE?>";
 		})
 	});
-	
+
+	submitTime = 1000 * <?=strtotime($info->submitTime)?>;
+	endTime = 1000 * <?=strtotime($info->endTime)?>;
+
+	id = setInterval(function(){
+		now = $.now();
+		if (now > endTime) {
+			clearInterval(id);
+			return;
+		}
+
+		var text, current;
+
+		if (now <= submitTime) {
+			text = "Time to Submit: ";
+			current = moment(submitTime - now);
+		} else {
+			text = "Time Remaining: ";
+			current = moment(endTime - now);
+		}
+
+		$('#time-remaining').text(text + current.utc().format('HH:mm:ss'));
+	}, 1000);
+
 	document.title = "<?=rtrim($data->title) . ' ' . $IO?>";
 </script>
