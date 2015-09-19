@@ -32,8 +32,8 @@
 <!--
 				<td><div class="badge badge-info"><i class="icon-user icon-white"></i><?=$row->count?></div></td>";
 -->
-				<td><button class="btn btn-mini" onclick='window.location.href="#admin/newcontest/$cid"'>Edit</button></td>
-				<td><button class="close" onclick="delete_contest($cid, $(this))">&times;</button></td></tr>
+				<td><button class="btn btn-mini" onclick='window.location.href="#admin/newcontest/<?=$cid?>"'>Edit</button></td>
+				<td><button class="close" onclick="delete_contest(<?=$cid?>, $(this))">&times;</button></td></tr>
 			<?php endforeach; ?>
 		</tbody>
 	</table>
