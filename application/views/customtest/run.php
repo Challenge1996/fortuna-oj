@@ -152,6 +152,9 @@
 				alert("Please be reminded to use '%lld' specificator in C/C++ instead of '%I64d'!");
 				return false;
 			}
+
+			$('#texteditor').val(btoa(unescape(encodeURIComponent($('#texteditor').val()))));
+
 			$('#custom_run').ajaxSubmit({
 				url: 'index.php/customtest/run',
 				success: function(responseText){

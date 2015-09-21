@@ -82,7 +82,7 @@ class Customtest extends CI_Controller {
 			$this->input->set_cookie(array('name' => 'language', 'value' => $language, 'expire' => '10000000'));
 			$this->user->save_language($uid, $language);
 
-			$code = html_entity_decode($this->input->post('texteditor'));	
+			$code = base64_decode($this->input->post('texteditor', FALSE));
 			$input_text = $this->input->post('input_text');
 			
 			$path = '/tmp/foj/customtest/run' . rand();
