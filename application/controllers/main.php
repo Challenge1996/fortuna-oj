@@ -575,17 +575,24 @@ class Main extends CI_Controller {
 				exit('error when mkdir');
 			foreach ($language as $file => $lang)
 			{
+				$saveto = $this->config->item('code_path') . "$front/$back";
 				if (isset($upload['name'][$file]))
 				{
 					if ($upload['error'][$file]>0) exit('upload error');
 					if ($upload['size'][$file]>67108864) exit('too large');
-					move_uploaded_file($upload['tmp_name'][$file], $this->config->item('code_path') . "$front/$back" . '/' . $file);
+					move_uploaded_file($upload['tmp_name'][$file], "$saveto/$file");
 				}
 				else
 				{
-					$handle = fopen($this->config->item('code_path') . "$front/$back" . '/' . $file, 'w');
+					$handle = fopen("$saveto/$file", 'w');
 					if (isset($editor[$file])) fwrite($handle, $editor[$file]);
 					fclose($handle);
+				}
+				if ($lang == 'pascal')
+				{
+					$ret_code = 0;
+					passthru("yast_gen_pas < $saveto/$file > $saveto/.ast", $ret_code);
+					if ($ret_code) exec("rm $saveto/.ast");
 				}
 			}
 

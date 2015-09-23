@@ -259,6 +259,7 @@ class Submission extends CI_Model{
 		if ($got->pushTime != $data['pushTime']) return;
 		unset($data['pushTime']);
 		$uid = $got->uid;
+		$data['sim'] = $this->gen_sim($sid, $uid, $pid, strtolower($data['language']));
 		$this->db->query($this->db->update_string('Submission',$data,"sid=$sid"));
 		$notEnd = false;
 		$this->load->model('contests');
@@ -334,5 +335,24 @@ class Submission extends CI_Model{
 			default :
 				return 9;
 		}
+	}
+
+	function gen_sim($sid, $uid, $pid, $lang)
+	{
+		if ($lang != 'pascal') return '';
+		$data = $this->db->query("SELECT sid,name FROM Submission WHERE uid!=? AND pid=? AND language=?", array($uid, $pid, ucfirst($lang)))->result();
+		$current = null;
+		$fileA = $this->config->item('code_path') . intval($sid/10000) . '/' . ($sid%10000) . '/.ast';
+		foreach ($data as $row)
+		{
+			$fileB = $this->config->item('code_path') . intval($row->sid/10000) . '/' . ($row->sid%10000) . '/.ast';
+			if (!file_exists($fileB)) continue;
+			$ret_code = 0;
+			$sim = system("yast_test $fileA $fileB", $ret_code);
+			if ($sim!='' && !$ret_code) $sim = (int)((1-floatval($sim))*100);
+			if (!$current || $sim > $current["similarity"])
+				$current = array("sid" => $row->sid, "similarity" => $sim, "name" => $row->name);
+		}
+		return json_encode($current);
 	}
 }
