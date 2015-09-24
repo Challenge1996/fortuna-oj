@@ -128,6 +128,7 @@ class Misc extends CI_Controller {
 	{
 		ignore_user_abort(true);
 		set_time_limit(0);
+		fastcgi_finish_request();
 		$this->load->model('problems');
 		$this->load->model('network');
 
@@ -180,6 +181,7 @@ class Misc extends CI_Controller {
 	{
 		ignore_user_abort(true);
 		set_time_limit(0);
+		fastcgi_finish_request();
 		if ($this->input->post('passwd') != $this->config->item('local_passwd')) exit('passwd wrong');
 		$get = $this->input->get();
 		$server = $get['server'];

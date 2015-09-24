@@ -199,6 +199,7 @@ class Submission extends CI_Model{
 		$files = scandir($path);
 		foreach ($files as $file)
 		{
+			if ($file == '.ast') continue;
 			if (! is_file("$path/$file")) continue;
 			if (filesize("$path/$file") > 10*1024)
 				$show[$file] = null;
