@@ -263,7 +263,7 @@ class User extends CI_Model{
 	}
 	
 	function load_configuration($uid){
-		return $this->db->query('SELECT showCategory, email, blogURL, description, submissionPerPage, problemsPerPage FROM User
+		return $this->db->query('SELECT showCategory, email, School, blogURL, description, submissionPerPage, problemsPerPage FROM User
 								WHERE uid=?', array($uid))
 								->row();
 	}

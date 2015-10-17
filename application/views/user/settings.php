@@ -35,6 +35,13 @@
 	</div>
 
 	<div class="control-group">
+		<label for="school" class="control-label">School</label>
+		<div class="controls controls-row">
+			<input type="text" name="school" id="school" class="input-large" value="<?=set_value('school', $config->School)?>" />
+		</div>
+	</div>
+
+	<div class="control-group">
 		<label for="blog_url" class="control-label">Blog URL</label>
 		<div class="controls controls-row">
 			<input type="text" name="blog_url" id="blog_url" class="input-large" value="<?=set_value('blog_url', $config->blogURL)?>" />
