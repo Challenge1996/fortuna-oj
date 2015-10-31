@@ -134,6 +134,18 @@ class Problems extends CI_Model{
 		$sql = $this->db->update_string('ProblemSet', array('dataConfiguration'=>$traditional, 'dataGroup'=>$dataGroup, 'confCache'=>$confCache), "pid=$pid");
 		$this->db->query($sql);
 	}
+
+	function load_group_matching($pid)
+	{
+		$list = $this->db->query("SELECT dataGroup FROM ProblemSet WHERE pid=?", array($pid))->row();
+		$list = json_decode($list->dataGroup);
+		$ret = array();
+		// suppose there is not a test not belonging to any case.
+		foreach ($list as $case => $tests)
+			foreach ($tests as $test)
+				$ret[$test] = $case;
+		return $ret;
+	}
 	
 	function load_code_size_limit($pid){
 		$result = $this->db->query("SELECT codeSizeLimit FROM ProblemSet WHERE pid=?", array($pid));

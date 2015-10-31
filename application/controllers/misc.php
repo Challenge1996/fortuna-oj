@@ -187,6 +187,7 @@ class Misc extends CI_Controller {
 		$server = $get['server'];
 		$this->load->model('submission');
 		$this->load->model('network');
+		$this->load->model('problems');
 		if ($this->submission->load_pushTime($get['sid'])!=$get['push_time'])
 		{
 			$this->network->jsonrpc_call($server,'cancel',array('key'=>(int)$get['key']));
@@ -215,14 +216,15 @@ class Misc extends CI_Controller {
 				else if ($language != $file->language)
 					$language = 'multiple';
 		// error should be handled in the detailed status page.
+		$inGroup = $this->problems->load_group_matching($params['pid']);
 		if (isset($ret) && !isset($ret->error))
 		{
 			foreach ($ret as $id => &$result)
 			{
 				if (!isset($result->message)) $result->message = '';
 				$result->message = $result->status . ' ' . $result->message;
-				if (isset($result->score) && (!isset($score[$id]) || $result->score > $score[id]))
-					$score[$id] = $result->score;
+				if (isset($result->score) && (!isset($score[$inGroup[$id]]) || $result->score > $score[$inGroup[$id]]))
+					$score[$inGroup[$id]] = $result->score;
 				if (isset($result->time))
 					foreach ($result->time as &$t)
 					{
