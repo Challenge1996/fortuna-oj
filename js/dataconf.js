@@ -380,7 +380,22 @@ function loaded() {
 	$("#btn_scan").click(function() {
 		$('#data_identification').ajaxSubmit({
 			type: 'POST',
-			success: function(data) { initialize(data); }
+			success: function(data)
+			{
+				var cur = eval('('+$("#traditional").val()+')');
+				data = eval('('+data+')');
+				if (cur.cases !== undefined && data.cases !== undefined)
+					for (var i in cur.cases)
+						if (cur.cases[i].tests !== undefined && data.cases[i].tests !== undefined)
+							for (var j in cur.cases[i].tests)
+							{
+								if (data.IOMode == 1 && cur.cases[i].tests[j].userInput !== undefined)
+									data.cases[i].tests[j].userInput = cur.cases[i].tests[j].userInput;
+								if ((data.IOMode == 1 || data.IOMode == 2) && cur.cases[i].tests[j].userOutput !== undefined)
+									data.cases[i].tests[j].userOutput = cur.cases[i].tests[j].userOutput;
+							}
+				initialize(JSON.stringify(data));
+			}
 		});
 		return false;
 	});
