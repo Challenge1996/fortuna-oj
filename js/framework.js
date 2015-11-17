@@ -25,19 +25,29 @@ if ( ! ('onhashchange' in window)) {
 	window.attachEvent('onhashchange', on_hash_change);
 }
 
-function requestNotificationPermission() {
-	window.webkitNotifications.requestPermission();
+var notificationHandle = window.Notification || window.mozNotification || window.webkitNotification;
+if (notificationHandle) notificationHandle.requestPermission();
+
+function myNotification(_title, _body)
+{
+	this.title = _title;
+	this.body = _body;
+	this.show = function()
+	{
+		if (!notificationHandle) return;
+		var instance = new notificationHandle(this.title, {
+			"body": this.body,
+			"icon": '/favicon.ico',
+		});
+		instance.onclick = function() { console.log('a'); window.focus(); }
+		instance.show();
+	}
 }
 
-function showMailNotification() {
-	var notification = window.webkitNotifications.createNotification(
-		'/favicon.ico',
-		'Fortuna Online Judge',
-		'You have some new mails!'
-	);
-	notification.show();
-	setTimeout(function() { notification.cancel() }, 5000);
-}
+var MailNotification = new myNotification(
+	'Fortuna Online Judge',
+	'You have some new mails!'
+);
 
 var firstNotification = true;
 function getServerPushData() {
@@ -53,11 +63,14 @@ function getServerPushData() {
 
 				if (data.m > 0) {
 					$('#unread_mail_count').html(data.m);
-					showMailNotification();
-				} else  $('#unread_mail_count').html('');
+					MailNotification.show();
+				} else
+					$('#unread_mail_count').html('');
 
-				if (data.c > 0) $('#running_contest_count').html(data.c);
-				else $('#running_contest_count').html('');
+				if (data.c > 0)
+					$('#running_contest_count').html(data.c);
+				else
+					$('#running_contest_count').html('');
 			}
 			setTimeout('getServerPushData()', 3000);
 		},
