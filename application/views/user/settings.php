@@ -1,8 +1,6 @@
 <fieldset>
 <legend><strong><em>Settings:</em></strong></legend>
 
-<button class="btn btn-small" onclick="requestNotificationPermission(); return false">Show Desktop Notification</button>
-
 <form action="index.php/users/<?=$user->name?>/settings" method="post" id="user_settings" class="form-horizontal">
 	<div class="control-group">
 		<label for="old_password" class="control-label">Old Password</label>
