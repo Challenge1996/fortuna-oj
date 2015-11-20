@@ -680,8 +680,8 @@ class Contests extends CI_Model{
 				'content' => "<span class='label label-info'>$username</span> replied `$content` to you at <a href='#contest/forum/$cid'>this page</a>",
 				'to_user' => $tmp->user,
 				'to_uid' => $tmp->uid,
-				'from_user' => 'root',
-				'from_uid' => $this->user->load_uid('root'),
+				'from_user' => 'noreply',
+				'from_uid' => $this->user->load_uid('noreply'),
 				'sendTime' => date("Y-m-d H:i:s")
 			));
 		}
