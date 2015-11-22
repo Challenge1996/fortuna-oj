@@ -76,6 +76,7 @@
 
 
 <script type="text/javascript">
+	addRequest["submitNotification"] = <?=$cid?>;
 	//refresh_flag = setTimeout("refresh_page()", 30000);
 </script>
 

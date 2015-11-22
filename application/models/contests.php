@@ -827,4 +827,22 @@ class Contests extends CI_Model{
 		}
 		return TRUE;
 	}
+
+	function second_before_end($cid)
+	{
+		$endTime = $this->db->query("SELECT endTime FROM Contest WHERE cid=?", array($cid))->row()->endTime;
+		return strtotime($endTime) - strtotime('now');
+	}
+
+	function load_not_submitted($cid, $uid)
+	{
+		$data = $this->db->query("
+			SELECT id FROM Contest_has_ProblemSet
+			WHERE cid=? AND pid NOT IN (SELECT pid FROM Submission WHERE cid=? AND uid=?)
+			", array($cid, $cid, $uid))->result();
+		$ret = array();
+		foreach ($data as $row)
+			$ret[] = $row->id;
+		return $ret;
+	}
 }

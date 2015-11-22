@@ -16,6 +16,10 @@ class Background extends CI_Controller {
 	}
 
 	function push($force = 0) {
+		$post = $this->input->post();
+		if (isset($post['submitNotification']))
+			$this->load->model('contests');
+
 		$uid = $this->user->uid();
 		$username = $this->user->username();
 
@@ -29,6 +33,23 @@ class Background extends CI_Controller {
 		while (true) {
 			$data['c'] = $this->user->running_contest_count();
 			$data['m'] = $this->user->unread_mail_count($uid);
+
+			if (isset($post['submitNotification']))
+			{
+				$cid = $post['submitNotification'];
+				$time = $this->contests->second_before_end($cid);
+				if ($time<=120 && $time>=0)
+				{
+					$notSubmitted = $this->contests->load_not_submitted($cid, $uid);
+					if ($notSubmitted)
+						$data['submitNotification'] = implode(', ', $notSubmitted);
+					else
+						unset($data['submitNotification']);
+				}
+				else
+					unset($data['submitNotification']);
+			} else
+				unset($data['submitNotification']);
 
 			$res = json_encode($data);
 			if ($force || $this->session->userdata('push') != $res) {

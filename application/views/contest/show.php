@@ -142,6 +142,8 @@
 <script src="js/moment-with-locales.min.js"></script>
 
 <script type="text/javascript">
+	addRequest["submitNotification"] = <?=$cid?>;
+
 	$.get('index.php/main/limits/<?=$data->pid?>?simple', function(data) {
 		data = '<pre>'+data+'</pre>';
 		$('#trigger').popover({html: true, content: data, trigger: 'hover', placement: 'bottom'});

@@ -20,3 +20,7 @@
 	<?php endforeach; ?>
 	</tbody>
 </table></div>
+
+<script>
+	addRequest["submitNotification"] = <?=$cid?>;
+</script>

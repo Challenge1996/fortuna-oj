@@ -28,34 +28,37 @@ if ( ! ('onhashchange' in window)) {
 var notificationHandle = window.Notification || window.mozNotification || window.webkitNotification;
 if (notificationHandle) notificationHandle.requestPermission();
 
-function myNotification(_title, _body)
+function myNotification(_title, _body, _tag)
 {
 	this.title = _title;
 	this.body = _body;
+	this.tag = _tag;
 	this.show = function()
 	{
 		if (!notificationHandle) return;
 		var instance = new notificationHandle(this.title, {
 			"body": this.body,
+			"tag": this.tag,
 			"icon": '/favicon.ico',
 		});
 		instance.onclick = function() { console.log('a'); window.focus(); }
-		instance.show();
 	}
 }
 
 var MailNotification = new myNotification(
 	'Fortuna Online Judge',
-	'You have some new mails!'
+	'You have some new mails!',
+	'mail'
 );
 
-var firstNotification = true;
+var addRequest = {}, firstNotification = true;
 function getServerPushData() {
 	var url = "index.php/background/push";
 	if (firstNotification) url += '/1';
 	$.ajax({
 		type:"POST",
 		url:url,
+		data: addRequest,
 		success: function(data) {
 			if (data != '' && data != null) {
 				firstNotification = false;
@@ -71,6 +74,20 @@ function getServerPushData() {
 					$('#running_contest_count').html(data.c);
 				else
 					$('#running_contest_count').html('');
+
+				if (data.submitNotification != undefined)
+				{
+					var SubmitNotification = new myNotification(
+						'Fortuna Online Judge',
+						'Don\'t forget to submit problem '
+							+ data.submitNotification
+							+ ' in contest '
+							+ addRequest['submitNotification']
+							+ ' !',
+						'submit'
+					);
+					SubmitNotification.show();
+				}
 			}
 			setTimeout('getServerPushData()', 3000);
 		},
@@ -106,6 +123,7 @@ function hash_to_url(hash) {
 }
 
 function set_page_content(selector, url, success) {
+	addRequest = {};
 	url = randomize(url);
 	$('.overlay').css({'z-index': '1000', 'display': 'block'});
 	$('.overlay').animate({opacity: '0.5'}, 250);

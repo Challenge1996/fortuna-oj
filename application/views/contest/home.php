@@ -33,6 +33,8 @@
 </div>
 
 <script type="text/javascript">
+	addRequest["submitNotification"] = <?=$cid?>;
+
 	function start_contest_onclick() {
 		if (confirm("Are you sure to start the contest? This CANNOT be reverted!")) {
 			$.ajax({
