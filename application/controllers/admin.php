@@ -14,7 +14,7 @@ class Admin extends CI_Controller {
 		
 		$allowed_methods = array('addproblem', 'problemset');
 		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_status');
-		
+
 		if ($this->user->is_logged_in()){
 			if ($this->user->is_admin() || in_array($method, $allowed_methods)) $this->_redirect_page($method, $params);
 			else if (in_array($method, $restricted_methods)){
@@ -717,9 +717,10 @@ class Admin extends CI_Controller {
 		}
 	}
 
-
-
-
+	function change_contest_pinned($cid) {
+		$this->load->model('contests');
+		$this->contests->change_pinned($cid);
+	}
 
 	// temp
 

@@ -8,13 +8,13 @@
 	<table id="contest_table" class="table table-condensed table-bordered table-striped">
 		<thead>
 			<th>Contest ID</th><th>Title</th><th>Start Time</th><th>Submit Time</th><th>End Time</th>
-			<th>Status</th><th>Mode</th><th>Type</th><th>Edit</th><th></th>
+			<th>Status</th><th>Mode</th><th>Type</th><th>Edit</th><th>Pin</th><th></th>
 		</thead>
 		
 		<tbody><?php
 			foreach ($data as $row):
 				$cid = $row->cid; ?>
-				<tr><td><?=$cid?></td><td>
+				<tr <?=$row->isPinned ? 'class="pinned"' : ''?>><td><?=$cid?></td><td>
 				<?=isset($row->running) ? "<a class='title' href=\"#contest/problems/$cid\">$row->title</a>"
 							: "<a class='title' href=\"#contest/home/$cid\">$row->title</a>"?>
 				</td>
@@ -33,6 +33,7 @@
 				<td><div class="badge badge-info"><i class="icon-user icon-white"></i><?=$row->count?></div></td>";
 -->
 				<td><button class="btn btn-mini" onclick='window.location.href="#admin/newcontest/<?=$cid?>"'>Edit</button></td>
+				<td><i class="icon-arrow-<?=$row->isPinned ? 'down' : 'up'?>" title="<?=$row->isPinned ? 'un' : ''?>pin it" onclick="access_page('#admin/change_contest_pinned/<?=$cid?>')"></i></td>
 				<td><button class="close" onclick="delete_contest(<?=$cid?>, $(this))">&times;</button></td></tr>
 			<?php endforeach; ?>
 		</tbody>
@@ -89,4 +90,13 @@
 		$('#modal_convert .info').html(cid + '. ' + selector.parent().parent().find('.title').html());
 		$('#modal_convert').modal();
 	}
+
+	$(document).ready(function() {
+		$('.table-striped').children('tbody').children('tr:nth-child(odd).pinned').children('td').each(function() {
+			$(this).css('background-color', '#ffffff');
+		});
+		$('.table-striped').children('tbody').children('tr:nth-child(even).pinned').children('td').each(function() {
+			$(this).css('background-color', '#f8f8ff');
+		});
+	});
 </script>

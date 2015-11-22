@@ -85,8 +85,8 @@ class Contests extends CI_Model{
 	}
 	
 	function load_contests_list($row_begin, $count){
-		return $this->db->query("SELECT cid, title, startTime, submitTime, endTime, contestMode, private, isTemplate FROM Contest
-								WHERE isShowed=1 ORDER BY cid DESC LIMIT ?,?",
+		return $this->db->query("SELECT cid, title, startTime, submitTime, endTime, contestMode, private, isTemplate, isPinned FROM Contest
+								WHERE isShowed=1 ORDER BY isPinned DESC,cid DESC LIMIT ?,?",
 								array($row_begin, $count))
 								->result();
 	}
@@ -844,5 +844,10 @@ class Contests extends CI_Model{
 		foreach ($data as $row)
 			$ret[] = $row->id;
 		return $ret;
+	}
+
+	function change_pinned($cid)
+	{
+		$this->db->query("UPDATE Contest SET isPinned=1-isPinned WHERE cid=?", array($cid));
 	}
 }

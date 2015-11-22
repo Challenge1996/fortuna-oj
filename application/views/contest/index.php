@@ -13,10 +13,10 @@
 		<tbody><?php
 			foreach ($data as $row):
 				$cid = $row->cid; ?>
-				<tr><td><?=$cid?></td>
-				<td class="title"> 
+				<tr <?=$row->isPinned ? 'class="pinned"' : ''?>><td><?=$cid?></td>
+				<td class="title">
 				<?=(isset($row->running) && !$row->isTemplate ?
-						"<a href=\"#contest/problems/$cid\">$row->title</a>" : 
+						"<a href=\"#contest/problems/$cid\">$row->title</a>" :
 						"<a href=\"#contest/home/$cid\">$row->title</a>")?>
 				</td>
 				<td><span class="label label-info"><?=$row->contestMode?></span></td>
@@ -34,5 +34,14 @@
 	<?=$this->pagination->create_links()?>
 </div>
 
-	
+<script>
+$(document).ready(function() {
+	$('.table-striped').children('tbody').children('tr:nth-child(odd).pinned').children('td').each(function() {
+		$(this).css('background-color', '#ffffff');
+	});
+	$('.table-striped').children('tbody').children('tr:nth-child(even).pinned').children('td').each(function() {
+		$(this).css('background-color', '#f8f8ff');
+	});
+});
+</script>
 <!-- End of file index.php  -->
