@@ -1,5 +1,7 @@
+<link href="css/tablewithpin.css" rel="stylesheet">
+
 <div class="contest_list">
-	<table id="contest_table" class="table table-condensed table-bordered table-striped">
+	<table id="contest_table" class="table table-condensed table-bordered">
 		<thead><tr>
 			<th align="center"><?=lang('contest_id')?></th>
 			<th><?=lang('title')?></th>
@@ -34,14 +36,4 @@
 	<?=$this->pagination->create_links()?>
 </div>
 
-<script>
-$(document).ready(function() {
-	$('.table-striped').children('tbody').children('tr:nth-child(odd).pinned').children('td').each(function() {
-		$(this).css('background-color', '#ffffff');
-	});
-	$('.table-striped').children('tbody').children('tr:nth-child(even).pinned').children('td').each(function() {
-		$(this).css('background-color', '#f8f8ff');
-	});
-});
-</script>
 <!-- End of file index.php  -->

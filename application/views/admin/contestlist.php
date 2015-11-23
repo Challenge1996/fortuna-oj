@@ -1,3 +1,5 @@
+<link href="css/tablewithpin.css" rel="stylesheet">
+
 <h4>
 	Contest List
 	<button class="btn btn-primary btn-small pull-right" onclick="window.location.hash='admin/newcontest'">Add</button>
@@ -5,7 +7,7 @@
 <hr />
 
 <div class="contest_list">
-	<table id="contest_table" class="table table-condensed table-bordered table-striped">
+	<table id="contest_table" class="table table-condensed table-bordered">
 		<thead>
 			<th>Contest ID</th><th>Title</th><th>Start Time</th><th>Submit Time</th><th>End Time</th>
 			<th>Status</th><th>Mode</th><th>Type</th><th>Edit</th><th>Pin</th><th></th>
@@ -90,13 +92,4 @@
 		$('#modal_convert .info').html(cid + '. ' + selector.parent().parent().find('.title').html());
 		$('#modal_convert').modal();
 	}
-
-	$(document).ready(function() {
-		$('.table-striped').children('tbody').children('tr:nth-child(odd).pinned').children('td').each(function() {
-			$(this).css('background-color', '#ffffff');
-		});
-		$('.table-striped').children('tbody').children('tr:nth-child(even).pinned').children('td').each(function() {
-			$(this).css('background-color', '#f8f8ff');
-		});
-	});
 </script>
