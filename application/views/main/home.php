@@ -1,7 +1,9 @@
-<div class="hero-unit" style="text-align:center; padding: 5px">
-	<h2 class="text-error">Welcome to Fortuna Online Judge System!</h2>
-	<p>This OJ is based on Ubuntu Server 14.04 LTS amd64.</p>
-	<p>Powered by Codeigniter / Bootstrap.</p>
+<div style="text-align:center; padding: 5px">
+	<div class="hero-unit">
+		<h2 class="text-error">Welcome to Fortuna Online Judge System!</h2>
+		<p>This OJ is based on Ubuntu Server 14.04 LTS amd64.</p>
+		<p>Powered by Codeigniter / Bootstrap.</p>
+	</div>
 	<div class="container-fluid">
 		<div class="row-fluid text-left">
 			<?=count($online)?> User(s) Online:
@@ -16,14 +18,16 @@
 			<div class="span3">
 				<h4>Available languages</h4>
 				<ul class="unstyled text-success">
-					<li>C</li>
-					<li>C++ including C++11(0x)</li>
-					<li>Pascal</li>
+					<li><strong>C</strong></li>
+					<li><strong>C++ including C++11(0x)</strong></li>
+					<li><strong>Pascal</strong></li>
 				</ul>
 				<br />
 	<!--			Currently Java and Python are unavailable-->
 			</div>
-			<div class="span9">
+			<div id='extra-info' class="span9">
+				<script> $('#extra-info').load('index.php/main/recentcontest'); </script>
+				<!--
 				OJ现已迁移至新版本YAUJ，主要改进了后端数据同步的稳定性和题目配置的灵活性。<br />
 	鉴于某些SPJ使用了中文输出导致传输过程中乱码，迁移过程中没有处理，请找管理员重测<br />
 				由于数据量较大，题目采用懒惰迁移，初次点开某题时可能卡顿不超过一分钟，请耐心等待。<br />
@@ -31,7 +35,8 @@
 				某些题目SPJ编写不规范，评测机编译器版本较新，SPJ可能编译错误。如怀疑有此情况发生，请联系管理员。<br />
 				鉴于代码相似度判断表现不佳，目前暂时取消。<br />
 	如遇代码提交框行号显示混乱，请清除浏览器缓存后刷新<br />
-	<!--
+				-->
+				<!--
 				<h4>Changelog</h4>
 					<dl style="text-align: left" class="dl-horizontal">
 						<dt>Oct.17 2014</dt>
@@ -56,8 +61,10 @@
 						<dt>Mar.17 2013</dt>
 						<dd>现在未通过提交可以下载第一个未通过的数据。</dd>
 					</dl>
-	-->
-	<!-- 			Jan.13 2013:	现在管理员可以在Group页面看到Task的统计信息。 -->
+				-->
+				<!--
+					Jan.13 2013:	现在管理员可以在Group页面看到Task的统计信息。 
+				-->
 			</div>
 		</div>
 	</div>

@@ -790,6 +790,19 @@ class Main extends CI_Controller {
 		$this->load->model('problems');
 		$this->problems->update_bookmark($pid);
 	}
+
+	function recentcontest() // don't move this to misc controller, because it calls misc model.
+	{
+		$this->load->model('misc');
+		$data = $this->misc->load_recent_contest();
+		if (!$data) return;
+		$data = json_decode($data, true);
+		foreach ($data as &$row)
+			if (strpos($row['countDown'], ':') !== false)
+				$row['countDown'] = date('j \D\a\y\(\s\) H:i:s', strtotime($row['startTime'])-time());
+
+		$this->load->view('main/recentcontest', array('data'=>$data));
+	}
 }
 
 // End of file main.php

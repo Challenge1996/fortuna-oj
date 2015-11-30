@@ -330,4 +330,17 @@ class Misc extends CI_Model{
 	function format_datetime($datetime) {
 		return date("Y-m-d H:i:s", $datetime);
 	}
+
+	function load_recent_contest()
+	{
+		$redis = new Redis();
+		if (!$redis->connect($this->config->item('redis_host'), $this->config->item('redis_port'))) throw new MyException('Error when connecting to redis server');
+		$redis->setOption(Redis::OPT_PREFIX, 'recent_contest:');
+		if (!$redis->exists('valid'))
+			system('nodejs js/fetch_contest_list.js > /dev/null 2>&1');
+		if (!$redis->exists('form'))
+			return null;
+		else
+			return $redis->get('form');
+	}
 }
