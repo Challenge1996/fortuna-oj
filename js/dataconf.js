@@ -16,14 +16,14 @@ function upd_gs(data, group)
 
 function clean_data(data)
 {
-	if (data.cases === undefined || data.cases === null) return data;
+	if (typeof data.cases === "undefined" || data.cases === null) return data;
 	data.cases = data.cases.filter(function(x){
-		if (x === undefined || x === null) return false;
-		if (x.tests === undefined || x.tests === null) return false;
+		if (typeof x === "undefined" || x === null) return false;
+		if (typeof x.tests === "undefined" || x.tests === null) return false;
 		return true;
 	});
 	for (var i in data.cases)
-		data.cases[i].tests = data.cases[i].tests.filter(function(x){ return x !== undefined && x !== null; })
+		data.cases[i].tests = data.cases[i].tests.filter(function(x){ return typeof x !== "undefined" && x !== null; })
 	return data;
 }
 
@@ -39,7 +39,7 @@ function initialize(data)
 	{
 		for (var i in data.cases)
 		{
-			//if (data.cases[i] === null || data.cases[i] === undefined)
+			//if (data.cases[i] === null || typeof data.cases[i] === "undefined")
 			//	continue;
 			case_id = add_case();
 			group[case_id] = Array();
@@ -136,7 +136,7 @@ function getDataFromElement()
 function init_group(group)
 {
 	$("#group").html("");
-	for (var i=0; i<group.length; i++) if (group[i] !== undefined)
+	for (var i=0; i<group.length; i++) if (typeof group[i] !== "undefined")
 	{
 		$("#group").append("<div id='gc"+i+"' data-case='"+i+"' class='gc alert alert-info' style='width:full'><strong>GROUP "+i+" : </strong></div>");
 		for (var j in group[i]) $("#gc"+i).append(" <span id='gt"+group[i][j]+"' data-test='"+group[i][j]+"' class='gt label label-info'>"+group[i][j]+"</span> ");
@@ -384,14 +384,14 @@ function loaded() {
 			{
 				var cur = eval('('+$("#traditional").val()+')');
 				data = eval('('+data+')');
-				if (cur.cases !== undefined && data.cases !== undefined)
-					for (var i in cur.cases)
-						if (cur.cases[i].tests !== undefined && data.cases[i].tests !== undefined)
+				if (typeof cur.cases !== "undefined" && typeof data.cases !== "undefined")
+					for (var i in cur.cases) if (typeof data.cases[i] !== "undefined")
+						if (typeof cur.cases[i].tests !== "undefined" && typeof data.cases[i].tests !== "undefined")
 							for (var j in cur.cases[i].tests)
 							{
-								if (data.IOMode == 1 && cur.cases[i].tests[j].userInput !== undefined)
+								if (data.IOMode == 1 && typeof cur.cases[i].tests[j].userInput !== "undefined")
 									data.cases[i].tests[j].userInput = cur.cases[i].tests[j].userInput;
-								if ((data.IOMode == 1 || data.IOMode == 2) && cur.cases[i].tests[j].userOutput !== undefined)
+								if ((data.IOMode == 1 || data.IOMode == 2) && typeof cur.cases[i].tests[j].userOutput !== "undefined")
 									data.cases[i].tests[j].userOutput = cur.cases[i].tests[j].userOutput;
 							}
 				initialize(JSON.stringify(data));
