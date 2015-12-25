@@ -1,6 +1,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var redis = require('redis');
+var iconv = require('iconv-lite');
 
 var client = redis.createClient();
 
@@ -47,12 +48,13 @@ client.on('ready', function(err){
 	request.post
 	(
 		'http://acm.hdu.edu.cn/recentcontest/index.php',
-		{ form: { type: 1 } },
+		{ form: { type: 1 }, encoding: null },
 		function (error, response, body)
 		{
 			if (!error && response.statusCode == 200)
 			{
-				form = parse(cheerio.load(body));
+				body = iconv.decode(body, 'gb2312');
+				form = parse(cheerio.load(body, {decodeEntities: false}));
 				save(JSON.stringify(form));
 			} else
 			{
