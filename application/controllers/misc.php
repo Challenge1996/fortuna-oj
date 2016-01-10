@@ -223,7 +223,7 @@ class Misc extends CI_Controller {
 			{
 				if (!isset($result->message)) $result->message = '';
 				$result->message = $result->status . ' ' . $result->message;
-				if (isset($result->score) && (!isset($score[$inGroup[$id]]) || $result->score > $score[$inGroup[$id]]))
+				if (isset($result->score) && (!isset($score[$inGroup[$id]]) || $result->score < $score[$inGroup[$id]]))
 					$score[$inGroup[$id]] = $result->score;
 				if (isset($result->time))
 					foreach ($result->time as &$t)
