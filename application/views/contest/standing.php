@@ -2,8 +2,10 @@
 
 <div class="standing_table">
 	<?php
-		if (!isset($data) || !$data)
-			exit('<div class="alert"><strong>THERE IS NO SUBMISSION</strong></div>');
+		if (!isset($data) || !$data) {
+			echo '<div class="alert"><strong>THERE IS NO SUBMISSION</strong></div>';
+			return;
+		}
 	?>
 
 	<?php if (isset($startTime)): ?>
