@@ -134,6 +134,13 @@ class Admin extends CI_Controller {
 	}
 	
 	public function problemset($page = 1){
+		if ($this->input->get('old_version')===false || $this->input->get('old_version')===null)
+		{
+			$oj_name = $this->config->item('oj_name');
+			header("location: /$oj_name/index.php/main/problemset/$page?spliter=right&reverse_order=1&show_in_control=1");
+			return;
+		}
+
 		$problems_per_page = 20;
 		$uid = FALSE;
 		if ( ! $this->user->is_admin()) $uid = $this->user->uid();

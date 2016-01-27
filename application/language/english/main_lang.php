@@ -17,15 +17,28 @@
 	$lang['p_advanced'] = 'Advanced...';
 	$lang['problem_id'] = 'Problem ID';
 	$lang['go'] = 'Go';
+	$lang['old_version_admin'] = 'Old Version Admin Page';
+	$lang['add_problem'] = 'Add Problem';
 	$lang['search'] = 'Search';
 	$lang['search_title_and_source'] = 'Search titles and sources';
 	$lang['filter'] = 'Filter';
+	$lang['reverse_order'] = 'Reverse display order';
+	$lang['show_in_control'] = 'Show problems in my control';
+	$lang['including_hidden'] = '(including that are hidden)';
+	$lang['select_starred'] = 'Only what I starred';
+	$lang['select_noted'] = 'Only where I have notes';
+	$lang['match_in_note'] = 'Match what I wrote in notes';
 	$lang['page'] = 'Page';
 	$lang['title'] = 'Title';
 	$lang['Problemset_source'] = 'Source';
 	$lang['solved'] = 'Solved';
 	$lang['submit'] = 'Submit';
 	$lang['average'] = 'Average';
+	$lang['uploader'] = 'Uploader';
+	$lang['show_hide'] = 'Show/Hide';
+	$lang['allow_submit'] = 'Allow Submit';
+	$lang['edit_problem'] = 'Edit Problem';
+	$lang['configure_data'] = 'Configure Data';
 	
 //show
 	$lang['time_limit'] = 'Time Limits';

@@ -1,7 +1,11 @@
+var origin_query = deparam(window.location.hash.substring(1));
+
 var status_open_all=false;
-var show_note = 0;
-var show_starred = 0;
-var search_note = false;
+var show_in_control = origin_query['show_in_control']?1:0;
+var show_note = origin_query['show_note']?1:0;
+var show_starred = origin_query['show_starred']?1:0;
+var reverse_order = origin_query['reverse_order']?1:0;
+var search_note = origin_query['search_note'];
 
 function upd_bookmark(pid)
 {
@@ -65,6 +69,16 @@ function toggle_open_all()
 	}
 }
 
+function delete_problem(pid, selector){
+	$("#modal_confirm #delete").click(function(){
+		$("#modal_confirm").modal('hide');
+		$("#modal_confirm #delete").unbind('click');
+		access_page("admin/delete_problem/" + pid);
+	});
+	$("#modal_confirm #info").html(pid + '. ' + selector.parent().parent().find('.title').html());
+	$("#modal_confirm").modal({backdrop: 'static'});
+}
+
 $(document).ready(function(){
 	$('#goto_button').bind('click', function(){
 		var pid = $('#goto_pid').val();
@@ -72,14 +86,52 @@ $(document).ready(function(){
 		load_page('main/show/' + pid);
 		return false;
 	});
+	
+	$("#btn_edit_pid").bind('click', function(){
+		var pid = $('#goto_pid').val();
+		if (pid != '') load_page("admin/addproblem/" + pid);
+		return false;
+	});
+	
+	$("#btn_configure_pid").bind('click', function(){
+		var pid = $("#goto_pid").val();
+		if (pid != '') load_page("admin/dataconf/" + pid);
+		return false;
+	});
 
 	$('#search_button').bind('click', function(){
 		var query = {};
-		if ($('#search_content').val()) query['search'] = encodeURIComponent($('#search_content').val());
-		if ($('#filter_content').val()!='0') query['filter'] = $('#filter_content').val();
-		if (show_starred) query['show_starred'] = show_starred;
-		if (show_note) query['show_note'] = show_note;
-		if (search_note) query['search_note'] = search_note;
+		Object.assign(query, origin_query);
+		if ($('#search_content').val())
+			query['search'] = encodeURIComponent($('#search_content').val());
+		else
+			delete query['search'];
+		if ($('#filter_content').val()!='0')
+			query['filter'] = $('#filter_content').val();
+		else
+			delete query['filter'];
+		if (reverse_order)
+			query['reverse_order'] = reverse_order;
+		else
+			delete query['reverse_order'];
+		if (show_in_control)
+			query['show_in_control'] = show_in_control;
+		else
+			delete query['show_in_control'];
+		if (show_starred)
+			query['show_starred'] = show_starred;
+		else
+			delete query['show_starred'];
+		if (show_note)
+			query['show_note'] = show_note;
+		else
+			delete query['show_note'];
+		if (search_note)
+			query['search_note'] = search_note;
+		else
+			delete query['search_note'];
+		console.log(query);
+		console.log($.param(query));
 		if (!query) return false;
 		load_page("main/problemset?" + $.param(query));
 		return false;
@@ -87,7 +139,9 @@ $(document).ready(function(){
 
 	$('#btn_goto_page').bind('click', function(){
 		var page = $('#goto_page').val();
-		load_page("main/problemset/" + page);
+		var hash = window.location.hash.split('?');
+		var query = (hash.length<2 ? '' : hash[1]);
+		load_page("main/problemset/" + page + '?' + query);
 		return false;
 	});
 
@@ -140,16 +194,25 @@ $(document).ready(function(){
 			<span id="close_popover" class="close pull-right">&times;</span>',
 		content:'\
 			<div> \
-				<label for="show_starred_content">Only what I starred</label> \
-				<input id="show_starred_content" class="pull-right" type="checkbox" onclick="show_starred=1-show_starred"></input> \
+				<label for="use_reverse_order">'+option_reverse_order+'</label> \
+				<input id="use_reverse_order" class="pull-right" type="checkbox" '+(reverse_order?'checked':'')+' onclick="reverse_order=1-reverse_order"></input> \
 			</div> \
 			<div> \
-				<label for="show_note_content">Only where I have notes</label> \
-				<input id="show_note_content" class="pull-right" type="checkbox" onclick="show_note=1-show_note"></input> \
+				<label for="use_show_in_control">'+option_show_in_control+'</label> \
+				<input id="use_show_in_control" class="pull-right" type="checkbox" '+(show_in_control?'checked':'')+' onclick="show_in_control=1-show_in_control"></input> \
+				<span class="pull-right"><i>'+including_hidden+'</i></span>\
 			</div> \
 			<div> \
-				<label for="search_note_content">Match what I wrote in notes</label> \
-				<input id="search_note_content" style="width:100%" onkeydown="search_note=$(this).val()"></input> \
+				<label for="show_starred_content">'+option_select_starred+'</label> \
+				<input id="show_starred_content" class="pull-right" type="checkbox" '+(show_starred?'checked':'')+' onclick="show_starred=1-show_starred"></input> \
+			</div> \
+			<div> \
+				<label for="show_note_content">'+option_select_noted+'</label> \
+				<input id="show_note_content" class="pull-right" type="checkbox" '+(show_note?'checked':'')+' onclick="show_note=1-show_note"></input> \
+			</div> \
+			<div> \
+				<label for="search_note_content">'+option_match_in_note+'</label> \
+				<input id="search_note_content" style="width:100%" onkeydown="search_note=$(this).val()">'+(search_note?search_note:'')+'</input> \
 			</div>'
 	});
 	

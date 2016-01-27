@@ -110,7 +110,7 @@ class Problems extends CI_Model{
 		$restricted_lim = $this->gen_restricted_lim();
 
 		return $this->db->query("
-			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, noSubmit, uname AS author
+			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, noSubmit, uname AS author, uid
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
 			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
 			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?

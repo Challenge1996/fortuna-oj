@@ -181,6 +181,9 @@ class Main extends CI_Controller {
 		$show_starred = $this->input->get('show_starred',TRUE);
 		$show_note = $this->input->get('show_note',TRUE);
 		$search_note = $this->input->get('search_note',TRUE);
+		$spliter = $this->input->get('spliter',TRUE);
+		$reverse = $this->input->get('reverse_order',TRUE);
+		$show_in_control = $this->input->get('show_in_control',TRUE);
 
 		if (count($this->input->get(NULL,TRUE))==1)
 			if ($page == 0)
@@ -195,8 +198,16 @@ class Main extends CI_Controller {
 		if ($count > 0 && ceil($count / $problems_per_page) < $page)
 			$page = ceil($count / $problems_per_page);
 		$row_begin = ($page - 1) * $problems_per_page;
-		$data = $this->problems->load_problemset($row_begin, $problems_per_page, FALSE, FALSE, FALSE, 
-			$keyword, $filter, $show_starred, $show_note, $search_note);
+
+		$filter_uid = FALSE;
+		if ($show_in_control && !$this->user->is_admin())
+			$filter_uid = $uid;
+		
+		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $reverse,
+			$filter_uid, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
+		
+		foreach ($data as $row)
+			$row->hasControl = ($this->user->is_admin() || $row->uid==$this->user->uid());
 		
 		$pids='';
 		foreach ($data as $row)
@@ -245,11 +256,13 @@ class Main extends CI_Controller {
 		$config['first_url'] = $config['base_url'] . '1' . $config['suffix'];
 		$this->pagination->initialize($config);
 
-		$this->load->view('main/problemset',
-						array('data' => $data,
-							'category' => $categorization,
-							'keyword' => $keyword,
-							'filter' => $filter));
+		$this->load->view('main/problemset', array(
+			'data' => $data,
+			'category' => $categorization,
+			'keyword' => $keyword,
+			'filter' => $filter,
+			'spliter' => $spliter
+		));
 	}
 
 	public function show($pid){

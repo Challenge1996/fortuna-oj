@@ -351,3 +351,18 @@ function object_content(obj)
 	return s
 }
 
+function deparam(querystring)
+{
+	// remove any preceding url and split
+	if (querystring.indexOf('?') == -1) querystring += '?';
+	querystring = querystring.substring(querystring.indexOf('?')+1).split('&');
+	var params = {}, pair, d = decodeURIComponent;
+	// march and parse
+	for (var i = querystring.length - 1; i >= 0; i--) {
+		pair = querystring[i].split('=');
+		params[d(pair[0])] = d(pair[1]);
+	}
+	delete params[''];
+	return params;
+}
+

@@ -17,15 +17,28 @@
 	$lang['p_advanced'] = '高级…';
 	$lang['problem_id'] = '题目编号';
 	$lang['go'] = '前往';
+	$lang['old_version_admin'] = '旧版管理页面';
+	$lang['add_problem'] = '添加题目';
 	$lang['search'] = '搜索';
 	$lang['search_title_and_source'] = '搜索标题和来源';
 	$lang['filter'] = '过滤';
+	$lang['reverse_order'] = '题号倒序';
+	$lang['show_in_control'] = '显示我能管理的题目';
+	$lang['including_hidden'] = '（包括隐藏的）';
+	$lang['select_starred'] = '仅显示星标题目';
+	$lang['select_noted'] = '仅显示有笔记的题目';
+	$lang['match_in_note'] = '搜索笔记内容';
 	$lang['page'] = '页面';
 	$lang['title'] = '标题';
 	$lang['Problemset_source'] = '来源';
 	$lang['solved'] = '通过';
 	$lang['submit'] = '提交';
 	$lang['average'] = '平均分';
+	$lang['uploader'] = '上传者';
+	$lang['show_hide'] = '显示/隐藏';
+	$lang['allow_submit'] = '允许提交';
+	$lang['edit_problem'] = '编辑题面';
+	$lang['configure_data'] = '配置数据';
 	
 //show
 	$lang['time_limit'] = '时间限制';
