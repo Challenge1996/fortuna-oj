@@ -162,7 +162,8 @@ class Admin extends CI_Controller {
 		$config['total_rows'] = $count;
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
-		$config['first_url'] = $config['base_url'] . '1';
+		$config['suffix'] = '?' . http_build_query($this->input->get());
+		$config['first_url'] = $config['base_url'] . '1' . $config['suffix'];
 		$this->pagination->initialize($config);
 
 		$this->load->view('admin/problemset', array('data' => $data, 'page' => $page));
