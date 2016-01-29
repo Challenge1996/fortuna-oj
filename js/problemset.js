@@ -145,14 +145,11 @@ $(document).ready(function(){
 		return false;
 	});
 
-	$('#goto_pid').bind('focus', function(){
-		$('#action_form').die();
-		$('#action_form').live('keypress', function(event){
-			if (event.keyCode == 13 && $('#goto_pid').val() != ''){
-				$('#goto_button').click();
-				return false;
-			}
-		})
+	$('#goto_pid').bind('keypress', function(event){
+		if (event.keyCode == 13 && $('#goto_pid').val() != ''){
+			$('#goto_button').click();
+			return false;
+		}
 	});
 
 	$('#search_content').bind('focus', function(){

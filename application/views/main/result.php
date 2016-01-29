@@ -55,6 +55,7 @@
 						$s .= $file;
 					}
 			$this->session->set_userdata('download', $s);
+			session_write_close();
 			$beenWrong = true;
 		}
 		
