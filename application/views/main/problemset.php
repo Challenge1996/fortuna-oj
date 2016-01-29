@@ -3,7 +3,7 @@
 		if (mb_strlen($str, 'UTF8') > 18) return (mb_substr($str, 0, 18, 'UTF8') . '..'); else return $str;
 	}
 ?>
-	
+
 <script>
 	var option_reverse_order = "<i class='icon-refresh'></i> <?=lang('reverse_order');?>";
 	var option_show_in_control = "<i class='icon-user'></i> <?=lang('show_in_control');?>";
@@ -13,7 +13,22 @@
 	var option_match_in_note = "<i class='icon-tags'></i> <?=lang('match_in_note')?>";
 </script>
 <script type="text/javascript" src="js/problemset.js"></script>
-
+<!--
+<style>
+	th.spliter, td.spliter, td.uploader, td.chg_status, td.chg_nosubmit, td.btn_edit, td.btn_configure, td.btn_del
+	{
+		box-shadow: -7px 7px 5px #aaaaaa;
+		position: relative;
+	}
+	th.spliter, td.spliter { z-index: 11 }
+	td.uploader { z-index: 10; }
+	td.chg_status { z-index: 9; }
+	td.chg_nosubmit { z-index: 8; }
+	td.btn_edit { z-index: 7; }
+	td.btn_configure { z-index: 6; }
+	td.btn_del { z-index: 5; }
+</style>
+-->
 <div style="margin-left:10px; margin-right:10px">
 	<div id="div_goto_pid" class="control-group input-prepend input-append">
 		<span class="add-on"><strong><font color="#006652"><?=lang('problem_id')?></font></strong></span>
@@ -84,7 +99,7 @@
 		<th class="solvedCount"><?=lang('solved')?></th>
 		<th class="submitCount"><?=lang('submit')?></th>
 		<th class="avg"><?=lang('average')?></th>
-		<th></th>
+		<th class="spliter"></th>
 		<th class="uploader"><?=lang('uploader')?></th>
 		<th class="chg_status"><?=lang('show_hide')?></th>
 		<th class="chg_nosubmit"><?=lang('allow_submit')?></th>

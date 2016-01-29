@@ -137,7 +137,8 @@ class Admin extends CI_Controller {
 		if ($this->input->get('old_version')===false || $this->input->get('old_version')===null)
 		{
 			$oj_name = $this->config->item('oj_name');
-			header("location: /$oj_name/index.php/main/problemset/$page?spliter=right&reverse_order=1&show_in_control=1");
+			$spliter = ($this->input->get('spliter')=='left'?'left':'right');
+			header("location: /$oj_name/index.php/main/problemset/$page?spliter=$spliter&reverse_order=1&show_in_control=1");
 			return;
 		}
 
