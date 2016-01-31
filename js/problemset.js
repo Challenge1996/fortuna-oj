@@ -1,3 +1,5 @@
+if (typeof Object.assign == "undefined") alert("Please update your browser");
+
 var origin_query = deparam(window.location.hash.substring(1));
 
 var status_open_all=false;

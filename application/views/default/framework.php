@@ -74,6 +74,7 @@
  									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/statistic">Statistic</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/rejudge">Rejudge</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/functions">Misc Functions</a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/global_settings">Global Settings</a></li>
 								</ul>
 							</li>
 						</ul>

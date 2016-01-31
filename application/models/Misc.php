@@ -343,4 +343,45 @@ class Misc extends CI_Model{
 		else
 			return $redis->get('form');
 	}
+
+	function load_dynamic_config()
+	{
+		$dynamic_config_file = $this->config->item('dynamic_config_file');
+		$data = array();
+		foreach ($dynamic_config_file as $file)
+		{
+			$formatpath = FCPATH . '/' . $file->format;
+			$valuepath = FCPATH . '/' . $file->value;
+			if (! is_readable($formatpath))
+			{
+				syslog(LOG_WARNING, "overriding dynamic format file '$formatpath' not found");
+				continue;
+			}
+			require($formatpath); // get $dynamic_format here
+			if (is_readable($valuepath))
+				$dynamic_value = file_get_contents($valuepath);
+			else
+				$dynamic_value = '';
+			$dynamic_value = json_decode($dynamic_value, true);
+			foreach ($dynamic_format as $key => $format)
+				$data[$key] = (object)(array(
+					'format' => (object)$format,
+					'value' => (isset($dynamic_value[$key]) ? $dynamic_value[$key] : $this->config->item($key)),
+					'valuefile' => $valuepath
+				));
+		}
+		return $data;
+	}
+
+	function save_dynamic_config($file, $key, $value)
+	{
+		if (is_readable($file))
+			$data = file_get_contents($file);
+		else
+			$data = '';
+		$data = json_decode($data, true);
+		$data[$key] = $value;
+		$data = json_encode($data);
+		file_put_contents($file, $data, LOCK_EX);
+	}
 }

@@ -101,3 +101,17 @@
 	$lang['rank'] = 'Rank';
 	$lang['score'] = 'Score';
 	$lang['export'] = 'Export';
+
+//admin
+	$lang['global_settings'] = 'Global Settings';
+	$lang['global_settings_description'] = '
+		These are global settings for the current OJ (senior, junior or elementary part). 
+		Changes are applied to everyone using this part of OJ';
+	$lang['global_settings_item_key_language'] = 'Language';
+	$lang['global_settings_item_description_language'] = 'Choose a language';
+	$lang['global_settings_enum_chinese'] = 'Chinese';
+	$lang['global_settings_enum_english'] = 'English';
+	$lang['global_settings_item_key_allow_message'] = 'Allow Private Message';
+	$lang['global_settings_item_description_allow_message'] = 'Turn on private message function';
+	$lang['global_settings_enum_yes'] = 'Yes';
+	$lang['global_settings_enum_no'] = 'No';

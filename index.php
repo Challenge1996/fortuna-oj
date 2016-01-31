@@ -179,7 +179,53 @@ switch (ENVIRONMENT)
  * Un-comment the $assign_to_config array below to use this feature
  */
 	// $assign_to_config['name_of_config_item'] = 'value of config item';
-
+	$assign_to_config = array();
+	$load_overriding_config = function() use (&$assign_to_config)
+	{
+		$static_config = array (
+			'overriding_config/local.php',
+			'overriding_config/secret.php'
+		);
+		$dynamic_config = array (
+			(object) ( array (
+				'format' => 'overriding_config/dynamic.php',
+				'value' => 'overriding_config/var/dynamic.json'
+			))
+		);
+		$assign_to_config['static_config_file'] = $static_config;
+		$assign_to_config['dynamic_config_file'] = $dynamic_config;
+		foreach ($static_config as $file)
+		{
+			$fullpath = dirname(__FILE__) . '/' . $file;
+			if (! is_readable($fullpath))
+			{
+				syslog(LOG_WARNING, "overriding static config file '$fullpath' not found");
+				continue;
+			}
+			require($fullpath);
+		}
+		foreach ($dynamic_config as $file)
+		{
+			$formatpath = dirname(__FILE__) . '/' . $file->format;
+			$valuepath = dirname(__FILE__) . '/' . $file->value;
+			if (! is_readable($formatpath))
+			{
+				syslog(LOG_WARNING, "overriding dynamic format file '$formatpath' not found");
+				continue;
+			}
+			require($formatpath); // get dynamic_format here.
+			if (is_readable($valuepath))
+				$dynamic_value = file_get_contents($valuepath);
+			else
+				$dynamic_value = '';
+			$dynamic_value = json_decode($dynamic_value, true);
+			foreach ($dynamic_format as $key => $format)
+				if (isset($dynamic_value[$key]))
+					$assign_to_config[$key] = $dynamic_value[$key];
+		}
+	};
+	$load_overriding_config();
+	unset($load_overriding_config);
 
 
 // --------------------------------------------------------------------

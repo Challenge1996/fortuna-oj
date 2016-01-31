@@ -101,3 +101,17 @@
 	$lang['rank'] = '排名';
 	$lang['score'] = '分数';
 	$lang['export'] = '导出';
+
+//admin
+	$lang['global_settings'] = '全局设定';
+	$lang['global_settings_description'] = '
+		以下是此部分OJ（高中、初中或小学）的全局设定， 
+		这些设定影响使用此部分OJ的所有人。';
+	$lang['global_settings_item_key_language'] = '语言';
+	$lang['global_settings_item_description_language'] = '选择一种语言';
+	$lang['global_settings_enum_chinese'] = '中文';
+	$lang['global_settings_enum_english'] = '英语';
+	$lang['global_settings_item_key_allow_message'] = '允许站内信';
+	$lang['global_settings_item_description_allow_message'] = '打开站内信功能';
+	$lang['global_settings_enum_yes'] = '是';
+	$lang['global_settings_enum_no'] = '否';

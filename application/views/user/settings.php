@@ -29,6 +29,7 @@
 		<label for="email" class="control-label">Email</label>
 		<div class="controls controls-row">
 			<input type="text" name="email" id="email" class="input-large" value="<?=set_value('email', $config->email)?>" />
+			<?=form_error('email')?>
 		</div>
 	</div>
 
@@ -43,6 +44,7 @@
 		<label for="blog_url" class="control-label">Blog URL</label>
 		<div class="controls controls-row">
 			<input type="text" name="blog_url" id="blog_url" class="input-large" value="<?=set_value('blog_url', $config->blogURL)?>" />
+			<?=form_error('blog_url')?>
 		</div>
 	</div>
 	
@@ -64,6 +66,7 @@
 		<label for="problems_per_page" class="control-label">Problems Per Page</label>
 		<div class="controls controls-row">
 			<input type="number" min="1" name="problems_per_page" id="problems_per_page" class="input-mini" value="<?=set_value('problems_per_page', $config->problemsPerPage)?>" />
+			<?=form_error('problems_per_page')?>
 		</div>
 	</div>
 	
@@ -71,6 +74,7 @@
 		<label for="submission_per_page" class="control-label">Submission Per Page</label>
 		<div class="controls controls-row">
 			<input type="number" min="1" name="submission_per_page" id="submission_per_page" class="input-mini" value="<?=set_value('submission_per_page', $config->submissionPerPage)?>" />
+			<?=form_error('submission_per_page')?>
 		</div>
 	</div>
 

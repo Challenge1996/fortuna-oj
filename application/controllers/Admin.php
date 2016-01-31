@@ -731,6 +731,20 @@ class Admin extends CI_Controller {
 		$this->contests->change_pinned($cid);
 	}
 
+	function global_settings()
+	{
+		$this->load->model('misc');
+		$data = $this->misc->load_dynamic_config();
+		$key = $this->input->post('key');
+		$value = $this->input->post('value');
+		if ($key && $value)
+		{
+			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value))
+				$this->misc->save_dynamic_config($data[$key]->valuefile, $key, $value);
+		} else
+			$this->load->view('admin/global_settings', array('data' => $data));
+	}
+
 	// temp
 
 	/*public function rejudgeall()
