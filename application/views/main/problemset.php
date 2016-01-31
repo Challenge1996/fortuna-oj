@@ -115,7 +115,7 @@
 			if (!$row->isShowed && !$this->user->is_admin()) continue;
 			$pid = $row->pid;
 	?>
-			<tr>
+			<tr style="height:0px">
 				<td style="white-space:nowrap;background-color:#e8e8e8">
 					<?php if (isset($row->bookmark) && $row->bookmark->note): ?>
 						<i class="icon-tags" title="add notes" id="note_icon_<?=$row->pid?>" onclick="open_note(<?=$row->pid?>);"></i>
@@ -165,7 +165,7 @@
 				<?php
 					if (!$spanflag):
 				?>
-						<td rowspan="<?=$row_cnt*2?>" class="spliter">
+						<td rowspan="<?=$row_cnt*2?>" class="spliter" style="height:100%">
 							<button class="spliter btn"><i class="spliter"></i></button>
 							<style>
 								td.spliter {
