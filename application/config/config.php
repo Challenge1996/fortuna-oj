@@ -419,5 +419,8 @@ $config['local_passwd'] = 'foobar'; // in overriding_config/secret.php
 // Allow using message function
 $config['allow_message'] = true;
 
+// Allow normal user add problem
+$config['allow_add_problem'] = true;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

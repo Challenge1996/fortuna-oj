@@ -15,7 +15,7 @@
 				<p><div class="btn-group" data-toggle="buttons-radio">
 					<?php foreach ($config->format->enum_value as $enum_key => $enum_value): ?>
 						<?php $active = ($config->value==$enum_value?'active':''); ?>
-							<span class="btn btn-primary <?=$active?>" onclick='change("<?=$key?>","<?=$enum_value?>")'>
+							<span class="btn btn-primary <?=$active?>" onclick='change("<?=$key?>",<?=json_encode($enum_value)?>)'>
 							<?=lang("global_settings_enum_$enum_key")?>
 						</span>
 					<?php endforeach; ?>
@@ -30,7 +30,7 @@
 	{
 		$.post(
 			"index.php/admin/global_settings",
-			{ key: key, value: value },
+			{ set: JSON.stringify({key: key, value: value}) },
 			function() { location.reload(); }
 		);
 	}

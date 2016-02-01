@@ -1,5 +1,6 @@
-/overriding_config
+/overriding_config/*
 !/overriding_config/dynamic.php
+!/overriding_config/example.php
 /application/daemon.php
 *.swp
 /application/logs

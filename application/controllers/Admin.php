@@ -12,11 +12,17 @@ class Admin extends CI_Controller {
 	public function _remap($method, $params = array()){
 		$this->load->model('user');
 		
-		$allowed_methods = array('addproblem', 'problemset');
+		$allowed_methods = array('problemset');
 		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_status');
 
+		if ($this->config->item('allow_add_problem'))
+			$allowed_methods[] = 'addproblem';
+		else
+			$restricted_methods[] = 'addproblem';
+
 		if ($this->user->is_logged_in()){
-			if ($this->user->is_admin() || in_array($method, $allowed_methods)) $this->_redirect_page($method, $params);
+			if ($this->user->is_admin() || in_array($method, $allowed_methods))
+				$this->_redirect_page($method, $params);
 			else if (in_array($method, $restricted_methods)){
 				$this->load->model('problems');
 				if (isset($params[0]) && $this->problems->uid($params[0]) == $this->user->uid())
@@ -735,11 +741,13 @@ class Admin extends CI_Controller {
 	{
 		$this->load->model('misc');
 		$data = $this->misc->load_dynamic_config();
-		$key = $this->input->post('key');
-		$value = $this->input->post('value');
-		if ($key && $value)
+		$post = $this->input->post('set');
+		if ($post)
 		{
-			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value))
+			$post = json_decode($post);
+			$key = $post->key;
+			$value = $post->value;
+			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value, true))
 				$this->misc->save_dynamic_config($data[$key]->valuefile, $key, $value);
 		} else
 			$this->load->view('admin/global_settings', array('data' => $data));
