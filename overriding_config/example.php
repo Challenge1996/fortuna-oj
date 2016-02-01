@@ -1,4 +1,4 @@
-<?php
+<?php  if (!isset($assign_to_config) && !isset($db)) exit('No direct script access allowed');
 
 // EXAMPLE
 

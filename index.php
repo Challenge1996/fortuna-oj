@@ -215,7 +215,13 @@ switch (ENVIRONMENT)
 				syslog(LOG_WARNING, "overriding dynamic format file '$formatpath' not found");
 				continue;
 			}
-			require($formatpath); // get dynamic_format here.
+			$dynamic_format = array();
+			$load_dynamic_format = function() use (&$dynamic_format, $formatpath)
+			{
+				require($formatpath); // get dynamic_format here.
+			};
+			$load_dynamic_format();
+			unset($load_dynamic_format);
 			if (is_readable($valuepath))
 				$dynamic_value = file_get_contents($valuepath);
 			else

@@ -1,4 +1,4 @@
-<?php
+<?php  if (!isset($dynamic_format)) exit('No direct script access allowed');
 
 // Here we define the config variables that can be modified by administrators
 // Default values are set in static config files
