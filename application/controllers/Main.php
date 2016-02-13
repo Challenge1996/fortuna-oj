@@ -813,7 +813,7 @@ class Main extends CI_Controller {
 		$data = json_decode($data, true);
 		foreach ($data as &$row)
 			if (strpos($row['countDown'], ':') !== false)
-				$row['countDown'] = date('j \D\a\y\(\s\) H:i:s', strtotime($row['startTime'])-time());
+				$row['countDown'] = gmdate('z \D\a\y\(\s\) H:i:s', strtotime($row['startTime'])-time());
 
 		$this->load->view('main/recentcontest', array('data'=>$data));
 	}
