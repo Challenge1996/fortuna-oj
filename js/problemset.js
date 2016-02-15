@@ -3,7 +3,7 @@ if (typeof Object.assign == "undefined") alert("Please update your browser");
 var origin_query = deparam(window.location.hash.substring(1));
 
 if (window.location.hash.substring(1).toLowerCase().indexOf('admin/problemset') != -1)
-	origin_query = { reverse_order: 1, show_in_control: 1 };
+	origin_query = { reverse_order: 1, show_in_control: 1, spliter: 'right' };
 
 var status_open_all=false;
 var show_in_control = origin_query['show_in_control']?1:0;
