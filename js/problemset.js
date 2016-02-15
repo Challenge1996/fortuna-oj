@@ -2,6 +2,9 @@ if (typeof Object.assign == "undefined") alert("Please update your browser");
 
 var origin_query = deparam(window.location.hash.substring(1));
 
+if (window.location.hash.substring(1).toLowerCase().indexOf('admin/problemset') != -1)
+	origin_query = { reverse_order: 1, show_in_control: 1 };
+
 var status_open_all=false;
 var show_in_control = origin_query['show_in_control']?1:0;
 var show_note = origin_query['show_note']?1:0;
@@ -132,8 +135,8 @@ $(document).ready(function(){
 			query['search_note'] = search_note;
 		else
 			delete query['search_note'];
-		console.log(query);
-		console.log($.param(query));
+		//console.log(query);
+		//console.log($.param(query));
 		if (!query) return false;
 		load_page("main/problemset?" + $.param(query));
 		return false;
