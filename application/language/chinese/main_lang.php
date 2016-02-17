@@ -117,3 +117,5 @@
 	$lang['global_settings_enum_no'] = '否';
 	$lang['global_settings_item_key_allow_add_problem'] = '允许添加题目';
 	$lang['global_settings_item_description_allow_add_problem'] = '允许普通用户添加题目';
+	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
+	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';

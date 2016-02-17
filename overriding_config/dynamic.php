@@ -27,5 +27,12 @@ $dynamic_format = array (
 			'yes' => true,
 			'no' => false
 		)
+	),
+	'allow_forum' => array (
+		'datatype' => 'enum',
+		'enum_value' => array (
+			'yes' => true,
+			'no' => false
+		)
 	)
 );

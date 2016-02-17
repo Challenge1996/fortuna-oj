@@ -343,6 +343,11 @@ class Contest extends CI_Controller {
 
 	public function forum($cid)
 	{
+		if (! $this->config->item('allow_forum'))
+		{
+			$this->load->view('error', array('message' => 'Forum has been shut off by administrator'));
+			return;
+		}
 		$del = $this->input->get('del');
 		$post = $this->input->get('post');
 		$mdfy = $this->input->get('mdfy');

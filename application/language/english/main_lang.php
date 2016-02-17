@@ -117,3 +117,5 @@
 	$lang['global_settings_enum_no'] = 'No';
 	$lang['global_settings_item_key_allow_add_problem'] = 'Allow Adding Problems';
 	$lang['global_settings_item_description_allow_add_problem'] = 'Allow normal user to add problems';
+	$lang['global_settings_item_key_allow_forum'] = 'Allow Forum';
+	$lang['global_settings_item_description_allow_forum'] = 'Allow using contest forum';

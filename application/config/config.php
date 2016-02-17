@@ -422,5 +422,8 @@ $config['allow_message'] = true;
 // Allow normal user add problem
 $config['allow_add_problem'] = true;
 
+// Allow forum
+$config['allow_forum'] = true;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
