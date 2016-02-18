@@ -397,7 +397,7 @@ class User extends CI_Model{
 					) AS T2 
 				ON if(T1.to_uid=?, T1.from_uid, T1.to_uid)=T2.val
 				ORDER BY idMail DESC",
-					array($uid, $uid, $uid, $uid, $uid, $uid))->result();
+					array($uid, $uid, $uid, $uid))->result();
 	}
 
 	function unread_mail_count($uid) {
