@@ -45,7 +45,7 @@
 		}
 
 		echo '<div style="text-align:center">';
-		echo "<h2>$data->pid. $data->title <sub>$IO</sub></h2>";
+		echo "<h2>" . ($info->running ? "" : "$data->pid. ") . "$data->title <sub>$IO</sub></h2>";
 		echo '<div>';
 		if (isset($data->timeLimit))
 			echo lang('time_limit') . ": <span class=\"badge badge-info\">$data->timeLimit ms</span> &nbsp;";
