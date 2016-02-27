@@ -81,7 +81,7 @@
 	$spanflag = false;
 	foreach ($data as $row)
 	{
-		if (!$row->isShowed && !$this->user->is_admin()) continue;
+		if (!$row->isShowed && !$this->user->is_admin() && $this->user->uid() != $row->uid) continue;
 		$row_cnt++;
 	}
 ?>
@@ -112,7 +112,7 @@
 	<?php
 		$category = $this->session->userdata('show_category') == 1;
 		foreach ($data as $row){
-			if (!$row->isShowed && !$this->user->is_admin()) continue;
+			if (!$row->isShowed && !$this->user->is_admin() && $this->user->uid() != $row->uid) continue;
 			$pid = $row->pid;
 	?>
 			<tr style="height:0px">
@@ -216,13 +216,16 @@
 					endif;
 				?>
 				<?php
+					if ($this->user->is_admin()) {
+						$isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');
+					} else {
+						$isShowed=($row->isShowed?'<span class="label">Showed</span>':'<span class="label">Hidden</span>');
+					}
 					if ($row->hasControl)
 					{
-						$isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');
 						$noSubmit=($row->noSubmit?'<span class="label label-important">Disallowing</span>':'<span class="label label-success">Allowing</span>');
 					} else
 					{
-						$isShowed=($row->isShowed?'<span class="label">Showed</span>':'<span class="label">Hidden</span>');
 						$noSubmit=($row->noSubmit?'<span class="label">Disallowing</span>':'<span class="label">Allowing</span>');
 					}
 				?>
@@ -236,9 +239,11 @@
 					<script>
 						(function(){
 							var pid = <?=$row->pid?>;
+						<?php if ($this->user->is_admin()): ?>
 							$("td.chg_status.row"+pid).children('a').click(
 								function(){access_page('#admin/change_problem_status/'+pid);}
 							);
+						<?php endif; ?>
 							$("td.chg_nosubmit.row"+pid).children('a').click(
 								function(){access_page('#admin/change_problem_nosubmit/'+pid);}
 							);

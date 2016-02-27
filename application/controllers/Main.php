@@ -202,10 +202,10 @@ class Main extends CI_Controller {
 		$filter_uid = FALSE;
 		if ($show_in_control && !$this->user->is_admin())
 			$filter_uid = $uid;
-		
+
 		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $reverse,
 			$filter_uid, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
-		
+
 		foreach ($data as $row)
 			$row->hasControl = ($this->user->is_admin() || $row->uid==$this->user->uid());
 		
