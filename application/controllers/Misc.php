@@ -139,7 +139,7 @@ class Misc extends CI_Controller {
 		{
 			if (! is_file("$path/$file")) continue;
 			$file_parts = pathinfo($file);
-			$extenssion = isset($file_parts['extension'])? $extension = $file_parts['extension']: '';
+			$extension = isset($file_parts['extension'])? $file_parts['extension']: '';
 			$filename = $file_parts['filename'];
 			if (in_array($extension, array('c','cpp','pas'))) $makefile .= " $filename";
 		}

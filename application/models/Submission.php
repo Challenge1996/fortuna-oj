@@ -128,22 +128,22 @@ class Submission extends CI_Model{
 		$conditions = '';
 		if (isset($filter['problems'])){
 			$conditions .= ' AND pid IN (';
-			foreach ($filter['problems'] as $pid) $conditions .= $pid . ',';
+			foreach ($filter['problems'] as $pid) $conditions .= $this->db->escape($pid) . ',';
 			$conditions[strlen($conditions) - 1] = ')';
 		}
 		if (isset($filter['users'])){
 			$conditions .= ' AND name IN (';
-			foreach ($filter['users'] as $name) $conditions .= "'$name',";
+			foreach ($filter['users'] as $name) $conditions .= $this->db->escape($name) . ',';
 			$conditions[strlen($conditions) - 1] = ')';
 		}
 		if (isset($filter['status'])){
 			$conditions .= ' AND status IN (';
-			foreach ($filter['status'] as $status) $conditions .= $status . ',';
+			foreach ($filter['status'] as $status) $conditions .= $this->db->escape($status) . ',';
 			$conditions[strlen($conditions) - 1] = ')';
 		}
 		if (isset($filter['languages'])){
 			$conditions .= ' AND language IN (';
-			foreach ($filter['languages'] as $language) $conditions .= "'$language',";
+			foreach ($filter['languages'] as $language) $conditions .= $this->db->escape($language) . ',';
 			$conditions[strlen($conditions) - 1] = ')';
 		}
 		return $conditions;

@@ -416,11 +416,15 @@ class Contests extends CI_Model{
 				array($cid))->result_array();
 			$pids = array();
 			foreach ($result_pids as $pid) $pids[] = $pid['pid'];
-			$pids = implode(',', $pids);
-			if ($this->session->userdata('priviledge') == 'admin')
-				$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
-			else
-				$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
+			$data = array();
+			if (count($pids) > 0)
+			{
+				$pids = implode(',', $pids);
+				if ($this->session->userdata('priviledge') == 'admin')
+					$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
+				else
+					$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
+			}
 			foreach ($data as $row){
 				if (!isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
@@ -465,12 +469,16 @@ class Contests extends CI_Model{
 	}
 	
 	function load_statistic_OI($pids, $uids){
-		if ($uids == FALSE) {
-			$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
-								WHERE pid in ($pids) ORDER BY sid DESC")->result();
-		} else {
-			$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
-								WHERE pid in ($pids) AND uid in ($uids) ORDER BY sid DESC")->result();
+		$data = array();
+		if ($pids != '')
+		{
+			if ($uids == FALSE) {
+				$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
+									WHERE pid in ($pids) ORDER BY sid DESC")->result();
+			} else {
+				$data = $this->db->query("SELECT sid, uid, name, pid, score FROM Submission
+									WHERE pid in ($pids) AND uid in ($uids) ORDER BY sid DESC")->result();
+			}
 		}
 		
 		foreach ($data as $row) {

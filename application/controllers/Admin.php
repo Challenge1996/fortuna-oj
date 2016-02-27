@@ -285,15 +285,15 @@ class Admin extends CI_Controller {
 		
 		if (isset($data['cases'])) {
 			foreach ($data['cases'] as $cid => &$case) {
-				foreach ($case->tests as $tid => $test){
-					if (file_exists($test->input) && file_exists($test->output)) {
-						$hash['input'][$test->input] = true;
-						$hash['output'][$test->output] = true;
+				foreach ($case['tests'] as $tid => $test){
+					if (file_exists($test['input']) && file_exists($test['output'])) {
+						$hash['input'][$test['input']] = true;
+						$hash['output'][$test['output']] = true;
 					} else {
-						$case->tests = array_diff_key($case->tests,array($tid=>null)); // do not use unset.
+						$case['tests'] = array_diff_key($case['tests'],array($tid=>null)); // do not use unset.
 					}
 				}
-				if (count($data['cases'][$cid]->tests) == 0)
+				if (count($data['cases'][$cid]['tests']) == 0)
 					$data['cases'] = array_diff_key($data['cases'],array($cid=>null)); // do not use unset.
 			}
 		}

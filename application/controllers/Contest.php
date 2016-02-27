@@ -408,7 +408,7 @@ class Contest extends CI_Controller {
 		$this->load->view('contest/reply', array('data' => $data, 'id' => $id));
 	}
 	
-	public function estimate($cid, $pid, $score)
+	public function estimate($cid, $pid, $score = 0)
 	{
 		$this->contests->upd_estimate($cid, $pid, $score);
 		$this->load->view('success');
