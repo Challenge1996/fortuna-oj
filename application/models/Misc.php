@@ -67,12 +67,13 @@ class Misc extends CI_Model{
 	}
 	
 	function save_group_settings($post, $gid = 0){
+		$this->load->model('user');
 		if ($gid == 0){
 			$post['count'] = 1;
 			$sql = $this->db->insert_string('Group', $post);
 			$this->db->query($sql);
 			$gid = $this->db->insert_id();
-			$uid = $this->session->userdata('uid');
+			$uid = $this->user->uid();
 			$data = array('uid' => $uid, 'gid' => $gid, 'priviledge' => 'admin', 'isAccepted' => 1);
 			$sql = $this->db->insert_string('Group_has_User', $data);
 			$this->db->query($sql);
@@ -133,7 +134,8 @@ class Misc extends CI_Model{
 	}
 	
 	function is_group_admin($gid){
-		$uid = $this->session->userdata('uid');
+		$this->load->model('user');
+		$uid = $this->user->uid();
 		$result = $this->db->query("SELECT priviledge FROM Group_has_User WHERE gid=? AND uid=?", array($gid, $uid));
 		if ($result->num_rows() == 0 || $result->row()->priviledge != 'admin') return false;
 		return true;

@@ -51,11 +51,12 @@ class Problems extends CI_Model{
 
 	function gen_bookmark_lim($show_starred, $show_note, $search_note)
 	{
+		$this->load->model('user');
 		$s = ($show_starred ? 'starred=1' : '');
 		$s .= ($show_note ? ($s?' AND ':'') ."note!=''" : '');
 		$word = $this->db->escape_like_str($search_note);
 		$s .= ($word ? ($s?' AND ':'') ."note LIKE '%$word%'" : '');
-		$uid = $this->session->userdata('uid');
+		$uid = $this->user->uid();
 		return ( $s ? "pid in (SELECT pid FROM Bookmark WHERE uid=$uid AND $s)" : 'TRUE');
 	}
 
@@ -76,7 +77,8 @@ class Problems extends CI_Model{
 
 	function gen_restricted_lim()
 	{
-		$uid = $this->session->userdata('uid');
+		$this->load->model('user');
+		$uid = $this->user->uid();
 		$priv = $this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge;
 		if ($priv == 'restricted')
 			return "pid IN (SELECT pid FROM Allowed_Problem WHERE uid=$uid)";
@@ -285,9 +287,10 @@ class Problems extends CI_Model{
 
 	function update_bookmark($pid)
 	{
+		$this->load->model('user');
 		$star=($this->input->post('star')=='true'?1:0);
 		$note=$this->input->post('note');
-		$uid=$this->session->userdata('uid');
+		$uid=$this->user->uid();
 		$this->db->query("DELETE FROM Bookmark WHERE pid=? AND uid=?", array($pid,$uid));
 		if ($star || $note)
 			$this->db->query("INSERT INTO Bookmark (pid,uid,starred,note) VALUES (?,?,?,?)", array($pid,$uid,$star,$note));

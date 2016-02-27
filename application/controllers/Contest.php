@@ -137,6 +137,7 @@ class Contest extends CI_Controller {
 		$submission_per_page = 20;
 		
 		$this->load->model('submission');
+		$this->load->model('user');
 
 		if ($this->contests->is_template_contest($cid))
 			$info = $this->contests->load_template_contest_status($cid, $this->user->uid());
@@ -147,7 +148,7 @@ class Contest extends CI_Controller {
 			$row_begin = ($page - 1) * $submission_per_page;
 			$count = $this->contests->load_contest_submission_count($cid);
 			$data = $this->contests->load_contest_submission($cid, $row_begin, $submission_per_page,
-												$info->running, $this->session->userdata('username'), $this->user->is_admin());
+												$info->running, $this->user->username(), $this->user->is_admin());
 			$this->submission->format_data($data);
 			foreach ($data as $row)
 				foreach ($info->problemset as $problem)

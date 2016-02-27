@@ -53,6 +53,7 @@ class Customtest extends CI_Controller {
 	}
 	
 	public function run() {
+		$this->load->model('user');
 		$this->load->library('form_validation');
 		$this->load->helper('cookie');
 		
@@ -60,7 +61,7 @@ class Customtest extends CI_Controller {
 
 		$this->form_validation->set_rules('language', 'Language', 'required');
 
-		$uid = $this->session->userdata('uid');
+		$uid = $this->user->uid();
 		$uploaded_file='/tmp/foj/customtest/'.$this->config->item('oj_name').'/'.$uid.'/input';
 	
 		if ($this->form_validation->run() == FALSE){
@@ -132,7 +133,6 @@ class Customtest extends CI_Controller {
 				{
 					if (file_exists($uploaded_file))
 					{
-						$uid=$this->session->userdata('uid');
 						$cmd="cp $uploaded_file $path/data.in";
 						system($cmd);
 					} else
@@ -187,9 +187,10 @@ class Customtest extends CI_Controller {
 
 	public function upload_input()
 	{
+		$this->load->model('user');
 		if ($_FILES['input_file']['error']>0) exit('uploading error '.$_FILES['input_file']['error']);
 		if ($_FILES['input_file']['size']>16777216) exit('too large');
-		$uid=$this->session->userdata('uid');
+		$uid = $this->user->uid();
 		if (!file_exists('/tmp/foj/customtest/'.$this->config->item('oj_name').'/'.$uid))
 			mkdir('/tmp/foj/customtest/'.$this->config->item('oj_name').'/'.$uid,0777,true);
 		if (!move_uploaded_file($_FILES['input_file']['tmp_name'],'/tmp/foj/customtest/'.$this->config->item('oj_name').'/'.$uid.'/input'))

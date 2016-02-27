@@ -472,8 +472,9 @@ class Admin extends CI_Controller {
 	
 	function users(){
 		$this->load->model('misc');
+		$this->load->model('user');
 		$data = $this->user->load_users_list();
-		$groups = $this->misc->load_groups($this->session->userdata('uid'));
+		$groups = $this->misc->load_groups($this->user->uid());
 		foreach ($data as $row){
 			$row->groups = $this->user->load_user_groups($row->uid, $groups);
 		}

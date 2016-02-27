@@ -36,7 +36,7 @@ class Users extends CI_Controller {
 	function password_check($password){
 		if ($this->input->post('new_password', TRUE) == '') return TRUE;
 		$password = md5(md5($password) . $this->config->item('password_suffix'));
-		return $this->user->password_check($this->session->userdata('username'), $password) != FALSE;
+		return $this->user->password_check($this->user->username(), $password) != FALSE;
 	}
 	
 	public function settings($user){
@@ -53,7 +53,7 @@ class Users extends CI_Controller {
 		$this->form_validation->set_message('password_check', 'Wrong Old Password!');
 		
 		if ($this->form_validation->run() == FALSE){
-			$config = $this->user->load_configuration($this->session->userdata('uid'));
+			$config = $this->user->load_configuration($this->user->uid());
 			
 			$this->load->view('user/settings', array('user' => $user, 'config' => $config));
 		}else{
@@ -70,10 +70,10 @@ class Users extends CI_Controller {
 			$config['problemsPerPage'] = (int)$raw['problems_per_page'];
 			$config['submissionPerPage'] = (int)$raw['submission_per_page'];
 			
-			$this->user->save_configuration($this->session->userdata('uid'), $config);
+			$this->user->save_configuration($this->user->uid(), $config);
 			
 			if (isset($raw['old_password']) && isset($raw['new_password']) && $raw['old_password'] != '') {
-				$this->user->save_password($this->session->userdata('uid'),
+				$this->user->save_password($this->user->uid(),
 										md5(md5($raw['new_password']) . $this->config->item('password_suffix')));
 			}
 

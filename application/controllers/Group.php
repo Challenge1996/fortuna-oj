@@ -41,13 +41,15 @@ class Group extends CI_Controller {
 	
 	function group_list(){
 		$this->load->model('misc');
-		$groups = $this->misc->load_groups($this->session->userdata('uid'));
+		$this->load->model('user');
+		$groups = $this->misc->load_groups($this->user->uid());
 		$this->load->view('group/group_list', array('groups' => $groups));
 	}
 	
 	function group_view($gid = 0){
 		$this->load->model('misc');
-		$groups = $this->misc->load_groups($this->session->userdata('uid'));
+		$this->load->model('user');
+		$groups = $this->misc->load_groups($this->user->uid());
 		
 		$grouping = $groups[$gid];
 		$grouping->members = $this->misc->load_grouping($gid);
@@ -57,8 +59,9 @@ class Group extends CI_Controller {
 	
 	function group_setting($gid = 0){
 		$this->load->model('misc');
+		$this->load->model('user');
 		if (($gid > 0 && ! $this->misc->is_group_admin($gid)) || ($gid == 0 && ! $this->user->is_admin())) return;
-		$groups = $this->misc->load_groups($this->session->userdata('uid'));
+		$groups = $this->misc->load_groups($this->user->uid());
 		
 		if ($gid > 0){
 			$grouping = $groups[$gid];
@@ -94,14 +97,16 @@ class Group extends CI_Controller {
 	
 	function group_join($gid){
 		$this->load->model('misc');
-		$this->misc->group_join($gid, $this->session->userdata('uid'));
+		$this->load->model('user');
+		$this->misc->group_join($gid, $this->user->uid());
 	}
 	
 	function group_apply($code){
 		$this->load->model('misc');
+		$this->load->model('user');
 		$gid = $this->misc->search_group_by_code($code);
 		if ($gid != FALSE){
-			$this->misc->group_join($gid, $this->session->userdata('uid'));
+			$this->misc->group_join($gid, $this->user->uid());
 			$this->load->view('success');
 		}
 	}

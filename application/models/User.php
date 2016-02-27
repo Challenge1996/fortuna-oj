@@ -6,10 +6,22 @@ class User extends CI_Model{
 		parent::__construct();
 	}
 	
+	function uid() {
+		$ret = $this->session->userdata('uid');
+		session_write_close();
+		return $ret;
+	}
+
+	function username() {
+		$ret = $this->session->userdata('username');
+		session_write_close();
+		return $ret;
+	}
+
 	function is_logged_in(){
-		if ($this->session->userdata('uid') != FALSE)
+		if ($this->uid() != FALSE)
 		{
-			if (!self::uid_check($this->session->userdata('uid'))) return FALSE;
+			if (!self::uid_check($this->uid())) return FALSE;
 			return TRUE;
 		}
 		if ($this->input->cookie('identifier') != FALSE){
@@ -21,14 +33,6 @@ class User extends CI_Model{
 			}
 		}
 		return FALSE;
-	}
-
-	function uid() {
-		return $this->session->userdata('uid');
-	}
-
-	function username() {
-		return $this->session->userdata('username');
 	}
 
 	function load_uid($name) {
@@ -46,7 +50,9 @@ class User extends CI_Model{
 	}
 
 	function is_admin() {
-		return $this->session->userdata('priviledge') == 'admin';
+		$ret = ($this->session->userdata('priviledge') == 'admin');
+		session_write_close();
+		return $ret;
 	}
 
 	function permission($method) {
@@ -118,6 +124,7 @@ class User extends CI_Model{
 		$this->session->set_userdata('show_category', $data['showCategory']);
 		$this->session->set_userdata('problems_per_page', $data['problemsPerPage']);
 		$this->session->set_userdata('submission_per_page', $data['submissionPerPage']);
+		session_write_close();
 	}
 	
 	function login_success($post = array()){
@@ -129,6 +136,7 @@ class User extends CI_Model{
 		$this->session->set_userdata('username', $post['username']);
 		$this->session->set_userdata('uid', $result->row()->uid);
 		$this->session->set_userdata('priviledge', $result->row()->priviledge);
+		session_write_close();
 		self::set_data($result->row_array());
 		
 		$this->input->set_cookie(array('name' => 'priviledge',
@@ -180,6 +188,7 @@ class User extends CI_Model{
 		$this->session->unset_userdata('submission_per_page');
 		$this->session->unset_userdata('download');
 		$this->session->unset_userdata('push');
+		session_write_close();
 	}
 	
 	function load_last_page($uid){
@@ -272,6 +281,7 @@ class User extends CI_Model{
 		if (count($config) == 0) return;
 		$sql = $this->db->update_string('User', $config, "uid=$uid");
 		$this->session->set_userdata('show_category', $config['showCategory']);
+		session_write_close();
 		$this->db->query($sql);
 		self::set_data($config);
 	}

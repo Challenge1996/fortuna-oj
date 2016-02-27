@@ -42,6 +42,7 @@ class Misc extends CI_Controller {
 			return;
 		}
 
+		$this->load->model('user');
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
@@ -54,7 +55,7 @@ class Misc extends CI_Controller {
 		} else {
 			$data = $this->input->post(NULL, TRUE);
 			$data['from_uid'] = $this->user->uid();
-			$data['from_user'] = $this->session->userdata('username');
+			$data['from_user'] = $this->user->username();
 			$data['to_uid'] = $this->user->load_uid($data['to_user']);
 			$data['sendTime'] = date("Y-m-d H:i:s");
 			$this->user->save_mail($data);

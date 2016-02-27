@@ -169,10 +169,11 @@ class Submission extends CI_Model{
 	{
 		$this->load->model('problems');
 		$this->load->model('contests');
+		$this->load->model('user');
 		$result = $this->db->query("SELECT uid, pid, cid, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
 		if ($this->user->is_admin()) return TRUE;
-		$uid = $this->session->userdata('uid');
+		$uid = $this->user->uid();
 
 		if (isset($result->cid)) {
 			$cid = $result->cid;
@@ -220,11 +221,14 @@ class Submission extends CI_Model{
 		
 		$result = $result->row();
 		$this->load->model('problems');
-		if ($result->uid == $this->session->userdata('uid') && $this->problems->allow($result->pid) || $this->session->userdata('priviledge') == 'admin') {
+		$this->load->model('user');
+		$privilege = $this->session->userdata('priviledge');
+		session_write_close();
+		if ($result->uid == $this->user->uid() && $this->problems->allow($result->pid) || $privilege == 'admin') {
 			if ( ! is_null($result->cid)) {
 				$this->load->model('contests');
 				$info = $this->contests->load_contest_status($result->cid);
-				if ($this->session->userdata('priviledge') == 'admin') return $result;
+				if ($privilege == 'admin') return $result;
 				else if ($info->contestMode == 'Codeforces' || $info->contestMode == 'OI') return $result;
 				else if (strtotime($info->endTime) < strtotime('now')) return $result;
 				else return FALSE;

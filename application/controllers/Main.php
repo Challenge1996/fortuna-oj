@@ -58,8 +58,8 @@ class Main extends CI_Controller {
 	}
 	
 	public function userinfo(){
-		$user = $this->session->userdata('username');
-		$avatar = $this->user->load_avatar($this->session->userdata('uid'));
+		$user = $this->user->username();
+		$avatar = $this->user->load_avatar($this->user->uid());
 		$this->load->view('userinfo', array('user' => $user, 'avatar' => $avatar));
 	}
 	
@@ -168,9 +168,10 @@ class Main extends CI_Controller {
 
 	public function problemset($page = 0){
 		$problems_per_page = (int)$this->session->userdata('problems_per_page');
+		session_write_close();
 		if ( ! $problems_per_page) $problems_per_page = 20;
 		
-		$uid = $this->session->userdata('uid');
+		$uid = $this->user->uid();
 		
 		$this->load->model('user');
 		$this->load->model('problems');
@@ -533,7 +534,7 @@ class Main extends CI_Controller {
 
 			$data = array(
 				'uid'	=>	$uid,
-				'name'	=>	$this->session->userdata('username'),
+				'name'	=>	$this->user->username(),
 				'pid'	=>	$this->input->post('pid', TRUE),
 				'submitTime'	=>	date("Y-m-d H:i:s"),
 				'pushTime' => date("Y-m-d H:i:s")
@@ -654,6 +655,7 @@ class Main extends CI_Controller {
 
 	public function status($page = 1){
 		$submission_per_page = (int)$this->session->userdata('submission_per_page');
+		session_write_close();
 		if ( ! $submission_per_page) $submission_per_page = 20;
 		
 		$filter = (array)$this->input->get(NULL, TRUE);
@@ -771,7 +773,7 @@ class Main extends CI_Controller {
 		$this->load->model('misc');
 		$this->load->model('problems');
 		
-		$is_accepted = $this->misc->is_accepted($this->session->userdata('uid'), $pid);
+		$is_accepted = $this->misc->is_accepted($this->user->uid(), $pid);
 		//if ( ! $is_accepted && ! $this->user->is_admin()) return;
 		
 		if ( !isset($_FILES['solution'])) return;

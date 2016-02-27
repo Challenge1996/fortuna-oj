@@ -25,7 +25,8 @@ class Contests extends CI_Model{
 	}
 	
 	function is_valid($cid){
-		$uid = $this->session->userdata('uid');
+		$this->load->model('user');
+		$uid = $this->user->uid();
 		if (
 			$this->db->query("SELECT priviledge FROM User WHERE uid=?", array($uid))->row()->priviledge == 'restricted' &&
 			$this->db->query("SELECT COUNT(*) AS cnt FROM Contest_has_ProblemSet WHERE cid=? AND pid NOT IN (SELECT pid FROM Allowed_Problem WHERE uid=?)", array($cid, $uid))->row()->cnt
@@ -37,7 +38,6 @@ class Contests extends CI_Model{
 							->num_rows() > 0) 
 			return TRUE;
 			
-		$uid = $this->session->userdata('uid');
 		$result = $this->db->query("SELECT * FROM Team
 								WHERE (idParticipant0=? OR idParticipant1=? OR idParticipant2=?) AND cid=?",
 								array($uid, $uid, $uid, $cid));
@@ -346,6 +346,7 @@ class Contests extends CI_Model{
 				$data = $this->db->query("SELECT sid, uid, name, pid, score, status, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
 			else
 				$data = $this->db->query("SELECT sid, uid, name, pid, score, status, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
+			session_write_close();
 			foreach ($data as $row){
 				if ( ! isset($result[$row->uid])){
 					$result[$row->uid] = new Participant;
@@ -424,6 +425,7 @@ class Contests extends CI_Model{
 					$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE pid in ($pids) ORDER BY sid DESC")->result();
 				else
 					$data = $this->db->query("SELECT sid, uid, name, pid, score, submitTime FROM Submission WHERE isShowed=1 AND pid in ($pids) ORDER BY sid DESC")->result();
+				session_write_close();
 			}
 			foreach ($data as $row){
 				if (!isset($result[$row->uid])){
