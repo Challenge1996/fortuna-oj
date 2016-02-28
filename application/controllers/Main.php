@@ -355,6 +355,13 @@ class Main extends CI_Controller {
 	public function download($pid, $filename = 'data.zip', $filetypeflag = 0, $path = 'data_path') {
 		//filetypeflag: 0 -> auto detect, 1 -> application/octet-stream
 		$filename = rawurldecode(urldecode($filename));
+
+		if ($filename != $this->security->sanitize_filename($filename, true))
+		{
+			$this->load->view('error', array('message' => 'The file name has disallowed charaters'));
+			return;
+		}
+
 		$file = $this->config->item($path) . $pid . "/$filename";
   		$filetype = mime_content_type($file);
   		if ($filetype == 'image/x-portable-bitmap') $filetype = 'text/plain';
@@ -370,6 +377,12 @@ class Main extends CI_Controller {
 
 	public function codedownload($sid, $file)
 	{
+		if ($file != $this->security->sanitize_filename($file, true))
+		{
+			$this->load->view('error', array('message' => 'The file name has disallowed charaters'));
+			return;
+		}
+
 		$this->load->model('submission');
 		$front = intval($sid/10000);
 		$back = $sid%10000;
@@ -381,7 +394,7 @@ class Main extends CI_Controller {
 		else
 			$this->load->view('main/download', array(
 				'file' => "$path/$file",
-				'filename' => $file.($this->input->get('ext')===null?'.'.$this->input->get('ext'):''),
+				'filename' => $file.($this->input->get('ext')?'.'.$this->input->get('ext'):''),
 				'filetype' => 'application/octet-strem'
 			));	
 	}
@@ -781,13 +794,14 @@ class Main extends CI_Controller {
 		$temp_file = $_FILES['solution']['tmp_name'];
 		$target_path = $this->config->item('solution_path') . $pid . '/';
 		if (! is_dir($target_path)) mkdir($target_path);
-		$target_file = $target_path . $_FILES['solution']['name'];
+		$sanitized_filename = $this->security->sanitize_filename($_FILES['solution']['name']);
+		$target_file = $target_path . $sanitized_filename;
 		
 		if (file_exists($target_file)) return;
 		
 		if (! is_executable($temp_file)) {
 			move_uploaded_file($temp_file, $target_file);
-			$this->problems->add_solution($pid, $_FILES['solution']['name']);
+			$this->problems->add_solution($pid, $sanitized_filename);
 			
 			$this->load->view('success');
 		}

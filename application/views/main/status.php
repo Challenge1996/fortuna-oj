@@ -1,4 +1,6 @@
 <?php
+	$this->load->model('submission');
+
 	function my_set_checkbox($array, $value){
 		if ($array != NULL && in_array($value, $array)) return 'checked';
 	}
@@ -179,7 +181,7 @@
 					echo "<td><span class=\"label label-info\">$row->memory</span></td>";
 				} else echo '<td>---</td><td>---</td>';
 				
-				if ($row->uid == $this->user->uid() || $this->user->is_admin() || ! $row->private)
+				if ($this->submission->allow_view_code($row->sid))
 					echo "<td><a href=\"#main/code/$row->sid\">$row->language</a></td>";
 				else echo "<td>$row->language</td>";
 				echo "<td>$row->codeLength</td>";

@@ -107,7 +107,7 @@ class Users extends CI_Controller {
 		
 		if (stristr($_FILES['avatar']['type'], 'image') === false) return;
 		
-		$file_parts = pathinfo($_FILES['avatar']['name']);
+		$file_parts = pathinfo($this->security->sanitize_filename($_FILES['avatar']['name']));
 		$extension = $file_parts['extension'];
 		$target_file = $target_path . $user->uid . '.' . $extension;
 		move_uploaded_file($temp_file, $target_file);

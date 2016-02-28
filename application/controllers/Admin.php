@@ -13,7 +13,7 @@ class Admin extends CI_Controller {
 		$this->load->model('user');
 		
 		$allowed_methods = array('problemset');
-		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit');
+		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist');
 
 		if ($this->config->item('allow_add_problem'))
 			$allowed_methods[] = 'addproblem';
@@ -230,7 +230,7 @@ class Admin extends CI_Controller {
 		
 		for ($i = 0; $i < $count; $i++) {
 			$temp_file = $_FILES['files']['tmp_name'][$i];
-			$target_file = $target_path . $_FILES['files']['name'][$i];
+			$target_file = $target_path . $this->security->sanitize_filename($_FILES['files']['name'][$i]);
 			//$file_types = array('c', 'cpp', 'pas', 'dpr');
 			//$file_parts = pathinfo($_FILES['files']['name'][$i]);
 			//$basename = $file_parts['basename'];
@@ -752,6 +752,20 @@ class Admin extends CI_Controller {
 				$this->misc->save_dynamic_config($data[$key]->valuefile, $key, $value);
 		} else
 			$this->load->view('admin/global_settings', array('data' => $data));
+	}
+
+	function check_file_exist($pid, $file)
+	{
+		$this->load->model('problems');
+		if (
+			$pid != $this->security->sanitize_filename($pid) ||
+			$file != $this->security->sanitize_filename($file)
+		   )
+		   exit("<i class='icon-remove'></i>Name disallowed");
+		if ($this->problems->file_exist($pid, $file, $this->input->get('require')))
+			exit("<i class='icon-ok'></i>OK. File exists");
+		else
+			exit("<i class='icon-remove'></i>File not exists");
 	}
 
 	// temp

@@ -329,6 +329,16 @@ class Problems extends CI_Model{
 		return false;
 	}
 
+	function file_exist($pid, $filename, $require = '')
+	{
+		$path = $this->config->item('data_path') . $pid . '/' . $filename;
+		if (! file_exists($path)) return FALSE;
+		if (stripos($require, 'r') !== FALSE && ! is_readable($path)) return FALSE;
+		if (stripos($require, 'w') !== FALSE && ! is_writeable($path)) return FALSE;
+		if (stripos($require, 'x') !== FALSE && ! is_executable($path)) return FALSE;
+		return TRUE;
+	}
+
 	function mark_update($pid)
 	{
 		$pushed = $this->problems->load_pushed($pid);
