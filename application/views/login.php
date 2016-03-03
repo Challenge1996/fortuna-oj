@@ -1,5 +1,7 @@
 <?php $this->load->model('user'); ?>
 
+<script> saltl="<?=$saltl?>"; saltr="<?=$saltr?>"; </script>
+
 <script src="js/login.js"></script>
 
 <div id="login_field" class="modal">
@@ -17,7 +19,8 @@
 				
 				<div>
 				<span style="position:absolute; left:10"><i class="icon-briefcase"></i><?=lang('password')?></span>
-					<input type="password" name="password" placeholder="Password" style="margin-left:90px" />
+					<input id="ori_passwd" type="password" placeholder="Password" style="margin-left:90px" />
+					<input id="new_passwd" type="hidden" name="password" />
 					<?=form_error('password')?>
 				</div>
 				

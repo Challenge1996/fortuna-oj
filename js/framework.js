@@ -203,6 +203,7 @@ function load_userinfo() {
 
 function login_submit() {
 	$('#login_field').modal('hide');
+	$('#new_passwd').val(saltl+$('#ori_passwd').val()+saltr);
 	$('#login_form').ajaxSubmit({
 		success: function login_success(responseText, stautsText){
 			if (responseText == 'success'){
