@@ -820,21 +820,15 @@ class Contests extends CI_Model{
 		if ($this->load_template_contest_status($cid, $uid)) return FALSE;
 		$info = $this->load_contest_status($cid);
 		if ($info->now < strtotime($info->startTime)) return FALSE;
-		$this->load->model('misc');
-		if ($info->now + $this->load_relative_time($cid)->endAfter > strtotime($info->endTime)) return FALSE;
 		return TRUE;
 	}
 
 	function start_contest($cid, $uid)
 	{
 		if (!$this->can_start_contest($cid, $uid)) return FALSE;
-		$this->db->query("INSERT INTO Contest_has_User (cid, uid, startTime) VALUES (?, ?, NOW())", array($cid, $uid));
-		$endTime = strtotime($this->load_contest_status($cid)->endTime);
-		$actEndTime = strtotime($this->load_template_contest_status($cid, $uid)->endTime);
-		if ($actEndTime > $endTime) {
-			$this->db->query("DELETE FROM Contest_has_User WHERE cid=? AND uid=?", array($cid, $uid));
-			return FALSE;
-		}
+		$startTime = min(strtotime('now'), strtotime($this->load_contest_status($cid)->endTime) - $this->load_relative_time($cid)->endAfter);
+		$this->load->model('misc');
+		$this->db->query("INSERT INTO Contest_has_User (cid, uid, startTime) VALUES (?, ?, ?)", array($cid, $uid, $this->misc->format_datetime($startTime)));
 		return TRUE;
 	}
 
