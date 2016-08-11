@@ -5,6 +5,18 @@
 		<p>Powered by Codeigniter / Bootstrap.</p>
 	</div>
 	<div class="container-fluid">
+		<h3>FAQ: 为什么我的程序在本地跑没事，交到你的OJ上就挂了(ノ=Д=)ノ┻━┻</h3>
+		<ul class="row-fluid text-left">
+			<li>你的数组越界了，你的数组越界了，你的数组越界了！一些隐藏的数组越界可能在本地不会报错，而到了OJ上由于运行环境发生了变化，才发生错误。数组越界不仅可能导致运行错误，也可能导致答案错误或超时等，这是由于数组越界干扰了其他内存导致的。</li>
+			<li>不要使用gets等读取一行，因为这些函数使用换行符来判断行结束（当然也不要手动判断换行符）。Windows下换行符是\r\n，而Linux下换行符是\r。假设此题的数据是在Windows下生成的，那么他的换行符是\r\n，而OJ上的程序是在Linux下编译的，读取的换行符是\n，这样就错了。</li>
+			<li>请记得使用%lld而非%I64d。</li>
+			<li>如果出现了编译错误，记得旧版g++可能不需要#include&lt;cstring&gt;，而OJ上的g++需要。</li>
+			<li>如果你内存超限了，记住OJ是64位机器，指针占8字节内存。</li>
+			<li>你的程序可能有精度等其他问题。</li>
+			<li>如果很多人都挂了，也可能是SPJ由于上述原因挂了。</li>
+		</ul>
+	</div>
+	<div class="container-fluid">
 		<div class="row-fluid text-left">
 			<?=count($online)?> User(s) Online:
 			<?php foreach ($online as $name): ?>
