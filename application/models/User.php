@@ -156,10 +156,15 @@ class User extends CI_Model{
 			//$this->db->query("UPDATE User SET identifier='' WHERE uid=?", array($result->row()->uid));
 			$this->input->set_cookie(array('name' => 'identifier', 'value' => '', 'expire' => '0'));
 		}
-		
+
+		$ip = $this->input->ip_address();
+		$handle = popen("curl -s -m 1 cip.cc/$ip | grep 地址 | sed \"s/地址\\t: //g\"", "r");
+		$addr = fread($handle, 45);
+		pclose($handle);
+		$ip = "$ip ($addr)";
 		$this->db->query("UPDATE User SET lastLogin=now(), lastIP=?
 						WHERE uid=?",
-						array($this->input->ip_address(), (int)$result->row()->uid));
+						array($ip, (int)$result->row()->uid));
 	}
 	
 	function registion_success($post = array()){
