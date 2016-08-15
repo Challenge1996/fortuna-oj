@@ -1,8 +1,25 @@
 <table class="table table-bordered table-condensed table-stripped">
 	<thead>
-		<th>uid</th><th>Name</th><th>School</th><th>Status</th><th>Priviledge</th><th>Groups</th>
-		<th>Last IP Addr</th>
-		<th>Last Login</th>
+		<?php foreach (array(
+			'uid' => 'uid',
+			'name' => 'Name',
+			'school' => 'School',
+			'isEnabled' => 'Status',
+			'priviledge' => 'Privilege',
+			'groups' => 'Groups',
+			'lastIP' => 'Last IP Address',
+			'lastLogin' => 'Last Login Time') as $key => $title): ?>
+			<th style='white-space: nowrap'>
+				<?php
+					$iconType = $keyword!=$key?'icon-resize-vertical':($order!='reverse'?'icon-arrow-up':'icon-arrow-down');
+					$iconUrl = ($keyword!=$key||$order=='reverse')?"#admin/users?sort=$key":"#admin/users?sort=$key&order=reverse";
+				?>
+				<a href='<?=$iconUrl?>'>
+					<?=$title?>
+					<i class='<?=$iconType?>'></i>
+				</a>
+			</th>
+		<?php endforeach; ?>
 		<th></th>
 	</thead>
 	<tbody><?php

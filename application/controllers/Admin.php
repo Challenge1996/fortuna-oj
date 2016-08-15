@@ -478,7 +478,33 @@ class Admin extends CI_Controller {
 		foreach ($data as $row){
 			$row->groups = $this->user->load_user_groups($row->uid, $groups);
 		}
-		$this->load->view('admin/users', array('data' => $data));
+
+		$keyword = $this->input->get('sort');
+		$order = $this->input->get('order');
+		if (!isset($keyword))
+		{
+			$keyword = 'uid';
+			$order = 'reverse';
+		} else if (!isset($order))
+			$order = null;
+		switch ($keyword)
+		{
+		case 'uid':
+		case 'name':
+		case 'school':
+		case 'isEnabled':
+		case 'priviledge':
+		case 'groups':
+		case 'lastIP':
+		case 'lastLogin':
+			if ($order != 'reverse')
+				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword > $rhs->$keyword; };
+			else
+				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword < $rhs->$keyword; };
+			usort($data, $callback);
+		}
+
+		$this->load->view('admin/users', array('data' => $data, 'keyword' => $keyword, 'order' => $order));
 	}
 	
 	function change_user_status($uid){
