@@ -212,7 +212,7 @@ class Main extends CI_Controller {
 		else if ($page == 0)
 			$page = 1;
 
-		$count = $this->problems->count(FALSE, FALSE,
+		$count = $this->problems->count(FALSE, $show_in_control,
 		    	$keyword, $filter, $show_starred, $show_note, $search_note);
 		if ($count > 0 && ceil($count / $problems_per_page) < $page)
 			$page = ceil($count / $problems_per_page);
