@@ -18,6 +18,10 @@
 					<?=$title?>
 					<i class='<?=$iconType?>'></i>
 				</a>
+				<?php if ($key == 'school'): ?>
+					<span class='btn btn-mini pull-right school-display' onclick='edit_school();'>Edit</span>
+					<span class='btn btn-mini btn-primary pull-right school-edit' style='display:none' onclick='submit_school();'>Save</span>
+				<?php endif; ?>
 			</th>
 		<?php endforeach; ?>
 		<th></th>
@@ -26,7 +30,10 @@
 		foreach ($data as $row){
 			echo "<tr><td>$row->uid</td>";
 			echo "<td><span class='label label-info name'><a href='#users/$row->name'>$row->name</a></span></td>";
-			echo "<td>$row->school</td>";
+			echo "<td>
+				<span class='school-display'>$row->school</span>
+				<input type='text' class='school-edit' style='display:none' onchange='newSchool[$row->uid]=$(this).val()' value='$row->school' />
+			</td>";
 			echo "<td><span style='width:55px; text-align:center' onclick=\"user_change_status($row->uid, $(this))\"";
 			if ($row->isEnabled) echo 'class="label label-success">Enabled';
 			else echo 'class="label label-important">Disabled';
@@ -116,5 +123,20 @@
 				option.show();
 			}
 		}, false);
+	}
+
+	function edit_school()
+	{
+		$('.school-display').hide();
+		$('.school-edit').show();
+		newSchool = {};
+	}
+
+	function submit_school()
+	{
+		$.post("index.php/admin/users", {'newschool':newSchool}, function(data) {
+			newSchool = undefined;
+			$("#page_content").html(data);
+		});
 	}
 </script>

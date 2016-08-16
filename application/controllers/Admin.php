@@ -473,6 +473,12 @@ class Admin extends CI_Controller {
 	function users(){
 		$this->load->model('misc');
 		$this->load->model('user');
+
+		$newSchool = $this->input->post('newschool');
+		if ($newSchool)
+			foreach ($newSchool as $uid => $schoolName)
+				$this->db->query("UPDATE User SET school=? WHERE uid=?", array($schoolName, $uid));
+
 		$data = $this->user->load_users_list();
 		$groups = $this->misc->load_groups($this->user->uid());
 		foreach ($data as $row){
