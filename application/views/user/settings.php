@@ -2,10 +2,11 @@
 <legend><strong><em>Settings:</em></strong></legend>
 
 <form action="index.php/users/<?=$user->name?>/settings" method="post" id="user_settings" class="form-horizontal">
+	<!-- do not use `autocomplete='off'` for some browsers ignore it -->
 	<div class="control-group">
 		<label for="old_password" class="control-label">Old Password</label>
 		<div class="controls controls-row">
-			<input type="password" name="old_password" id="old_password" class="input-large" />
+			<input type="password" name="old_password" id="old_password" class="input-large" autocomplete="new-password"/>
 			<?=form_error('old_password')?>
 		</div>
 	</div>
@@ -13,14 +14,14 @@
 	<div class="control-group">
 		<label for="new_password" class="control-label">New Password</label>
 		<div class="controls controls-row">
-			<input type="password" name="new_password" id="new_password" class="input-large" />
+			<input type="password" name="new_password" id="new_password" class="input-large" autocomplete="new-password"/>
 		</div>
 	</div>
 	
 	<div class="control-group">
 		<label for="confirm_new_password" class="control-label">Confirm New Password</label>
 		<div class="controls controls-row">
-			<input type="password" name="confirm_new_password" id="confirm_new_password" class="input-large" />
+			<input type="password" name="confirm_new_password" id="confirm_new_password" class="input-large" autocomplete="new-password"/>
 			<span id="not_match" class="alert" style="display:none"></span>
 		</div>
 	</div>
