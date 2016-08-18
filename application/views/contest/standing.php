@@ -1,88 +1,87 @@
+<?php
+	if (!isset($data) || !$data) {
+		echo '<div class="alert"><strong>THERE IS NO SUBMISSION</strong></div>';
+		return;
+	}
+?>
+
 <script type="text/javascript" src="js/contest_statistic.js"></script>
+<script>
+	angular.module('appStanding') // already created
+		.constant('data', <?=json_encode(isset($data)?$data:null)?>)
+		.constant('info', <?=json_encode(isset($info)?$info:null)?>)
+		.constant('startTime', <?=json_encode(isset($startTime)?$startTime:null)?>)
+		.constant('est', <?=json_encode(isset($est)?$est:null)?>);
+</script>
 
-<div class="standing_table">
-	<?php
-		if (!isset($data) || !$data) {
-			echo '<div class="alert"><strong>THERE IS NO SUBMISSION</strong></div>';
-			return;
-		}
-	?>
-
-	<?php if (isset($startTime)): ?>
-		<button onclick="download_statistic(<?=$info->cid?>)" class="btn btn-small pull-right"><strong>export</strong></button>
-		<button onclick="toggle_previous()" class="btn btn-small pull-right" id="sps_button"><strong>show previous submissions</strong></button>
-	<?php else: ?>
-		<button onclick="download_result(<?=$info->cid?>)" class="btn btn-small pull-right"><strong>export</strong></button>
-	<?php endif; ?>
+<div id='standing-app' ng-controller='StandingCtrl'>
+	<button ng-if-start='startTime' ng-click="download_statistic(info.cid)" class="btn btn-small pull-right">
+		<strong>export</strong>
+	</button>
+	<button ng-if-end ng-click="$parent.show_previous=!show_previous" class="btn btn-small pull-right" id="sps_button">
+		<strong>{{show_previous ? 'hide' : 'show'}} previous submissions</strong>
+	</button>
+	<button ng-if='!startTime' ng-click="download_result(info.cid)" class="btn btn-small pull-right">
+		<strong>export</strong>
+	</button>
 
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th><?=lang('rank')?></th><th><?=lang('user')?></th>
-				<?php
-					if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
-						echo '<th>' . lang('score') . '</th>';
-						foreach ($info->problemset as $row){
-							$pid[] = $row->pid;
-							echo "<th style='text-align:center'><a href='#contest/show/$info->cid/$row->id'>$row->title</a></th>";
-						}
-					}else if ($info->contestMode == 'ACM'){
-						echo '<th>Solved</th><th>Penalty</th>';
-						for ($i = 0; $i < $info->count; $i++) echo '<th style="text-align: center">' . chr(65 + $i) . '</th>';
-					}
-				?>
+				<th><?=lang('rank')?></th>
+				<th><?=lang('user')?></th>
+				<th ng-if-start='oi'><?=lang('score')?></th>
+				<th ng-if-end ng-repeat='row in info.problemset' style='text-align:center'>
+					<a href='#contest/show/{{info.cid}}/{{row.id}}'>{{row.title}}</a>
+				</th>
+				<th ng-if-start='acm'>Solved</th>
+				<th>Penalty</th>
+				<th ng-if-end ng-repeat='i in range(0, info.count)' style='text-align:center'>
+					{{ indexChar(i) }}
+				</th>
 			</tr>
 		</thead>
-		<tbody><?php
-		if ($data != FALSE){
-			foreach ($data as $row){
-				$uid = $row->uid;
-				$s=(isset($startTime) && $row->submitTime < $startTime)?' class="submitted_before" style="display:none" ':'';
-				echo "<tr".$s.">";
-				echo "<td><div ".$s."><span class=\"label\">$row->rank</span></div></td>";
-				echo "<td><div ".$s."><a href='#users/$row->name'><span class=\"label label-info\">$row->name</span></a></div></td>";
-				echo "<td><div ".$s.">".
-					"<span class=\"badge badge-info\">$row->score</span>".
-					(isset($est[$uid])? "<sup><span class=\"badge\">".$est[$uid]['sum']."</span></sup>" :'').
-					"</div></td>";
-				
-				if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
-					foreach ($pid as $prob){
-						echo "<td style='text-align:center'><div ".$s.">";
-						if (isset($row->acList[$prob])){
-							//echo $prob;
-							echo "<a href='#main/code/" . $row->attempt[$prob] . "'>";
-							if ($row->acList[$prob] == 0)
-								echo '<span class="badge badge-important">' . $row->acList[$prob] . '</span>';
-							else
-								echo '<span class="badge badge-success">' . $row->acList[$prob] . '</span>';
-							echo '</a>';
-						}
-						if (isset($est[$uid]) && isset($est[$uid][$prob]))
-							echo '<sup><span class="badge">'.$est[$uid][$prob].'</span></sup>';
-						echo '</div></td>';
-					}
-				}else if ($info->contestMode == 'ACM'){
-					echo "<td><div ".$s."><span class=\"badge badge-info\">$row->penalty</span></div></td>";
-					foreach ($info->problemset as $prob){
-						echo '<td style="text-align: center"><div'.$s.'>';
-						if (isset($row->attempt[$prob->pid])){
-							if (isset($row->acList[$prob->pid])){
-								echo '<span class="badge badge-success">' . $row->attempt[$prob->pid] . '/' . $row->acList[$prob->pid] . '</span>';
-							}else{
-								echo '<span class="badge badge-important">-' . $row->attempt[$prob->pid] . '</span>';
-							}
-						}
-						echo '</div></td>';
-					}
-				}
-				
-				echo '</tr>';
-			}
-		}	
-		?></tbody>
+		<tbody>
+			<tr ng-repeat='row in data' ng-if='!(startTime && row.submitTime < startTime) || show_previous'>
+				<td><span class='label'>{{row.rank}}</span></td>
+				<td><a href='#users/{{row.name}}'><span class='label label-info'>{{row.name}}</span></a></td>
+				<td>
+					<span class='badge badge-info'>{{row.score}}</span><!-- to remove spaces
+				 --><sup ng-if='est[row.uid]'><span class='badge'>{{est[row.uid]['sum']}}</span></sup>
+				</td>
+				<td ng-if='oi' ng-repeat='prob in info.problemset' style='text-align:center'>
+					<a ng-if='isset(row.acList[prob.pid])' href='#main/code/{{row.attempt[prob.pid]}}'>
+						<span ng-class='{badge:true, "badge-important":!row.acList[prob.pid], "badge-success":row.acList[prob.pid]}'>
+							{{row.acList[prob.pid]}}
+						</span><!-- to remove spaces
+				 --></a><!-- to remove spaces
+				 --><sup ng-if='est[row.uid] && isset(est[row.uid][prob.pid])'><!-- to remove spaces
+					 --><span class='badge'>{{est[row.uid][prob.pid]}}</span>
+					<sup>
+				</td>
+				<td ng-if-start='acm'><span class='badge badge-info'>{{row.penalty}}</span></td>
+				<td ng-if-end ng-repeat='prob in info.problemset' style='text-align:center'>
+					<span ng-if='row.attempt[prob.pid]'>
+						<span ng-if='isset(row.acList[prob.pid])' class='badge badge-success'>
+							{{row.attempt[prob.pid]}}/{{row.acList[prob.pid]}}
+						</span>
+						<span ng-if='!isset(row.acList[prob.pid])' class='badge badge-important'>
+							-{{row.attempt[prob.pid]}}
+						</span>
+					</span>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </div>
 
 <iframe id="downloader" style="display:none"></iframe>
+
+<script>
+	// place this after all js code
+	// have to do this because the page is loaded via AJAX
+	$(document).ready(function() {
+		angular.bootstrap($('#standing-app'), ['appStanding']);
+	});
+</script>
 

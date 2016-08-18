@@ -20,6 +20,8 @@
 		<script src="application/third_party/ckeditor/ckeditor.js"></script>
 		<script src="application/third_party/ckfinder/ckfinder.js"></script>
 
+		<script type="text/javascript" src="js/angular.min.js"></script>
+
 		<?php if (isset($head)) echo $head?>
 		
 		<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
