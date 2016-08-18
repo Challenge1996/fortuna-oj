@@ -28,16 +28,33 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th><?=lang('rank')?></th>
-				<th><?=lang('user')?></th>
-				<th ng-if-start='oi'><?=lang('score')?></th>
+				<th style='whitespace: nowrap'>
+					<?=lang('rank')?>
+					<i class="{{sortUser.getClass('rank')}}" ng-click="sortUser.toggle('rank')"></i>
+				</th>
+				<th style='whitespace: nowrap'>
+					<?=lang('user')?>
+					<i class="{{sortUser.getClass('name')}}" ng-click="sortUser.toggle('name')"></i>
+				</th>
+				<th ng-if-start='oi' style='whitespace: nowrap'>
+					<?=lang('score')?>
+					<i class="{{sortUser.getClass('score')}}" ng-click="sortUser.toggle('score')"></i>
+				</th>
 				<th ng-if-end ng-repeat='row in info.problemset' style='text-align:center'>
 					<a href='#contest/show/{{info.cid}}/{{row.id}}'>{{row.title}}</a>
+					<i class="{{sortUser.getClass(row.pid)}}" ng-click="sortUser.toggle(row.pid)"></i>
 				</th>
-				<th ng-if-start='acm'>Solved</th>
-				<th>Penalty</th>
-				<th ng-if-end ng-repeat='i in range(0, info.count)' style='text-align:center'>
-					{{ indexChar(i) }}
+				<th ng-if-start='acm' style='whitespace: nowrap'>
+					Solved
+					<i class="{{sortUser.getClass('score')}}" ng-click="sortUser.toggle('score')"></i>
+				</th>
+				<th style='whitespace: nowrap'>
+					Penalty
+					<i class="{{sortUser.getClass('penalty')}}" ng-click="sortUser.toggle('penalty')"></i>
+				</th>
+				<th ng-if-end ng-repeat='row in info.problemset' style='text-align:center'>
+					{{ indexChar(row.id) }}
+					<i class="{{sortUser.getClass(row.pid)}}" ng-click="sortUser.toggle(row.pid)"></i>
 				</th>
 			</tr>
 		</thead>
