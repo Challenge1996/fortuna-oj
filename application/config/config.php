@@ -425,5 +425,8 @@ $config['allow_add_problem'] = true;
 // Allow forum
 $config['allow_forum'] = true;
 
+// Allow normal users to switch their submissions as public
+$config['allow_normal_user_public'] = true;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

@@ -119,3 +119,5 @@
 	$lang['global_settings_item_description_allow_add_problem'] = 'Allow normal user to add problems';
 	$lang['global_settings_item_key_allow_forum'] = 'Allow Forum';
 	$lang['global_settings_item_description_allow_forum'] = 'Allow using contest forum';
+	$lang['global_settings_item_key_allow_normal_user_public'] = 'Allow publishing submissions';
+	$lang['global_settings_item_description_allow_normal_user_public'] = 'Allow normal users to switch their submissions as public';

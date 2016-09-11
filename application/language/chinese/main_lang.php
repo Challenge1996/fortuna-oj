@@ -119,3 +119,5 @@
 	$lang['global_settings_item_description_allow_add_problem'] = '允许普通用户添加题目';
 	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
 	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';
+	$lang['global_settings_item_key_allow_normal_user_public'] = '允许开放代码';
+	$lang['global_settings_item_description_allow_normal_user_public'] = '允许普通用户将其代码设为公开';

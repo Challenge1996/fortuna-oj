@@ -62,7 +62,7 @@
 			echo "<td>$row->submitTime</td>";
 
 			echo '<td>';
-			if ($this->user->uid() == $row->uid || $this->user->is_admin()){
+			if ($this->user->uid() == $row->uid && $this->config->item('allow_normal_user_public') || $this->user->is_admin()){
 				echo "<a onclick=\"access_page('main/submission_change_access/$row->sid')\">";
 				if ($row->private == 1) echo '<i class="icon-lock"></i>'; else echo '<i class="icon-globe"></i>';
 				echo '</a>';
