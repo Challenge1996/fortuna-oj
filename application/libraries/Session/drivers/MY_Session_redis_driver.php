@@ -120,21 +120,21 @@ class MY_Session_redis_driver extends CI_Session_redis_driver
 			$this->_fingerprint = md5($session_data);
 			return $session_data;
 		}
-		return $this->_fail();
+		return $this->_failure;
 	}
 
 	public function write($session_id, $session_data)
 	{
 		if ( ! isset($this->_redis))
 		{
-			return $this->_fail();
+			return $this->_failure;
 		}
 		// Was the ID regenerated?
 		elseif ($session_id !== $this->_session_id)
 		{
 			if ( ! $this->_release_lock() OR ! $this->_get_lock($session_id))
 			{
-				return $this->_fail();
+				return $this->_failure;
 			}
 			$this->_key_exists = FALSE;
 			$this->_session_id = $session_id;
@@ -150,12 +150,12 @@ class MY_Session_redis_driver extends CI_Session_redis_driver
 					$this->_key_exists = TRUE;
 					return $this->_success;
 				}
-				return $this->_fail();
+				return $this->_failure;
 			}
 			return ($this->_redis->setTimeout($this->_key_prefix.$session_id, $this->_config['expiration']))
 				? $this->_success
-				: $this->_fail();
+				: $this->_failure;
 		}
-		return $this->_fail();
+		return $this->_failure;
 	}
 }
