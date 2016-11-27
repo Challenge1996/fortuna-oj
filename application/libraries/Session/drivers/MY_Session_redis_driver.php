@@ -4,6 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class MY_Session_redis_driver extends CI_Session_redis_driver
 {
+	/**
+	 * Key exists flag
+	 *
+	 * @var bool
+	 */
+	protected $_key_exists = FALSE;
+
 	public function close()
 	{
 		$ret = parent::close();
@@ -100,4 +107,55 @@ class MY_Session_redis_driver extends CI_Session_redis_driver
 		return FALSE;
 	}
 
+	public function read($session_id)
+	{
+		if (isset($this->_redis) && $this->_get_lock($session_id))
+		{
+			// Needed by write() to detect session_regenerate_id() calls
+			$this->_session_id = $session_id;
+			$session_data = $this->_redis->get($this->_key_prefix.$session_id);
+			is_string($session_data)
+				? $this->_key_exists = TRUE
+				: $session_data = '';
+			$this->_fingerprint = md5($session_data);
+			return $session_data;
+		}
+		return $this->_fail();
+	}
+
+	public function write($session_id, $session_data)
+	{
+		if ( ! isset($this->_redis))
+		{
+			return $this->_fail();
+		}
+		// Was the ID regenerated?
+		elseif ($session_id !== $this->_session_id)
+		{
+			if ( ! $this->_release_lock() OR ! $this->_get_lock($session_id))
+			{
+				return $this->_fail();
+			}
+			$this->_key_exists = FALSE;
+			$this->_session_id = $session_id;
+		}
+		if (isset($this->_lock_key))
+		{
+			$this->_redis->setTimeout($this->_lock_key, 300);
+			if ($this->_fingerprint !== ($fingerprint = md5($session_data)) OR $this->_key_exists === FALSE)
+			{
+				if ($this->_redis->set($this->_key_prefix.$session_id, $session_data, $this->_config['expiration']))
+				{
+					$this->_fingerprint = $fingerprint;
+					$this->_key_exists = TRUE;
+					return $this->_success;
+				}
+				return $this->_fail();
+			}
+			return ($this->_redis->setTimeout($this->_key_prefix.$session_id, $this->_config['expiration']))
+				? $this->_success
+				: $this->_fail();
+		}
+		return $this->_fail();
+	}
 }
