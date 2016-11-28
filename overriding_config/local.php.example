@@ -25,10 +25,10 @@ $assign_to_config['allow_message']			= true;
 
 $assign_to_config['allow_add_problem']		= true;
 
-$assign_to_config['allow_sendgrid']		= true;
+$assign_to_config['allow_sendgrid']			= true;
 
 // $db is loaded in application/config/database.php
 
-$db['default']['database']		= 'oj'; // in overriding_config/local.php
+$db['default']['database']					= 'oj'; // in overriding_config/local.php
 
 // End of File : overriding_config/local.php
