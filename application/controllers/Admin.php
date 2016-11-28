@@ -117,7 +117,7 @@ class Admin extends CI_Controller {
 			}
 			
 			$target_path = $this->config->item('data_path') . '/' . $pid . '/';
-			if (! is_dir($target_path)) mkdir($target_path);
+			if (! is_dir($target_path)) mkdir($target_path, 0777, true);
 			
 			if ($new) $this->load->view('information', array('data' => 'success' . $pid));
 			else $this->load->view('success');
