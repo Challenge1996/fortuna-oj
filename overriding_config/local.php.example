@@ -1,0 +1,34 @@
+<?php  if (!isset($assign_to_config) && !isset($db)) exit('No direct script access allowed');
+
+// Here are the configurations that vary from each OJ
+
+// $assign_to_config is loaded in index.php
+
+$assign_to_config['base_url']				= 'http://fortuna-oj.com/oj';
+
+$assign_to_config['language']				= 'chinese';
+
+$assign_to_config['sess_cookie_name']		= 'foj_ci_session';
+
+$assign_to_config['cookie_path']			= "/oj";
+
+$assign_to_config['data_path']				= "/home/judge/newdata/oj/data/";
+$assign_to_config['code_path']				= "/home/judge/newdata/oj/code/";
+$assign_to_config['solution_path']			= "/home/judge/newdata/oj/solution/";
+$assign_to_config['problem_path']			= "/home/judge/newdata/oj/problem/";
+
+$assign_to_config['servers']				= array('http://127.0.0.1:8389');
+
+$assign_to_config['oj_name']				= 'oj';
+
+$assign_to_config['allow_message']			= true;
+
+$assign_to_config['allow_add_problem']		= true;
+
+$assign_to_config['allow_sendgrid']		= true;
+
+// $db is loaded in application/config/database.php
+
+$db['default']['database']		= 'oj'; // in overriding_config/local.php
+
+// End of File : overriding_config/local.php

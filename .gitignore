@@ -2,6 +2,7 @@
 !/overriding_config/.htaccess
 !/overriding_config/dynamic.php
 !/overriding_config/example.php
+!/overriding_config/*.example
 /application/daemon.php
 *.swp
 /application/logs

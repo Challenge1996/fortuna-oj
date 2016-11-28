@@ -29,21 +29,27 @@
 					<?=lang('remember_me')?>
 				</div>
 			</div>
-			<div id="body1" style="display:none">
-				<h3>Send An Email To You And Reset Your Password?</h3>
-			</div>
+			<?php if ($this->config->item('allow_sendgrid') === true): ?>
+				<div id="body1" style="display:none">
+					<h3>Send An Email To You And Reset Your Password?</h3>
+				</div>
+			<?php endif; ?>
 		</div>
 
 		<div class="modal-footer">
 			<div id="footer0">
-				<span class="btn btn-link pull-left" onclick="return load_forget()">Forgot your password?</span>
+				<?php if ($this->config->item('allow_sendgrid') === true): ?>
+					<span class="btn btn-link pull-left" onclick="return load_forget()">Forgot your password?</span>
+				<?php endif; ?>
 				<button class="btn btn-primary pull-right" onclick="return login_submit()">Login</button>
 				<span class="btn" onclick="return register()">Register</span>
 			</div>
-			<div id="footer1" style="display:none">
-				<span class="btn btn-link pull-left" onclick="return hide_forget()">Back</span>
-				<span class="btn btn-danger pull-right" onclick="return send_reset()">Send</span>
-			</div>
+			<?php if ($this->config->item('allow_sendgrid') === true): ?>
+				<div id="footer1" style="display:none">
+					<span class="btn btn-link pull-left" onclick="return hide_forget()">Back</span>
+					<span class="btn btn-danger pull-right" onclick="return send_reset()">Send</span>
+				</div>
+			<?php endif; ?>
 		</div>
 	</form>
 </div>

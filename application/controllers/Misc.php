@@ -66,6 +66,9 @@ class Misc extends CI_Controller {
 
 	function reset_password()
 	{
+		if ($this->config->item('allow_sendgrid') !== true)
+			exit('This feature has been turned off in config files');
+
 		$this->load->model('user');
 		$this->load->helper('email');
 		$this->load->helper('string');

@@ -407,7 +407,8 @@ $config['servers'] = array('http://127.0.0.1:8389'); // in overriding_config/loc
 // OJ name (should be the same name as the url)
 $config['oj_name'] = 'yauj'; // in overriding_config/local.php
 
-// Sendgrid configurations
+// Sendgrid configurations (sending email via Sendgrid to restore accounts)
+$config['allow_sendgrid'] = true; // in overriding_config/local.php
 $config['admin_email'] = 'noreply@jzoj.net';
 $config['admin_email_name'] = 'JZOJ Admin';
 $config['sendgrid_api_user'] = 'foo'; // in overriding_config/secret.php
