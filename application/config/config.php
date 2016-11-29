@@ -432,5 +432,8 @@ $config['allow_normal_user_public'] = true;
 // Name of problem sets
 $config['problemset_name'] = array('main set'); // in overriding_config/local.php
 
+// Fetch recent contest list from HDU
+$config['fetch_contest_list' ] = true; // in overriding_config/local.php
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

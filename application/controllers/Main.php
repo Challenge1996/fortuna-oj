@@ -842,6 +842,8 @@ class Main extends CI_Controller {
 
 	function recentcontest() // don't move this to misc controller, because it calls misc model.
 	{
+		if ($this->config->item('fetch_contest_list') !== true)
+			exit('');
 		$this->load->model('misc');
 		$data = $this->misc->load_recent_contest();
 		if (!$data) return;
