@@ -184,7 +184,7 @@ class Main extends CI_Controller {
 		}
 	}
 
-	public function problemset($page = 0){
+	public function problemset($tab = 0, $page = 0){
 		$problems_per_page = (int)$this->session->userdata('problems_per_page');
 		session_write_close();
 		if ( ! $problems_per_page) $problems_per_page = 20;
@@ -213,7 +213,7 @@ class Main extends CI_Controller {
 			$page = 1;
 
 		$count = $this->problems->count(FALSE, $show_in_control,
-		    	$keyword, $filter, $show_starred, $show_note, $search_note);
+		    	$keyword, $filter, $show_starred, $show_note, $search_note, $tab);
 		if ($count > 0 && ceil($count / $problems_per_page) < $page)
 			$page = ceil($count / $problems_per_page);
 		$row_begin = ($page - 1) * $problems_per_page;
@@ -223,7 +223,7 @@ class Main extends CI_Controller {
 			$filter_uid = $uid;
 
 		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $reverse,
-			$filter_uid, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
+			$filter_uid, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note, $tab);
 
 		foreach ($data as $row)
 			$row->hasControl = ($this->user->is_admin() || $row->uid==$this->user->uid());
@@ -267,7 +267,7 @@ class Main extends CI_Controller {
 		}
 
 		$this->load->library('pagination');
-		$config['base_url'] = '#main/problemset/';
+		$config['base_url'] = "#main/problemset/$tab/";
 		$config['total_rows'] = $count;
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;
@@ -280,7 +280,8 @@ class Main extends CI_Controller {
 			'category' => $categorization,
 			'keyword' => $keyword,
 			'filter' => $filter,
-			'spliter' => $spliter
+			'spliter' => $spliter,
+			'tab' => $tab
 		));
 	}
 

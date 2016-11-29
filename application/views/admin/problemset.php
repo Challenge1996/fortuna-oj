@@ -6,7 +6,17 @@
 
 <h4>
 	Problemset
-	<button class="btn btn-primary btn-small pull-right" onclick="window.location.hash='admin/addproblem'">Add</button>
+	<div class="btn-group pull-right">
+		<a class="btn btn-primary btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+			Add
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<?php foreach ($this->config->item("problemset_name") as $id => $tab): ?>
+				<li><a href="#admin/addproblem/0/<?=$id?>"><?=$tab?></a></li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
 </h4>
 <hr />
 

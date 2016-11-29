@@ -429,5 +429,8 @@ $config['allow_forum'] = true;
 // Allow normal users to switch their submissions as public
 $config['allow_normal_user_public'] = true;
 
+// Name of problem sets
+$config['problemset_name'] = array('main set'); // in overriding_config/local.php
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

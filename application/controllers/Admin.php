@@ -69,7 +69,7 @@ class Admin extends CI_Controller {
 		$this->load->view('admin/index');
 	}
 	
-	public function addproblem($pid = 0){
+	public function addproblem($pid = 0, $tab = 0){
 		$this->load->model('problems');
 		if ($pid > 0 && ! $this->user->is_admin() && $this->problems->uid($pid) != $this->user->uid()) {
 			$this->load->view('error', array('message' => 'You are not allowed to edit this problem!'));
@@ -100,8 +100,8 @@ class Admin extends CI_Controller {
 				$data['outputSample']         = file_get_contents("$path/outputSample.html");
 				$data['dataConstraint']       = file_get_contents("$path/dataConstraint.html");
 				$data['hint']                 = file_get_contents("$path/hint.html");
-
-			}else $data = NULL;
+			} else
+				$data = array('tab' => $tab);
 
 			$this->load->view("admin/addproblem", $data);
 		}else{
@@ -109,7 +109,7 @@ class Admin extends CI_Controller {
 			//$data['isShowed'] = 0;
 			if ($pid == 0){
 				$new = TRUE;
-				$pid = $this->problems->add($data);
+				$pid = $this->problems->add($data, 0, $tab);
 				$this->problems->save_dataconf($pid, '{IOMode:0, cases:[]}', null, null);
 			}else{
 				$new = FALSE;
@@ -139,12 +139,12 @@ class Admin extends CI_Controller {
 		$this->problems->change_nosubmit($pid);
 	}
 	
-	public function problemset($page = 1){
+	public function problemset($tab = 0, $page = 1){
 		if ($this->input->get('old_version')===false || $this->input->get('old_version')===null)
 		{
 			$oj_name = $this->config->item('oj_name');
 			$spliter = ($this->input->get('spliter')=='left'?'left':'right');
-			header("location: /$oj_name/index.php/main/problemset/$page?spliter=$spliter&reverse_order=1&show_in_control=1");
+			header("location: /$oj_name/index.php/main/problemset/$tab/$page?spliter=$spliter&reverse_order=1&show_in_control=1");
 			return;
 		}
 
@@ -165,7 +165,7 @@ class Admin extends CI_Controller {
 		}
 
 		$this->load->library('pagination');
-		$config['base_url'] = '#admin/problemset/';
+		$config['base_url'] = "#admin/problemset/$tab/";
 		$config['total_rows'] = $count;
 		$config['per_page'] = $problems_per_page;
 		$config['cur_page'] = $page;

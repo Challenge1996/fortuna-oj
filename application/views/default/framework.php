@@ -54,7 +54,14 @@
 								<div class="clearfix"></div>
 							</li>
 							<li class="nav_bar" id="nav_home"><a href="#main/home"><?=lang('home')?></a></li>
-							<li class="nav_bar" id="nav_problemset"><a href="#main/problemset"><?=lang('problemset')?></a></li>
+							<li class="nav_bar" id="nav_problemset">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=lang('problemset')?><b class="caret"></b></a>
+								<ul class="dropdown-menu" style="top:auto">
+									<?php foreach ($this->config->item('problemset_name') as $id => $tab): ?>
+										<li class="nav_bar"><a href="#main/problemset/<?=$id?>"><?=$tab?></a></li>
+									<?php endforeach; ?>
+								</ul>
+							</li>
 							<li class="nav_bar" id="nav_status"><a href="#main/status"><?=lang('status')?></a></li>
 							<li class="nav_bar" id="nav_contest">
 								<a href="#contest"><?=lang('contest')?>
@@ -66,9 +73,12 @@
 							<li class="nav_bar" id="nav_ranklist"><a href="#main/ranklist"><?=lang('ranklist')?></a></li>
 							<li class="nav_bar" id="nav_custom_test"><a href="#customtest/run"><?=lang('customtest')?></a></li>
 							<li id="nav_admin" class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=lang('administer')?></a>
-								<ul class="dropdown-menu">
-									<li class="nav_bar"><a href="#admin/problemset">Problemset</a></li>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=lang('administer')?><b class="caret"></b></a>
+								<ul class="dropdown-menu" style="top:auto; bottom:100%">
+									<?php foreach ($this->config->item('problemset_name') as $id => $tab): ?>
+										<li class="nav_bar"><a href="#admin/problemset/<?=$id?>"><?=$tab?></a></li>
+									<?php endforeach; ?>
+									<li class="divider"></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/contestlist">Contest List</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/task_list">Task List</a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/users">Manage User</a></li>

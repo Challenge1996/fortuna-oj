@@ -85,8 +85,14 @@ class Problems extends CI_Model{
 		else
 			return 'TRUE';
 	}
+
+	function gen_tab_lim($tab)
+	{
+		$tab = $this->db->escape($tab);
+		return $tab == -1 ? 'TRUE' : "tab=$tab";
+	}
 	
-	function count($uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
+	function count($uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE, $tab = -1)
 	{
 		$keyword_lim = $this->gen_keyword_lim($keyword);
 		$filter_lim = $this->gen_filter_lim($filter);
@@ -94,14 +100,15 @@ class Problems extends CI_Model{
 		$uid_lim = $this->gen_uid_lim($uid);
 		$admin_lim = $this->gen_admin_lim($admin);
 		$restricted_lim = $this->gen_restricted_lim();
+		$tab_lim = $this->gen_tab_lim($tab);
 
 		return $this->db->query("
 			SELECT COUNT(*) AS count FROM ProblemSet
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim) AND ($tab_lim)
 			")->row()->count;
 	}
 
-	function load_problemset($row_begin, $count, $rev=FALSE, $uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
+	function load_problemset($row_begin, $count, $rev=FALSE, $uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE, $tab = -1)
 	{
 		$keyword_lim = $this->gen_keyword_lim($keyword);
 		$filter_lim = $this->gen_filter_lim($filter);
@@ -110,11 +117,12 @@ class Problems extends CI_Model{
 		$admin_lim = $this->gen_admin_lim($admin);
 		$rev_str = ($rev?"DESC":"");
 		$restricted_lim = $this->gen_restricted_lim();
+		$tab_lim = $this->gen_tab_lim($tab);
 
 		return $this->db->query("
 			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, noSubmit, uname AS author, uid
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
+			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim) AND ($tab_lim)
 			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?
 			", array($row_begin, $count))->result();
 	}
@@ -192,7 +200,7 @@ class Problems extends CI_Model{
 		return $data;
 	}
 	
-	function add($data, $pid = 0){
+	function add($data, $pid = 0, $tab = 0){
 		$problemDescription = $data['problemDescription'];
 		$inputDescription = $data['inputDescription'];
 		$outputDescription = $data['outputDescription'];
@@ -215,6 +223,7 @@ class Problems extends CI_Model{
 
 		if ($pid == 0){
 			$data['uid'] = $this->user->uid();
+			$data['tab'] = $tab;
 			$sql = $this->db->insert_string('ProblemSet', $data);
 			$this->db->query($sql);
 			$pid = $this->db->query("SELECT MAX(pid) AS max FROM ProblemSet")->row()->max;

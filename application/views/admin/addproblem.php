@@ -5,7 +5,7 @@
 
 <div class="addproblem_form">
 
-	<form class="form-horizontal" action="index.php/admin/addproblem/<?=isset($pid) ? $pid : ''?>" method="post" id="addproblem">
+	<form class="form-horizontal" action="index.php/admin/addproblem/<?=isset($pid) ? $pid : "0/$tab"?>" method="post" id="addproblem">
 	
 		<input type="hidden" name="title" id="title_data" />
 		<fieldset>

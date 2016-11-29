@@ -45,8 +45,8 @@
 		</div>
 	</div>
 
-	<button class="btn btn-primary pull-right" onclick="window.location.hash='admin/addproblem'"><?=lang('add_problem')?></button>
-	<button class="btn btn-link pull-right" onclick="window.location.hash='admin/problemset?old_version'"><?=lang('old_version_admin')?></button>
+	<button class="btn btn-primary pull-right" onclick="window.location.hash='admin/addproblem/0/<?=$tab?>'"><?=lang('add_problem')?></button>
+	<button class="btn btn-link pull-right" onclick="window.location.hash='admin/problemset/<?=$tab?>?old_version'"><?=lang('old_version_admin')?></button>
 </div>
 
 <form class="form-inline" id="action_form" style="margin-left:10px; margin-right:10px">
