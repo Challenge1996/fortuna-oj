@@ -429,5 +429,8 @@ $config['allow_forum'] = true;
 // Allow normal users to switch their submissions as public
 $config['allow_normal_user_public'] = true;
 
+// Fetch recent contest list from HDU
+$config['fetch_contest_list' ] = true; // in overriding_config/local.php
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
