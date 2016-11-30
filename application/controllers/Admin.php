@@ -12,7 +12,7 @@ class Admin extends CI_Controller {
 	public function _remap($method, $params = array()){
 		$this->load->model('user');
 		
-		$allowed_methods = array('problemset');
+		$allowed_methods = array('problemset', 'change_problem_status');
 		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist');
 
 		if ($this->config->item('allow_add_problem'))
@@ -25,7 +25,7 @@ class Admin extends CI_Controller {
 				$this->_redirect_page($method, $params);
 			else if (in_array($method, $restricted_methods)){
 				$this->load->model('problems');
-				if (isset($params[0]) && $this->problems->uid($params[0]) == $this->user->uid())
+				if (isset($params[0]) && $this->problems->has_control($params[0]))
 					$this->_redirect_page($method, $params);
 				else
 					$this->load->view('error', array('message' => '<h5 class="alert">Operation not permitted!</h5>'));
@@ -134,7 +134,9 @@ class Admin extends CI_Controller {
 	}
 	
 	public function change_problem_status($pid){
+		$this->load->model('user');
 		$this->load->model('problems');
+		if (! $this->user->is_admin() && $this->user->uid() != $this->problems->uid($pid)) exit('forbidden');
 		$this->problems->change_status($pid);
 	}
 
@@ -149,6 +151,11 @@ class Admin extends CI_Controller {
 			$oj_name = $this->config->item('oj_name');
 			$spliter = ($this->input->get('spliter')=='left'?'left':'right');
 			header("location: /$oj_name/index.php/main/problemset/$tab/$page?spliter=$spliter&reverse_order=1&show_in_control=1");
+			return;
+		}
+		if (! $this->user->is_admin())
+		{
+			$this->load->view('error', array('message' => '<h5 class="alert">You are not administrators!</h5>'));
 			return;
 		}
 

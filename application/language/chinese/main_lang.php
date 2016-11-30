@@ -106,6 +106,15 @@
 	$lang['manage_viewing_permissions'] = '管理题目查看权限';
 	$lang['rejudge'] = '重测';
 	$lang['misc'] = '杂项';
+	$lang['hidden'] = '不可见';
+	$lang['showed'] = '已公开';
+	$lang['reviewing'] = '审核中';
+	$lang['allowed'] = '允许';
+	$lang['disallowed'] = '禁止';
+	$lang['edit'] = '编辑';
+	$lang['configure'] = '配置';
+	$lang['switch_hide_show'] = '点击以切换显示/隐藏状态';
+	$lang['switch_reviewing'] = '点击以发送/撤回审核';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '
