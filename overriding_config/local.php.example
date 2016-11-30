@@ -1,6 +1,7 @@
 <?php  if (!isset($assign_to_config) && !isset($db)) exit('No direct script access allowed');
 
 // Here are the configurations that vary from each OJ
+// Please refer to application/config for explainations for each option
 
 // $assign_to_config is loaded in index.php
 
@@ -28,6 +29,8 @@ $assign_to_config['allow_add_problem']		= true;
 $assign_to_config['allow_sendgrid']			= true;
 
 $assign_to_config['problemset_name']		= array('NOIP', 'GDOI', 'NOI');
+
+$assign_to_config['add_problem_to_tab']		= array(true, true, true);
 
 $assign_to_config['fetch_contest_list']		= true;
 

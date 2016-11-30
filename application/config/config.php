@@ -432,6 +432,10 @@ $config['allow_normal_user_public'] = true;
 // Name of problem sets
 $config['problemset_name'] = array('main set'); // in overriding_config/local.php
 
+// Allow adding problems to each problem sets. This works if 'allow_add_problem' set to true.
+// This uses the same id as 'problemset_name'.
+$config['add_problem_to_tab'] = array(true);
+
 // Fetch recent contest list from HDU
 $config['fetch_contest_list' ] = true; // in overriding_config/local.php
 

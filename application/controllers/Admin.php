@@ -71,6 +71,10 @@ class Admin extends CI_Controller {
 	
 	public function addproblem($pid = 0, $tab = 0){
 		$this->load->model('problems');
+		if ($pid == 0 && ! $this->user->is_admin() && $this->config->item('add_problem_to_tab')[$tab] !== true) {
+			$this->load->view('error', array('message' => 'You are not allowed to edit this problem!'));
+			return;
+		}
 		if ($pid > 0 && ! $this->user->is_admin() && $this->problems->uid($pid) != $this->user->uid()) {
 			$this->load->view('error', array('message' => 'You are not allowed to edit this problem!'));
 			return;
