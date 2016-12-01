@@ -196,16 +196,17 @@ class User extends CI_Model{
 		session_write_close();
 	}
 	
-	function load_last_page($uid){
-		return $this->db->query("SELECT lastPage FROM User
-								WHERE uid=?",
-								array($uid))->row()->lastPage;
+	function load_last_page($uid, $tab){
+		$tab = (string)$tab;
+		$data = json_decode($this->db->query("SELECT lastPage FROM User WHERE uid=?", array($uid))->row()->lastPage, true);
+		return isset($data[$tab]) ? (int)$data[$tab] : 1;
 	}
 	
-	function save_last_page($uid, $page){
-		$this->db->query("UPDATE User SET lastPage=?
-						WHERE uid=?",
-						array($page, $uid));
+	function save_last_page($uid, $tab, $page){
+		$tab = (string)$tab;
+		$data = json_decode($this->db->query("SELECT lastPage FROM User WHERE uid=?", array($uid))->row()->lastPage, true);
+		$data[$tab] = (int)$page;
+		$this->db->query("UPDATE User SET lastPage=? WHERE uid=?", array(json_encode($data), $uid));
 	}
 	
 	function save_language($uid, $language){

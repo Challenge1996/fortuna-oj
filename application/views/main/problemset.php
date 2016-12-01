@@ -11,6 +11,7 @@
 	var option_select_starred = "<i class='icon-star'></i> <?=lang('select_starred')?>";
 	var option_select_noted = "<i class='icon-tags'></i> <?=lang('select_noted')?>";
 	var option_match_in_note = "<i class='icon-tags'></i> <?=lang('match_in_note')?>";
+	var tab = Number(<?=$tab?>);
 </script>
 <script type="text/javascript" src="js/problemset.js"></script>
 <!--
@@ -45,8 +46,12 @@
 		</div>
 	</div>
 
-	<button class="btn btn-primary pull-right" onclick="window.location.hash='admin/addproblem/0/<?=$tab?>'"><?=lang('add_problem')?></button>
-	<button class="btn btn-link pull-right" onclick="window.location.hash='admin/problemset/<?=$tab?>?old_version'"><?=lang('old_version_admin')?></button>
+	<?php if ($this->user->is_admin() || ($tab != -1 && $this->config->item('add_problem_to_tab')[$tab] === true)): ?>
+		<button class="btn btn-primary pull-right" onclick="window.location.hash='admin/addproblem/0/<?=$tab?>'"><?=lang('add_problem')?></button>
+	<?php endif; ?>
+	<?php if ($this->user->is_admin()): ?>
+		<button class="btn btn-link pull-right" onclick="window.location.hash='admin/problemset/<?=$tab?>?old_version'"><?=lang('old_version_admin')?></button>
+	<?php endif; ?>
 </div>
 
 <form class="form-inline" id="action_form" style="margin-left:10px; margin-right:10px">

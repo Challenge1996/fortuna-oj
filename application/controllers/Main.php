@@ -184,7 +184,8 @@ class Main extends CI_Controller {
 		}
 	}
 
-	public function problemset($tab = 0, $page = 0){
+	public function problemset($tab = -1, $page = 0){
+		$tab = (int)$tab; // minus number will be string
 		$problems_per_page = (int)$this->session->userdata('problems_per_page');
 		session_write_close();
 		if ( ! $problems_per_page) $problems_per_page = 20;
@@ -206,9 +207,9 @@ class Main extends CI_Controller {
 
 		if (count($this->input->get(NULL,TRUE))==1)
 			if ($page == 0)
-				$page = $this->user->load_last_page($uid);
+				$page = $this->user->load_last_page($uid, $tab);
 			else
-				$this->user->save_last_page($uid, $page);
+				$this->user->save_last_page($uid, $tab, $page);
 		else if ($page == 0)
 			$page = 1;
 

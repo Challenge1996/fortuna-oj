@@ -146,7 +146,7 @@ $(document).ready(function(){
 		var page = $('#goto_page').val();
 		var hash = window.location.hash.split('?');
 		var query = (hash.length<2 ? '' : hash[1]);
-		load_page("main/problemset/" + page + '?' + query);
+		load_page("main/problemset/" + tab + '/' + page + '?' + query);
 		return false;
 	});
 
