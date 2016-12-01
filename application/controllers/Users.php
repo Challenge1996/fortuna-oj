@@ -13,6 +13,10 @@ class Users extends CI_Controller {
 		$this->load->model('user');
 		$params[0] = rawurldecode($params[0]);
 		$user = $this->user->load_user($params[0]);
+		if (! isset($user)){
+			$this->load->view('error', array('message' => 'User does not exist'));
+			return;
+		}
 		$user->name = $params[0];
 		
 		$params[0] = $user;
