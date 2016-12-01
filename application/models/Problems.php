@@ -5,6 +5,40 @@ class Problems extends CI_Model{
 	function __construct(){
 		parent::__construct();
 	}
+
+	function approve_review($pid){
+		$this->db->query("UPDATE ProblemSet SET isShowed=1 WHERE pid=?", array($pid));
+
+		$this->load->model('user');
+		$accepter = $this->user->username();
+		$submitter_id = $this->uid($pid);
+		$this->user->save_mail(array(
+			'title' => 'Your problem has been accepted',
+			'content' => "<span class='label label-info'>$accepter</span> accepted your problem <a href='#/main/show/$pid'>$pid</a>",
+			'to_user' => $this->user->load_username($submitter_id),
+			'to_uid' => $submitter_id,
+			'from_user' => 'noreply',
+			'from_uid' => $this->user->load_uid('noreply'),
+			'sendTime' => date("Y-m-d H:i:s")
+		));
+	}
+
+	function decline_review($pid, $msg){
+		$this->db->query("UPDATE ProblemSet SET isShowed=0, reviewing=0 WHERE pid=?", array($pid));
+
+		$this->load->model('user');
+		$rejecter = $this->user->username();
+		$submitter_id = $this->uid($pid);
+		$this->user->save_mail(array(
+			'title' => 'Your problem has been rejected',
+			'content' => "<span class='label label-info'>$rejecter</span> rejecteded your problem <a href='#/main/show/$pid'>$pid</a> for the reason that:<br />$msg",
+			'to_user' => $this->user->load_username($submitter_id),
+			'to_uid' => $submitter_id,
+			'from_user' => 'noreply',
+			'from_uid' => $this->user->load_uid('noreply'),
+			'sendTime' => date("Y-m-d H:i:s")
+		));
+	}
 	
 	function change_status($pid){
 		if ($this->user->is_admin())
