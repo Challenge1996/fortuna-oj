@@ -54,9 +54,15 @@ class Misc extends CI_Controller {
 			$this->load->view('misc/newmail', array('username' => $username));
 		} else {
 			$data = $this->input->post(NULL, TRUE);
+			$to_uid = $this->user->load_uid($data['to_user']);
+			if (! isset($to_uid) || ! $to_uid) {
+				$this->load->view('error', array('message' => 'User does not exist'));
+				return;
+			}
+
 			$data['from_uid'] = $this->user->uid();
 			$data['from_user'] = $this->user->username();
-			$data['to_uid'] = $this->user->load_uid($data['to_user']);
+			$data['to_uid'] = $to_uid;
 			$data['sendTime'] = date("Y-m-d H:i:s");
 			$this->user->save_mail($data);
 
