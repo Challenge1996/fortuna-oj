@@ -226,7 +226,7 @@ class Main extends CI_Controller {
 			$filter_uid, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
 
 		foreach ($data as $row)
-			$row->hasControl = ($this->user->is_admin() || $row->uid==$this->user->uid());
+			$row->hasControl = $this->problems->has_control($row->pid);
 		
 		$pids='';
 		foreach ($data as $row)

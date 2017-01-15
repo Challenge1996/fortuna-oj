@@ -7,7 +7,14 @@ class Problems extends CI_Model{
 	}
 	
 	function change_status($pid){
-		$this->db->query("UPDATE ProblemSet SET isShowed=1-isShowed WHERE pid=?", array($pid));
+		if ($this->user->is_admin())
+			$this->db->query("UPDATE ProblemSet SET isShowed=1-isShowed WHERE pid=?", array($pid));
+		else {
+			if ($this->is_showed($pid))
+				$this->db->query("UPDATE ProblemSet SET isShowed=0, reviewing=0 WHERE pid=?", array($pid));
+			else
+				$this->db->query("UPDATE ProblemSet SET reviewing=1-reviewing WHERE pid=?", array($pid));
+		}
 	}
 
 	function change_nosubmit($pid){
@@ -112,7 +119,7 @@ class Problems extends CI_Model{
 		$restricted_lim = $this->gen_restricted_lim();
 
 		return $this->db->query("
-			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, noSubmit, uname AS author, uid
+			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, reviewing, noSubmit, uname AS author, uid
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
 			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
 			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?
@@ -246,6 +253,13 @@ class Problems extends CI_Model{
 
 	function no_submit($pid){
 		return $this->db->query("SELECT noSubmit FROM ProblemSet WHERE pid=?", array($pid))->row()->noSubmit;
+	}
+
+	function has_control($pid) {
+		$this->load->model('user');
+		if ($this->user->is_admin()) return true;
+		$row = $this->db->query("SELECT uid, isShowed, reviewing FROM ProblemSet WHERE pid=?", array($pid))->row();
+		return $this->user->uid() == $row->uid && ! $row->isShowed && ! $row->reviewing;
 	}
 	
 	function load_problem_submission($pid){

@@ -106,6 +106,15 @@
 	$lang['manage_viewing_permissions'] = 'Manage Viewing Permissions';
 	$lang['rejudge'] = 'Rejudge';
 	$lang['misc'] = 'Miscellaneous';
+	$lang['hidden'] = 'Hidden';
+	$lang['showed'] = 'Showed';
+	$lang['reviewing'] = 'Reviewing';
+	$lang['allowed'] = 'Allowed';
+	$lang['disallowed'] = 'Disallowed';
+	$lang['edit'] = 'Edit';
+	$lang['configure'] = 'Configure';
+	$lang['switch_hide_show'] = 'Click to switch showed/hidden';
+	$lang['switch_reviewing'] = 'Click to mark for / retrieve from reviewing';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '

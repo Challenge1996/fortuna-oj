@@ -216,34 +216,54 @@
 					endif;
 				?>
 				<?php
-					if ($this->user->is_admin()) {
-						$isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');
-					} else {
-						$isShowed=($row->isShowed?'<span class="label">Showed</span>':'<span class="label">Hidden</span>');
+					if ($this->user->is_admin() || $this->user->uid() == $row->uid)
+					{
+						$isShowed=($row->isShowed?	'<span class="label label-success">' . lang('showed') . '</span>':
+								  ($row->reviewing?	'<span class="label label-inverse">' . lang('reviewing') . '</span>':
+													'<span class="label label-important">' . lang('hidden') . '</span>'));
+					} else
+					{
+						$isShowed=($row->isShowed?	'<span class="label">' . lang('showed') . '</span>':
+								  ($row->reviewing?	'<span class="label">' . lang('reviewing') . '</span>':
+													'<span class="label">' . lang('hidden') . '</span>'));
 					}
 					if ($row->hasControl)
 					{
-						$noSubmit=($row->noSubmit?'<span class="label label-important">Disallowing</span>':'<span class="label label-success">Allowing</span>');
+						$noSubmit=($row->noSubmit?	'<span class="label label-important">' . lang('disallowed') . '</span>':
+													'<span class="label label-success">' . lang('allowed') . '</span>');
 					} else
 					{
-						$noSubmit=($row->noSubmit?'<span class="label">Disallowing</span>':'<span class="label">Allowing</span>');
+						$noSubmit=($row->noSubmit?	'<span class="label">' . lang('disallowed') . '</span>':
+													'<span class="label">' . lang('allowed') . '</span>');
 					}
 				?>
 				<td class="uploader"><span class='label label-info'><?=$row->author?></span></td>
-				<td class="chg_status row<?=$row->pid?>"><a><?=$isShowed?></a></td>
+				<td class="chg_status row<?=$row->pid?>">
+					<a><?=$isShowed?></a>
+					<?php if ($this->user->is_admin()): ?>
+						<i class="icon-question-sign" title="<?=lang('switch_hide_show')?>"></i>
+					<?php elseif ($this->user->uid() == $row->uid): ?>
+						<i class="icon-question-sign" title="<?=lang('switch_reviewing')?>"></i>
+					<?php endif; ?>
+				</td>
 				<td class="chg_nosubmit row<?=$row->pid?>"><a><?=$noSubmit?></a></td>
-				<td class="btn_edit row<?=$row->pid?>"><button class='btn btn-mini'>Edit</button></td>
-				<td class="btn_configure row<?=$row->pid?>"><button class='btn btn-mini'>Configure</button></td>
+				<td class="btn_edit row<?=$row->pid?>"><button class='btn btn-mini'><?=lang('edit')?></button></td>
+				<td class="btn_configure row<?=$row->pid?>"><button class='btn btn-mini'><?=lang('configure')?></button></td>
 				<td class="btn_del row<?=$row->pid?>"><button class='close'>&times;</button></tr>
+				<?php if ($this->user->is_admin() || $this->user->uid() == $row->uid): ?>
+					<script>
+						(function(){
+							var pid = <?=$row->pid?>;
+							$("td.chg_status.row"+pid).children('a').click(
+								function(){access_page('#admin/change_problem_status/'+pid);}
+							);
+						})();
+					</script>
+				<?php endif; ?>
 				<?php if ($row->hasControl): ?>
 					<script>
 						(function(){
 							var pid = <?=$row->pid?>;
-						<?php if ($this->user->is_admin()): ?>
-							$("td.chg_status.row"+pid).children('a').click(
-								function(){access_page('#admin/change_problem_status/'+pid);}
-							);
-						<?php endif; ?>
 							$("td.chg_nosubmit.row"+pid).children('a').click(
 								function(){access_page('#admin/change_problem_nosubmit/'+pid);}
 							);
