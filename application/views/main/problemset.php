@@ -239,18 +239,35 @@
 				?>
 				<td class="uploader"><span class='label label-info'><?=$row->author?></span></td>
 				<td class="chg_status row<?=$row->pid?>">
-					<a><?=$isShowed?></a>
-					<?php if ($this->user->is_admin()): ?>
-						<i class="icon-question-sign" title="<?=lang('switch_hide_show')?>"></i>
-					<?php elseif ($this->user->uid() == $row->uid): ?>
-						<i class="icon-question-sign" title="<?=lang('switch_reviewing')?>"></i>
+					<?php if ($this->user->is_admin() && ! $row->isShowed && $row->reviewing): ?>
+						<button class="btn btn-small btn-success accept-btn"><?=lang('accept_review')?></button>
+						<button class="btn btn-small btn-danger reject-btn"><?=lang('reject_review')?></button>
+					<?php else: ?>
+						<a><?=$isShowed?></a>
+						<?php if ($this->user->is_admin()): ?>
+							<i class="icon-question-sign" title="<?=lang('switch_hide_show')?>"></i>
+						<?php elseif ($this->user->uid() == $row->uid): ?>
+							<i class="icon-question-sign" title="<?=lang('switch_reviewing')?>"></i>
+						<?php endif; ?>
 					<?php endif; ?>
 				</td>
 				<td class="chg_nosubmit row<?=$row->pid?>"><a><?=$noSubmit?></a></td>
 				<td class="btn_edit row<?=$row->pid?>"><button class='btn btn-mini'><?=lang('edit')?></button></td>
 				<td class="btn_configure row<?=$row->pid?>"><button class='btn btn-mini'><?=lang('configure')?></button></td>
 				<td class="btn_del row<?=$row->pid?>"><button class='close'>&times;</button></tr>
-				<?php if ($this->user->is_admin() || $this->user->uid() == $row->uid): ?>
+				<?php if ($this->user->is_admin() && ! $row->isShowed && $row->reviewing): ?>
+					<script>
+						(function(){
+							var pid = <?=$row->pid?>;
+							$("td.chg_status.row"+pid).children('.accept-btn').click(
+								function(){access_page('#admin/approve_review/'+pid);}
+							);
+							$("td.chg_status.row"+pid).children('.reject-btn').click(
+								function(){load_page('#admin/decline_review/'+pid);}
+							);
+						})();
+					</script>
+				<?php elseif ($this->user->is_admin() || $this->user->uid() == $row->uid): ?>
 					<script>
 						(function(){
 							var pid = <?=$row->pid?>;

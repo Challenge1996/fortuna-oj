@@ -128,6 +128,22 @@ class Admin extends CI_Controller {
 		$this->load->model('problems');
 		$this->problems->delete($pid);
 	}
+
+	public function approve_review($pid){
+		$this->load->model('problems');
+		$this->problems->approve_review($pid);
+	}
+
+	public function decline_review($pid){
+		$msg = $this->input->post('msg');
+		if (isset($msg) && $msg){
+			$this->load->model('problems');
+			$this->problems->decline_review($pid, $msg);
+			$this->load->view('success');
+		} else {
+			$this->load->view('admin/decline_msg', array('pid' => $pid));
+		}
+	}
 	
 	public function change_problem_status($pid){
 		$this->load->model('user');

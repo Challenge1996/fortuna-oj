@@ -115,6 +115,9 @@
 	$lang['configure'] = 'Configure';
 	$lang['switch_hide_show'] = 'Click to switch showed/hidden';
 	$lang['switch_reviewing'] = 'Click to mark for / retrieve from reviewing';
+	$lang['accept_review'] = 'Accept';
+	$lang['reject_review'] = 'Reject';
+	$lang['input_reject'] = 'Input your rejection message';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '

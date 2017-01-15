@@ -115,6 +115,9 @@
 	$lang['configure'] = '配置';
 	$lang['switch_hide_show'] = '点击以切换显示/隐藏状态';
 	$lang['switch_reviewing'] = '点击以发送/撤回审核';
+	$lang['accept_review'] = '通过审核';
+	$lang['reject_review'] = '拒绝';
+	$lang['input_reject'] = '输入拒绝理由';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '
