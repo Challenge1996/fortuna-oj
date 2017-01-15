@@ -1,0 +1,9 @@
+*
+!.gitignore
+!.htaccess
+!dynamic.php
+!example.php
+!*.example
+!var
+var/*
+!var/README.md

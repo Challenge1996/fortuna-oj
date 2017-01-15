@@ -66,17 +66,17 @@
 							<li class="nav_bar" id="nav_ranklist"><a href="#main/ranklist"><?=lang('ranklist')?></a></li>
 							<li class="nav_bar" id="nav_custom_test"><a href="#customtest/run"><?=lang('customtest')?></a></li>
 							<li id="nav_admin" class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=lang('administer')?></a>
-								<ul class="dropdown-menu">
-									<li class="nav_bar"><a href="#admin/problemset">Problemset</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/contestlist">Contest List</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/task_list">Task List</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/users">Manage User</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/setallowings">Manage Viewing Permissions</a></li>
- 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/statistic">Statistic</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/rejudge">Rejudge</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/functions">Misc Functions</a></li>
-									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/global_settings">Global Settings</a></li>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=lang('administer')?><b class="caret"></b></a>
+								<ul class="dropdown-menu" style="top:auto; bottom:100%">
+									<li class="nav_bar"><a href="#admin/problemset"><?=lang('problemset')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/contestlist"><?=lang('contest')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/task_list"><?=lang('task')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/users"><?=lang('user')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/setallowings"><?=lang('manage_viewing_permissions')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/statistic"><?=lang('statistic')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/rejudge"><?=lang('rejudge')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/functions"><?=lang('misc')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/global_settings"><?=lang('global_settings')?></a></li>
 								</ul>
 							</li>
 						</ul>

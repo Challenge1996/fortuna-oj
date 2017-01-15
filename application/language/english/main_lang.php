@@ -103,6 +103,10 @@
 	$lang['export'] = 'Export';
 
 //admin
+	$lang['manage_viewing_permissions'] = 'Manage Viewing Permissions';
+	$lang['rejudge'] = 'Rejudge';
+	$lang['misc'] = 'Miscellaneous';
+
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '
 		These are global settings for the current OJ (senior, junior or elementary part). 

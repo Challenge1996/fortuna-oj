@@ -103,6 +103,10 @@
 	$lang['export'] = '导出';
 
 //admin
+	$lang['manage_viewing_permissions'] = '管理题目查看权限';
+	$lang['rejudge'] = '重测';
+	$lang['misc'] = '杂项';
+
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '
 		以下是此部分OJ（高中、初中或小学）的全局设定， 
