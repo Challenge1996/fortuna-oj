@@ -132,6 +132,7 @@
 	$lang['error_tag_same_name'] = 'There is already a tag with the same name.';
 	$lang['move_up_tag'] = 'Move up this tag to be superior';
 	$lang['move_down_tag'] = 'Move up this tag to be inferior';
+	$lang['prohibited_tag'] = 'Prohibit normal user to tag problems with this tag.';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '

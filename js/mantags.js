@@ -46,7 +46,7 @@ angular.module('appMantags', [])
 				var ret = null;
 				for (var j in $scope.tags)
 					if ($scope.tags[j].idCategory == id)
-						ret = {id: id, name: $scope.tags[j].name, proto: $scope.tags[j].prototype, peers: []};
+						ret = {id: id, name: $scope.tags[j].name, proto: $scope.tags[j].prototype, peers: [], properties: $scope.tags[j].properties};
 				if (! ret) return null;
 				for (var j in $scope.tags)
 					if ($scope.tags[j].idCategory != id && $scope.tags[j].prototype == ret.proto)
@@ -82,6 +82,14 @@ angular.module('appMantags', [])
 			$http.get('index.php/admin/tag_change_proto/' + $scope.chosen.id + '/' + newProto).then(function(res) {
 				updTags();
 			});
+		};
+
+		$scope.updProperties = function() {
+			$http.post(
+				'index.php/admin/tag_set_properties/' + $scope.chosen.id,
+				$.param({properties: JSON.stringify($scope.chosen.properties)}),
+				{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+			);
 		};
 
 		$scope.addBtnTitle = function() {

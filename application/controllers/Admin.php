@@ -836,6 +836,13 @@ class Admin extends CI_Controller {
 		$this->problems->tag_change_proto($id, $proto == 'null' ? null : $proto);
 	}
 
+	function tag_set_properties($id)
+	{
+		$this->load->model("problems");
+		$properties = $this->input->post('properties');
+		$this->problems->tag_set_properties($id, $properties);
+	}
+
 	function check_file_exist($pid, $file)
 	{
 		$this->load->model('problems');

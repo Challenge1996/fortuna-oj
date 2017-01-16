@@ -132,6 +132,7 @@
 	$lang['error_tag_same_name'] = '已有相同名字的标签。';
 	$lang['move_up_tag'] = '移为更上级的标签';
 	$lang['move_down_tag'] = '移为更下级的标签';
+	$lang['prohibited_tag'] = '禁止普通用户加注此标签';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '

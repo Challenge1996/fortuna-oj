@@ -21,6 +21,12 @@
 					<h4>{{chosen.name}}</h4>
 					<hr />
 					<form>
+						<label class="checkbox">
+							<input type="checkbox" ng-model="chosen.properties.prohibit" ng-change="updProperties()"/><?=lang('prohibited_tag')?>
+						</label>
+					</form>
+					<hr />
+					<form>
 						<p ng-if="chosen.proto">
 							<button class='btn btn-small' ng-click="changeProto(chosen.proto.proto)">
 								<i class="icon-arrow-left"></i>

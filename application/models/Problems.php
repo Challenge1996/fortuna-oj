@@ -356,6 +356,7 @@ class Problems extends CI_Model{
 		{
 			$item->idCategory = (int)($item->idCategory);
 			if ($item->prototype !== null) $item->prototype = (int)($item->prototype);
+			$item->properties = ($item->properties === null ? (object)null : json_decode($item->properties));
 		}
 		return $ret;
 	}
@@ -378,6 +379,11 @@ class Problems extends CI_Model{
 	function tag_change_proto($id, $proto)
 	{
 		$this->db->query("UPDATE Category SET prototype = ? WHERE idCategory = ?", array($proto, $id));
+	}
+
+	function tag_set_properties($id, $properties)
+	{
+		$this->db->query("UPDATE Category SET properties = ? WHERE idCategory = ?", array($properties, $id));
 	}
 
 	function load_pushed($pid)
