@@ -130,6 +130,8 @@
 	$lang['del_tag_confirm'] = '确认删除此标签？这会影响所有加注此标签的题目。所有子标签会被保留。';
 	$lang['please_input_tag_name'] = '请输入标签名称';
 	$lang['error_tag_same_name'] = '已有相同名字的标签。';
+	$lang['move_up_tag'] = '移为更上级的标签';
+	$lang['move_down_tag'] = '移为更下级的标签';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '

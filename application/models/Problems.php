@@ -351,7 +351,13 @@ class Problems extends CI_Model{
 
 	function load_tags()
 	{
-		return $this->db->query("SELECT * FROM Category")->result();
+		$ret = $this->db->query("SELECT * FROM Category")->result();
+		foreach ($ret as &$item)
+		{
+			$item->idCategory = (int)($item->idCategory);
+			if ($item->prototype !== null) $item->prototype = (int)($item->prototype);
+		}
+		return $ret;
 	}
 
 	function del_tag($id)
@@ -367,6 +373,11 @@ class Problems extends CI_Model{
 			return false;
 		$this->db->query("INSERT INTO Category (name, prototype) VALUES (?, ?)", array($name, $proto));
 		return true;
+	}
+
+	function tag_change_proto($id, $proto)
+	{
+		$this->db->query("UPDATE Category SET prototype = ? WHERE idCategory = ?", array($proto, $id));
 	}
 
 	function load_pushed($pid)

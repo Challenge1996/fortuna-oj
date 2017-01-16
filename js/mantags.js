@@ -1,5 +1,5 @@
 angular.module('appMantags', [])
-	.directive('akModal', function() {
+	.directive('akModal', function() { // Angular doesn't work with native Bootstrap modal
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
@@ -41,14 +41,23 @@ angular.module('appMantags', [])
 					break;
 				}
 			}
-			if ($scope.lists.length >= 2) {
-				$scope.chosen = {id: $scope.lists[$scope.lists.length - 1].prototype};
+
+			function getFromId(id) {
+				var ret = null;
 				for (var j in $scope.tags)
-					if ($scope.tags[j].idCategory == $scope.chosen.id) {
-						$scope.chosen.name = $scope.tags[j].name;
-					}
-			} else
-				$scope.chosen = null;
+					if ($scope.tags[j].idCategory == id)
+						ret = {id: id, name: $scope.tags[j].name, proto: $scope.tags[j].prototype, peers: []};
+				if (! ret) return null;
+				for (var j in $scope.tags)
+					if ($scope.tags[j].idCategory != id && $scope.tags[j].prototype == ret.proto)
+						ret.peers.push({id: $scope.tags[j].idCategory, name: $scope.tags[j].name});
+				for (var j in $scope.tags)
+					if ($scope.tags[j].idCategory == ret.proto) // null != 0 in javascript
+						ret.proto = {id: $scope.tags[j].idCategory, proto: $scope.tags[j].prototype};
+				return ret;
+			}
+
+			$scope.chosen = ($scope.lists.length >= 2 ? getFromId($scope.lists[$scope.lists.length - 1].prototype) : null);
 		};
 
 		$scope.del = function(msg) {
@@ -69,11 +78,21 @@ angular.module('appMantags', [])
 			});
 		};
 
+		$scope.changeProto = function(newProto) {
+			$http.get('index.php/admin/tag_change_proto/' + $scope.chosen.id + '/' + newProto).then(function(res) {
+				updTags();
+			});
+		};
+
 		$scope.addBtnTitle = function() {
 			if ($scope.chosen) {
 				return language == "english" ? "Add a tag as a sub-tag of " + $scope.chosen.name : "添加标签为" + $scope.chosen.name + "的子标签";
 			} else {
 				return language == "english" ? "Add a primary tag" : "添加一个顶级标签";
 			}
+		};
+
+		$scope.moveInfTitle = function(name) {
+			return language == "english" ? "Sub-tag of " + name : name + "的子标签";
 		};
 	}]);

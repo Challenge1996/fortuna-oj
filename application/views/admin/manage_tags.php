@@ -21,7 +21,29 @@
 					<h4>{{chosen.name}}</h4>
 					<hr />
 					<form>
-						<button class='btn-small btn-danger' ng-click='del("<?=lang('del_tag_confirm')?>")'><?=lang('delete')?></button>
+						<p ng-if="chosen.proto">
+							<button class='btn btn-small' ng-click="changeProto(chosen.proto.proto)">
+								<i class="icon-arrow-left"></i>
+								<?=lang('move_up_tag')?>
+							</button>
+						</p>
+						<p ng-if="chosen.peers.length">
+							<div class="dropdown" ng-if="chosen.peers.length">
+								<a href="#" class='btn btn-small dropdown-toggle' data-toggle="dropdown">
+									<i class="icon-arrow-right"></i>
+									<?=lang('move_down_tag')?>
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu" role="menu">
+									<li ng-repeat="item in chosen.peers">
+										<a role="menuitem" tabindex="-1" ng-click="changeProto(item.id)">{{moveInfTitle(item.name)}}</a>
+									</li>
+								</ul>
+							</div>
+						</p>
+						<p>
+							<button class='btn btn-small btn-danger' ng-click='del("<?=lang('del_tag_confirm')?>")'><?=lang('delete')?></button>
+						</p>
 					</form>
 				</div>
 				<div ng-if='! chosen'>
@@ -31,7 +53,7 @@
 				<button class="btn btn-primary" ng-click="showModal = true">{{addBtnTitle()}}</button>
 			</div>
 			<div class='span9'>
-				<select multiple ng-repeat='list in lists' ng-model='list.selection' ng-change='updList()'>
+				<select multiple ng-repeat='list in lists' ng-model='list.selection' ng-change='updList()' size="10">
 					<option value='null' selected>--</option>
 					<option value='{{item.idCategory}}' ng-repeat='item in tags' ng-if='item.prototype==list.prototype'>{{item.name}}</option>
 				</select>

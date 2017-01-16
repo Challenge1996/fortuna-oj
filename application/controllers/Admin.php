@@ -830,6 +830,12 @@ class Admin extends CI_Controller {
 		exit(json_encode($ret));
 	}
 
+	function tag_change_proto($id, $proto)
+	{
+		$this->load->model("problems");
+		$this->problems->tag_change_proto($id, $proto == 'null' ? null : $proto);
+	}
+
 	function check_file_exist($pid, $file)
 	{
 		$this->load->model('problems');

@@ -130,6 +130,8 @@
 	$lang['del_tag_confirm'] = 'Sure to delete this tag? This will affect all the problems that use this tag. All the sub-tags will be preserved.';
 	$lang['please_input_tag_name'] = 'Please input the name of the tag';
 	$lang['error_tag_same_name'] = 'There is already a tag with the same name.';
+	$lang['move_up_tag'] = 'Move up this tag to be superior';
+	$lang['move_down_tag'] = 'Move up this tag to be inferior';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '
