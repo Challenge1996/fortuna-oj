@@ -349,6 +349,26 @@ class Problems extends CI_Model{
 		return $this->db->query("SELECT title FROM ProblemSet WHERE pid=?", array($pid))->row()->title;
 	}
 
+	function load_tags()
+	{
+		return $this->db->query("SELECT * FROM Category")->result();
+	}
+
+	function del_tag($id)
+	{
+		$proto = $this->db->query("SELECT prototype FROM Category WHERE idCategory = ?", array($id))->row()->prototype;
+		$this->db->query("UPDATE Category SET prototype = ? WHERE prototype = ?", array($proto, $id));
+		$this->db->query("DELETE FROM Category WHERE idCategory = ?", array($id));
+	}
+
+	function add_tag($name, $proto = NULL)
+	{
+		if ($this->db->query("SELECT COUNT(*) AS count FROM Category WHERE name = ?", array($name))->row()->count)
+			return false;
+		$this->db->query("INSERT INTO Category (name, prototype) VALUES (?, ?)", array($name, $proto));
+		return true;
+	}
+
 	function load_pushed($pid)
 	{
 		$ret = json_decode($this->db->query('SELECT pushedServer FROM ProblemSet WHERE pid=?', array($pid))->row()->pushedServer,true);

@@ -839,6 +839,12 @@ class Main extends CI_Controller {
 		$this->problems->update_bookmark($pid);
 	}
 
+	function all_tags()
+	{
+		$this->load->model('problems');
+		echo json_encode($this->problems->load_tags());
+	}
+
 	function recentcontest() // don't move this to misc controller, because it calls misc model.
 	{
 		if ($this->config->item('fetch_contest_list') !== true)

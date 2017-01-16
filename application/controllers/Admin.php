@@ -809,6 +809,27 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/global_settings', array('data' => $data));
 	}
 
+	function manage_tags()
+	{
+		$this->load->view("admin/manage_tags");
+	}
+
+	function del_tag($id)
+	{
+		$this->load->model("problems");
+		$this->problems->del_tag($id);
+	}
+
+	function add_tag($name, $proto = NULL)
+	{
+		$this->load->model("problems");
+		if ($this->problems->add_tag($name, $proto))
+			$ret = array("status" => "ok");
+		else
+			$ret = array("status" => "error", "message" => lang('error_tag_same_name'));
+		exit(json_encode($ret));
+	}
+
 	function check_file_exist($pid, $file)
 	{
 		$this->load->model('problems');

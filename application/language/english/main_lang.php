@@ -1,4 +1,9 @@
 <?php
+//common
+	$lang['delete'] = 'Delete';
+	$lang['close'] = 'Close';
+	$lang['ok'] = 'OK';
+
 //login
 	$lang['password'] = 'Password';
 	$lang['remember_me'] = 'Remember me';
@@ -118,6 +123,13 @@
 	$lang['accept_review'] = 'Accept';
 	$lang['reject_review'] = 'Reject';
 	$lang['input_reject'] = 'Input your rejection message';
+
+	$lang['manage_tags'] = 'Manage Tags';
+	$lang['manage_tags_description'] = 'Add / edit / delete tags (categories) for problems here';
+	$lang['please_choose_a_tag'] = 'Please choose a tag, or';
+	$lang['del_tag_confirm'] = 'Sure to delete this tag? This will affect all the problems that use this tag. All the sub-tags will be preserved.';
+	$lang['please_input_tag_name'] = 'Please input the name of the tag';
+	$lang['error_tag_same_name'] = 'There is already a tag with the same name.';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '

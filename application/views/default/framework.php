@@ -77,6 +77,7 @@
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/rejudge"><?=lang('rejudge')?></a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/functions"><?=lang('misc')?></a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/global_settings"><?=lang('global_settings')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/manage_tags"><?=lang('manage_tags')?></a></li>
 								</ul>
 							</li>
 						</ul>

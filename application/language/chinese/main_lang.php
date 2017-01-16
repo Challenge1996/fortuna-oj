@@ -1,4 +1,9 @@
 <?php
+//common
+	$lang['delete'] = '删除';
+	$lang['close'] = '关闭';
+	$lang['ok'] = '确定';
+
 //login
 	$lang['password'] = '密码';
 	$lang['remember_me'] = '下次自动登录';
@@ -118,6 +123,13 @@
 	$lang['accept_review'] = '通过审核';
 	$lang['reject_review'] = '拒绝';
 	$lang['input_reject'] = '输入拒绝理由';
+
+	$lang['manage_tags'] = '管理题目标签';
+	$lang['manage_tags_description'] = '在此添加/编辑/删除题目的标签（分类）';
+	$lang['please_choose_a_tag'] = '请选择一个标签，或';
+	$lang['del_tag_confirm'] = '确认删除此标签？这会影响所有加注此标签的题目。所有子标签会被保留。';
+	$lang['please_input_tag_name'] = '请输入标签名称';
+	$lang['error_tag_same_name'] = '已有相同名字的标签。';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '
