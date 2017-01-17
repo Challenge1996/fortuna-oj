@@ -4,6 +4,7 @@
 	$lang['close'] = '关闭';
 	$lang['ok'] = '确定';
 	$lang['foldup'] = '收起';
+	$lang['next_step'] = '下一步';
 
 //login
 	$lang['password'] = '密码';
@@ -125,6 +126,7 @@
 	$lang['reject_review'] = '拒绝';
 	$lang['input_reject'] = '输入拒绝理由';
 
+	$lang['add_tags'] = '添加标签';
 	$lang['manage_tags'] = '管理题目标签';
 	$lang['manage_tags_description'] = '在此添加/编辑/删除题目的标签（分类）';
 	$lang['please_choose_a_tag'] = '请选择一个标签，或';

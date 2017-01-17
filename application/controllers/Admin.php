@@ -809,7 +809,12 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/global_settings', array('data' => $data));
 	}
 
-	function manage_tags()
+	function edit_tags($pid) // manage tags for a problem
+	{
+		$this->load->view("admin/edit_tags", array("pid" => $pid));
+	}
+
+	function manage_tags() // manage all the tags
 	{
 		$this->load->view("admin/manage_tags");
 	}

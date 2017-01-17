@@ -124,7 +124,7 @@
 						responseText = responseText.substr(7);
 						if (status == 'success'){
 							if (responseText == '') load_page('admin/problemset');
-							else load_page('admin/dataconf/' + responseText);
+							else load_page('admin/edit_tags/' + responseText);
 						} else $('#page_content').html(responseText);
 					}
 				});

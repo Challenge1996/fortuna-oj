@@ -4,6 +4,7 @@
 	$lang['close'] = 'Close';
 	$lang['ok'] = 'OK';
 	$lang['foldup'] = 'Fold';
+	$lang['next_step'] = 'Next';
 
 //login
 	$lang['password'] = 'Password';
@@ -125,6 +126,7 @@
 	$lang['reject_review'] = 'Reject';
 	$lang['input_reject'] = 'Input your rejection message';
 
+	$lang['add_tags'] = 'Add Tags';
 	$lang['manage_tags'] = 'Manage Tags';
 	$lang['manage_tags_description'] = 'Add / edit / delete tags (categories) for problems here';
 	$lang['please_choose_a_tag'] = 'Please choose a tag, or';
