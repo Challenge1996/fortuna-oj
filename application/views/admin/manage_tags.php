@@ -24,6 +24,7 @@
 						<label class="checkbox">
 							<input type="checkbox" ng-model="chosen.properties.prohibit" ng-change="updProperties()"/><?=lang('prohibited_tag')?>
 						</label>
+						<em><?=lang('will_affect_inferior_tags')?></em>
 					</form>
 					<hr />
 					<form>
@@ -59,7 +60,7 @@
 				<button class="btn btn-primary" ng-click="showModal = true">{{addBtnTitle()}}</button>
 			</div>
 			<div class='span9'>
-				<select multiple ng-repeat='list in lists' ng-model='list.selection' ng-change='updList()' size="10">
+				<select multiple ng-repeat='list in lists' ng-model='list.selection' ng-click='updList(list)' size="10">
 					<option value='null' selected>--</option>
 					<option value='{{item.idCategory}}' ng-repeat='item in tags' ng-if='item.prototype==list.prototype'>{{item.name}}</option>
 				</select>

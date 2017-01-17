@@ -3,6 +3,7 @@
 	$lang['delete'] = '删除';
 	$lang['close'] = '关闭';
 	$lang['ok'] = '确定';
+	$lang['foldup'] = '收起';
 
 //login
 	$lang['password'] = '密码';
@@ -133,6 +134,8 @@
 	$lang['move_up_tag'] = '移为更上级的标签';
 	$lang['move_down_tag'] = '移为更下级的标签';
 	$lang['prohibited_tag'] = '禁止普通用户加注此标签';
+	$lang['add_subtag_note'] = '添加子级标签后父级标签会被自动添加。';
+	$lang['will_affect_inferior_tags'] = '（会影响其子标签）';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '

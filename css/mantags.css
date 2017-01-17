@@ -2,3 +2,7 @@ select {
 	min-width: 100px;
 	width: auto;
 }
+
+em {
+	color: grey;
+}

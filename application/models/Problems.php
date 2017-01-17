@@ -349,9 +349,12 @@ class Problems extends CI_Model{
 		return $this->db->query("SELECT title FROM ProblemSet WHERE pid=?", array($pid))->row()->title;
 	}
 
-	function load_tags()
+	function load_tags($pid = null)
 	{
-		$ret = $this->db->query("SELECT * FROM Category")->result();
+		if ($pid === null)
+			$ret = $this->db->query("SELECT * FROM Category")->result();
+		else
+			$ret = $this->db->query("SELECT * FROM Category WHERE idCategory in (SELECT idCategory FROM Categorization WHERE pid = ?)", array($pid))->result();
 		foreach ($ret as &$item)
 		{
 			$item->idCategory = (int)($item->idCategory);
@@ -383,7 +386,25 @@ class Problems extends CI_Model{
 
 	function tag_set_properties($id, $properties)
 	{
-		$this->db->query("UPDATE Category SET properties = ? WHERE idCategory = ?", array($properties, $id));
+		$decoded = json_decode($properties);
+		$queue = array($id);
+		while (($id = array_shift($queue)) !== null)
+		{
+			$this->db->query("UPDATE Category SET properties = ? WHERE idCategory = ?", array($properties, $id));
+			$nexts = array();
+			if ($decoded->prohibit === true)
+			{
+				$nexts = $this->db->query("SELECT idCategory FROM Category WHERE prototype = ?", array($id))->result();
+				foreach ($nexts as $tag)
+					$queue[] = $tag->idCategory;
+			}
+			if ($decoded->prohibit === false)
+			{
+				$nexts = $this->db->query("SELECT prototype FROM Category WHERE idCategory = ?", array($id))->result();
+				foreach ($nexts as $tag) // use for-loop in case of empty query
+					$queue[] = $tag->prototype;
+			}
+		}
 	}
 
 	function load_pushed($pid)

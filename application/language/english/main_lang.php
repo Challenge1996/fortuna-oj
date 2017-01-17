@@ -3,6 +3,7 @@
 	$lang['delete'] = 'Delete';
 	$lang['close'] = 'Close';
 	$lang['ok'] = 'OK';
+	$lang['foldup'] = 'Fold';
 
 //login
 	$lang['password'] = 'Password';
@@ -133,6 +134,8 @@
 	$lang['move_up_tag'] = 'Move up this tag to be superior';
 	$lang['move_down_tag'] = 'Move up this tag to be inferior';
 	$lang['prohibited_tag'] = 'Prohibit normal user to tag problems with this tag.';
+	$lang['add_subtag_note'] = 'Superior tags will be automatically added if inferior tags are added.'
+	$lang['will_affect_inferior_tags'] = '(Will affect inferior tags)';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '

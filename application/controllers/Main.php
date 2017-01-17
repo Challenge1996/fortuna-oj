@@ -295,7 +295,7 @@ class Main extends CI_Controller {
 			$this->load->view('error', array('message'=>$e->getMessage()));
 			return;
 		}	
-		if ($data != FALSE && ($data->isShowed && $this->problems->allow($pid) || $this->user->is_admin())) {
+		if ($data != FALSE && $this->problems->allow($pid)) {
 			
 			$data->filemode = json_decode($data->confCache);
 			unset($data->confCache);
@@ -470,7 +470,49 @@ class Main extends CI_Controller {
 			'showName' => count($src)>1
 		));
 	}
-	
+
+	public function tags($pid)
+	{
+		$this->load->model("problems");
+		$this->load->model("user");
+		if (! $this->problems->allow($pid))
+		{
+			$this->load->view('error', array('message' => 'Problem not available!'));
+			return;
+		}
+
+		$readonly = ($this->input->get("readonly") == "true");
+
+		$tags = $this->problems->load_tags($readonly ? $pid : null);
+		$byId = array();
+		foreach ($tags as $tag)
+		{
+			$byId[$tag->idCategory] = $tag;
+			$byId[$tag->idCategory]->subtags = array();
+			$byId[$tag->idCategory]->chosen = false;
+		}
+		foreach ($tags as $tag)
+			if ($tag->prototype !== null)
+				$byId[$tag->prototype]->subtags[] = $tag->idCategory;
+		$chosen = $this->problems->load_tags($pid);
+		foreach ($chosen as $tag)
+			$byId[$tag->idCategory]->chosen = true;
+
+		$ret = array();
+		$sortTags = function($id, $depth) use ($byId, &$ret, &$sortTags) { // function must be passed in as reference to recurse
+			$byId[$id]->depth = $depth;
+			$ret[] = $byId[$id];
+			foreach ($byId[$id]->subtags as $subtag)
+				$sortTags($subtag, $depth + 1);
+		};
+		foreach ($tags as $tag)
+			if ($tag->prototype === null)
+				$sortTags($tag->idCategory, 0);
+
+		$isAdmin = $this->user->is_admin();
+		$this->load->view("main/tags", array("list" => $ret, "readonly" => $readonly, "pid" => $pid, "isAdmin" => $isAdmin));
+	}
+
 	public function addtag($pid){
 		$id = $this->input->get('tag', TRUE);
 		if (!$id) return;

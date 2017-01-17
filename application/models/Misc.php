@@ -39,12 +39,32 @@ class Misc extends CI_Model{
 	}
 	
 	function add_categorization($pid, $id){
-		$sql = $this->db->insert_string('Categorization', array('pid' => $pid, 'idCategory' => $id));
-		$this->db->query($sql);
+		$properties = $this->db->query('SELECT properties FROM Category WHERE idCategory = ?', array($id))->row()->properties;
+		$properties = ($properties === null ? (object)null : json_decode($properties));
+		$this->load->model('user');
+		if (! $this->user->is_admin() && $properties->prohibit) return;
+
+		while (true)
+		{
+			$this->db->query($this->db->insert_string('Categorization', array('pid' => $pid, 'idCategory' => $id)));
+			if (! ($id = $this->db->query('SELECT prototype FROM Category WHERE idCategory = ?', array($id))->row()->prototype)) break;
+		}
 	}
 	
 	function delete_categorization($pid, $id){
-		$sql = $this->db->query("DELETE FROM Categorization WHERE pid=? AND idCategory=?", array($pid, $id));
+		$properties = $this->db->query('SELECT properties FROM Category WHERE idCategory = ?', array($id))->row()->properties;
+		$properties = ($properties === null ? (object)null : json_decode($properties));
+		$this->load->model('user');
+		if (! $this->user->is_admin() && $properties->prohibit) return;
+
+		$queue = array($id);
+		while (($id = array_shift($queue)) !== null)
+		{
+			$this->db->query("DELETE FROM Categorization WHERE pid=? AND idCategory=?", array($pid, $id));
+			$subtags = $this->db->query("SELECT idCategory FROM Category WHERE prototype = ?", array($id))->result();
+			foreach ($subtags as $tag)
+				$queue[] = $tag->idCategory;
+		}
 	}
 	
 	function load_groups($uid){

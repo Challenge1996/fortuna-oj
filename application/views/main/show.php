@@ -139,27 +139,18 @@
 			echo '</div></section></fieldset>';
 		?></div>
 		
-		<?php
-		if ($this->session->userdata('show_category') == 1 || $is_accepted){
-			echo '<div class="well" id="div_tags">';
-			echo '<fieldset id="tags">';
-			echo '<legend><h5><em>' . lang('tags') . '</em>';
-			if ($is_accepted || $this->user->is_admin()) echo ' <button id="add_tag_btn" class="btn btn-mini pull-right">' . lang('add') . '</button>';
-			echo '</h5></legend>';
-			foreach ($data->category as $id => $name)
-				echo "<span class=\"label tag\" id=\"$id\" style=\"margin-right:5px\">" .
-					'<button class="close delete_tag" style="color: white;font-size:14px;opacity:0.8;height:14px">&times;</button>' .
-					$name . '</span> ';
-			
-			echo '<form id="tag_form" >';
-			echo '<select style="width:120px" name="tag">';
-			foreach ($category as $id => $name) echo "<option value=\"$id\">$name</option>";
-			echo '</select><br />';
-			echo '<button class="btn btn-mini btn" id="cancel_add">cancel</button>';
-			echo '<button class="btn btn-mini btn-primary pull-right" id="confirm_add">add</button>';
-			echo '</form></fieldset></div>';	
-		}
-		?>
+		<?php if ($this->session->userdata('show_category') == 1 || $is_accepted): ?>
+			<div class="well" id="div_tags"><fieldset id="tags">
+				<legend><h5>
+					<em><?=lang('tags')?></em>
+					<?php if ($is_accepted || $this->user->is_admin()):?>
+						<button id="add_tag_btn" class="btn btn-mini pull-right"><?=lang('add')?></button>
+						<button id="cancel_add" class="btn btn-mini pull-right"><?=lang('foldup')?></button>
+					<?php endif; ?>
+				</h5></legend>
+				<div id="tags_ajax"></div>
+			</fieldset></div>
+		<?php endif; ?>
 		<div class="well" id="div_solutions">
 			<fieldset id="solutions">
 				<legend><h5><em><?=lang('solutions')?></em>
@@ -225,6 +216,15 @@
 		access_page('main/deletesolution/' + idSolution);
 	}
 
+	function load_tags(readonly) {
+		$.get('index.php/main/tags/<?=$data->pid?>' + (readonly ? '?readonly=true' : ''), function(data) {
+			$("#tags_ajax").html(data);
+		});
+	}
+	var editing_tags; // global variables. because 'tags' will refresh the entire page
+	load_tags(! editing_tags);
+	if (editing_tags) $("#add_tag_btn").hide(); else $("#cancel_add").hide();
+
 	$.get('index.php/main/limits/<?=$data->pid?>?simple', function(data) {
 		data = '<pre>'+data+'</pre>';
 		$('#trigger').popover({html: true, content: data, trigger: 'hover', placement: 'bottom'});
@@ -242,46 +242,27 @@
 				}
 			});
 		});
-		$('.delete_tag').hide();
-		$('#tag_form').hide();
-		$('.tag').hover(
-			function(){
-				$(this).children('.close').show();
-			},
-			function(){
-				$(this).children('.close').hide();
-			}
-		);
-		$('.delete_tag').click(function(){
-			access_page('main/deltag/<?=$data->pid?>/' + $(this).parent().attr('id'));
-		});
 		$('#trigger').click(function(){
 			$('#trigger').popover('hide')
 		});
 		$('#add_tag_btn').click(function(){
-			$('#tag_form').show();
+			load_tags(false);
+			$("#add_tag_btn").hide();
+			$("#cancel_add").show();
+			editing_tags = true;
 		});
 		$('#cancel_add').click(function(){
-			$('#tag_form').hide();
-			return false;
+			load_tags(true);
+			$("#cancel_add").hide();
+			$("#add_tag_btn").show();
+			editing_tags = false;
 		});
-		$('#confirm_add').click(function(){
-			$('#tag_form').hide();
-			$('#tag_form').ajaxSubmit({
-				type: "GET",
-				url: "index.php/main/addtag/<?=$data->pid?>",
-				success: function(){
-					refresh_page();
-					return false;
-				}
-			});
-			return false;
-		});
+
 		$('#page_content').one('DOMNodeInserted', function(){
 			document.title = "<?=OJ_TITLE?>";
 		});
 	});
-	
+
 	document.title = "<?=$data->pid . '. ' . rtrim($data->title) . ' ' . $IO?>";
 </script>
 

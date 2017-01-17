@@ -16,15 +16,15 @@ angular.module('appMantags', [])
 		updTags = function() {
 			$http.get('index.php/main/all_tags').then(function(res) {
 				$scope.tags = res.data;
-				$scope.lists = [{prototype: null, selection: ['null']}];
-				$scope.chosen = null;
 			});
 		};
 		updTags();
+		$scope.lists = [{prototype: null, selection: ['null']}];
+		$scope.chosen = null;
 
 		$scope.showModal = false;
 
-		$scope.updList = function() {
+		$scope.updList = function(param) {
 			for (var i = 0; i < $scope.lists.length; i++) {
 				var next = Number($scope.lists[i].selection[0]);
 				if (isNaN(next)) { // for '--' -> 'null'
@@ -35,7 +35,7 @@ angular.module('appMantags', [])
 					$scope.lists.push({prototype: next, selection: ['null']});
 					break;
 				}
-				if ($scope.lists[i + 1].prototype != next) {
+				if ($scope.lists[i + 1].prototype != next || $scope.lists[i] == param) {
 					$scope.lists[i + 1] = {prototype: next, selection: ['null']};
 					$scope.lists = $scope.lists.slice(0, i + 2);
 					break;
@@ -64,6 +64,8 @@ angular.module('appMantags', [])
 			if (confirm(msg))
 				$http.get('index.php/admin/del_tag/' + $scope.chosen.id).then(function(res) {
 					updTags();
+					$scope.lists = [{prototype: null, selection: ['null']}];
+					$scope.chosen = null;
 				});
 		};
 
@@ -71,9 +73,11 @@ angular.module('appMantags', [])
 			var url = 'index.php/admin/add_tag/' + $scope.inputName + '/' + ($scope.chosen ? $scope.chosen.id : '');
 			$http.get(url).then(function(res) {
 				res = res.data;
-				if (res.status == "ok")
+				if (res.status == "ok") {
 					updTags();
-				else
+					$scope.lists = [{prototype: null, selection: ['null']}];
+					$scope.chosen = null;
+				} else
 					alert(res.message);
 			});
 		};
@@ -81,6 +85,8 @@ angular.module('appMantags', [])
 		$scope.changeProto = function(newProto) {
 			$http.get('index.php/admin/tag_change_proto/' + $scope.chosen.id + '/' + newProto).then(function(res) {
 				updTags();
+				$scope.lists = [{prototype: null, selection: ['null']}];
+				$scope.chosen = null;
 			});
 		};
 
@@ -89,7 +95,9 @@ angular.module('appMantags', [])
 				'index.php/admin/tag_set_properties/' + $scope.chosen.id,
 				$.param({properties: JSON.stringify($scope.chosen.properties)}),
 				{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-			);
+			).then(function(res) {
+				updTags();
+			});
 		};
 
 		$scope.addBtnTitle = function() {
