@@ -137,7 +137,11 @@
 					<a href="#main/show/<?=$pid?>"><?=$row->title?></a>
 				<?php
 					if ($category || $row->ac) {
+						if (count($row->category) > 3)
+							echo "<span class='pull-right'> … </span>";
+						$cnt = 0;
 						foreach ($row->category as $id => $tag) {
+							if (++$cnt > 3) break;
 				?>
 							<span class='label pull-right' style="cursor:pointer"
 								onclick='window.location.href="#main/problemset?filter=<?=$id?>"'>
