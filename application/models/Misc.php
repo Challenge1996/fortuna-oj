@@ -42,7 +42,7 @@ class Misc extends CI_Model{
 		$properties = $this->db->query('SELECT properties FROM Category WHERE idCategory = ?', array($id))->row()->properties;
 		$properties = ($properties === null ? (object)null : json_decode($properties));
 		$this->load->model('user');
-		if (! $this->user->is_admin() && $properties->prohibit) return;
+		if (! $this->user->is_admin() && isset($properties->prohibit) && $properties->prohibit) return;
 
 		while (true)
 		{
@@ -55,7 +55,7 @@ class Misc extends CI_Model{
 		$properties = $this->db->query('SELECT properties FROM Category WHERE idCategory = ?', array($id))->row()->properties;
 		$properties = ($properties === null ? (object)null : json_decode($properties));
 		$this->load->model('user');
-		if (! $this->user->is_admin() && $properties->prohibit) return;
+		if (! $this->user->is_admin() && isset($properties->prohibit) && $properties->prohibit) return;
 
 		$queue = array($id);
 		while (($id = array_shift($queue)) !== null)

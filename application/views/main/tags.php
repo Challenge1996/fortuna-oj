@@ -6,7 +6,7 @@
 			<?php endfor; ?>
 			<input type="checkbox"
 			       <?=$item->chosen ? "checked" : ""?>
-				   <?=($readonly || (! $isAdmin && $item->properties->prohibit)) ?
+				   <?=($readonly || (! $isAdmin && isset($item->properties->prohibit) && $item->properties->prohibit)) ?
 						"disabled" : 
 						("onclick=toggleTag($item->idCategory," . ($item->chosen ? "0" : "1") . ")")
 				   ?>

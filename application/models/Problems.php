@@ -386,19 +386,19 @@ class Problems extends CI_Model{
 
 	function tag_set_properties($id, $properties)
 	{
-		$decoded = json_decode($properties);
+		$decoded = ($properties === null ? (object)null : json_decode($properties));
 		$queue = array($id);
 		while (($id = array_shift($queue)) !== null)
 		{
 			$this->db->query("UPDATE Category SET properties = ? WHERE idCategory = ?", array($properties, $id));
 			$nexts = array();
-			if ($decoded->prohibit === true)
+			if (isset($decoded->prohibit) && $decoded->prohibit === true)
 			{
 				$nexts = $this->db->query("SELECT idCategory FROM Category WHERE prototype = ?", array($id))->result();
 				foreach ($nexts as $tag)
 					$queue[] = $tag->idCategory;
 			}
-			if ($decoded->prohibit === false)
+			if (isset($decoded->prohibit) && $decoded->prohibit === false)
 			{
 				$nexts = $this->db->query("SELECT prototype FROM Category WHERE idCategory = ?", array($id))->result();
 				foreach ($nexts as $tag) // use for-loop in case of empty query
