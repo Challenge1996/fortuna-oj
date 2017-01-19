@@ -35,6 +35,13 @@ $dynamic_format = array (
 			'no' => false
 		)
 	),
+	'allow_download_first_wrong' => array (
+		'datatype' => 'enum',
+		'enum_value' => array (
+			'yes' => true,
+			'no' => false
+		)
+	),
 	'allow_forum' => array (
 		'datatype' => 'enum',
 		'enum_value' => array (

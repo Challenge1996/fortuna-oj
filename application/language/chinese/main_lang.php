@@ -155,6 +155,8 @@
 	$lang['global_settings_item_description_allow_custom_test'] = '打开自定义测试功能';
 	$lang['global_settings_item_key_allow_add_problem'] = '允许添加题目';
 	$lang['global_settings_item_description_allow_add_problem'] = '允许普通用户添加题目';
+	$lang['global_settings_item_key_allow_download_first_wrong'] = '允许下载第一个错误点';
+	$lang['global_settings_item_description_allow_download_first_wrong'] = '允许用户下载第一个出错的测试点的数据，编译错误和比赛时除外';
 	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
 	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';
 	$lang['global_settings_item_key_allow_normal_user_public'] = '允许开放代码';

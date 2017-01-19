@@ -43,7 +43,7 @@
 			default: $detail->status = 'Nothing Happened';
 		}
 
-		if ($statId && !$beenWrong)
+		if ($statId && !$beenWrong && $this->config->item('allow_download_first_wrong'))
 		{
 			$s = '';
 			if ($statId != 8)

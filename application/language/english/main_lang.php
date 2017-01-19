@@ -155,6 +155,8 @@
 	$lang['global_settings_item_description_allow_custom_test'] = 'Turn on Custeom Test function';
 	$lang['global_settings_item_key_allow_add_problem'] = 'Allow Adding Problems';
 	$lang['global_settings_item_description_allow_add_problem'] = 'Allow normal user to add problems';
+	$lang['global_settings_item_key_allow_download_first_wrong'] = 'Allow downloding first wrong case';
+	$lang['global_settings_item_description_allow_download_first_wrong'] = 'Users will be able to download the data of their first wrong test case, except for compiling errors or during contests';
 	$lang['global_settings_item_key_allow_forum'] = 'Allow Forum';
 	$lang['global_settings_item_description_allow_forum'] = 'Allow using contest forum';
 	$lang['global_settings_item_key_allow_normal_user_public'] = 'Allow publishing submissions';

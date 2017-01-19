@@ -426,6 +426,9 @@ $config['allow_custom_test'] = true; // in overriding_config/local.php
 // Allow normal user add problem
 $config['allow_add_problem'] = true; // in overriding_config/local.php
 
+// Allow user to download first wrong case
+$config['allow_download_first_wrong'] = true; // in overriding_config/local.php
+
 // Allow forum
 $config['allow_forum'] = true;
 
