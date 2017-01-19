@@ -88,6 +88,7 @@ DROP TABLE IF EXISTS `Categorization`;
 CREATE TABLE `Categorization` (
   `pid` int(11) NOT NULL,
   `idCategory` int(11) NOT NULL,
+  UNIQUE KEY `pid` (`pid`,`idCategory`),
   KEY `fk_ProblemSet_has_Category_Category1_idx` (`idCategory`),
   KEY `fk_ProblemSet_has_Category_ProblemSet1_idx` (`pid`),
   CONSTRAINT `fk_ProblemSet_has_Category_Category1` FOREIGN KEY (`idCategory`) REFERENCES `Category` (`idCategory`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -109,7 +110,7 @@ CREATE TABLE `Category` (
   `prototype` int(11) DEFAULT NULL,
   PRIMARY KEY (`idCategory`),
   KEY `name_INDEX` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -385,7 +386,7 @@ CREATE TABLE `ProblemSet` (
   KEY `score_INDEX` (`scoreSum`),
   KEY `uid` (`uid`),
   CONSTRAINT `ProblemSet_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1002 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1003 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,7 +452,7 @@ CREATE TABLE `Submission` (
   CONSTRAINT `fk_Submission_Group_has_Task1` FOREIGN KEY (`tid`) REFERENCES `Group_has_Task` (`tid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_Submission_ProblemSet1` FOREIGN KEY (`pid`) REFERENCES `ProblemSet` (`pid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_Submission_User1` FOREIGN KEY (`uid`) REFERENCES `User` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,4 +582,4 @@ CREATE TABLE `User` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-15 20:00:55
+-- Dump completed on 2017-01-18 19:37:44
