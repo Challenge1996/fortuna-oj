@@ -8,14 +8,14 @@
 		<?php foreach ($users as $user):?>
 			<li class="user-li" data-user="<?=$user?>"><span id="user-span-<?=$user?>" class="label label-info"><?=$user?><span class="close user-close">&times;</span></span></li>
 		<?php endforeach;?>
-		<li id='user-input-li'><input id='user-input' placeholder='Users. Saperated by spaces, tabs or commas. The users should be set to "restricted" mode.'></input>
+		<li id='user-input-li'><input id='user-input' placeholder='Users. Saperated by spaces, tabs or commas. The users should be set to "restricted" mode.'></input></li>
 	</ul>
 	<ul class="inline row-fluid list-ul">
 		<li class="prob-li" style="display:none"></li>
 		<?php foreach ($probs as $prob):?>
 			<li class="prob-li" data-prob="<?=$prob?>"><span id="prob-span-<?=$prob?>" class="label label-info"><?=$prob?><span class="close prob-close">&times;</span></span></li>
 		<?php endforeach;?>
-		<li id='prob-input-li'><input id='prob-input' placeholder='Problem IDs. Saperated by spaces, tabs or commas.'></input>
+		<li id='prob-input-li'><input id='prob-input' placeholder='Problem IDs. Saperated by spaces, tabs or commas.'></input></li>
 	</ul>
 
 	<div class='row-fluid'><span class='pull-right'>

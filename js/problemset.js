@@ -111,7 +111,7 @@ $(document).ready(function(){
 			query['search'] = encodeURIComponent($('#search_content').val());
 		else
 			delete query['search'];
-		if ($('#filter_content').val()!='0')
+		if ($('#filter_content').val()!='[]')
 			query['filter'] = $('#filter_content').val();
 		else
 			delete query['filter'];
@@ -158,16 +158,6 @@ $(document).ready(function(){
 	});
 
 	$('#search_content').bind('focus', function(){
-		$('#action_form').die();
-		$('#action_form').live('keypress', function(event){
-			if (event.keyCode == 13){
-				$('#search_button').click();
-				return false;
-			}
-		})
-	});
-	
-	$('#filter_content').bind('focus', function(){
 		$('#action_form').die();
 		$('#action_form').live('keypress', function(event){
 			if (event.keyCode == 13){

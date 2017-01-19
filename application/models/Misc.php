@@ -39,6 +39,9 @@ class Misc extends CI_Model{
 	}
 	
 	function add_categorization($pid, $id){
+		$exists = $this->db->query('SELECT COUNT(*) AS count FROM Categorization WHERE pid = ? AND idCategory = ?', array($pid, $id))->row()->count;
+		if ($exists) return;
+
 		$properties = $this->db->query('SELECT properties FROM Category WHERE idCategory = ?', array($id))->row()->properties;
 		$properties = ($properties === null ? (object)null : json_decode($properties));
 		$this->load->model('user');

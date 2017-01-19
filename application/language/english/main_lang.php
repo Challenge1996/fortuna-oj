@@ -28,7 +28,6 @@
 	$lang['add_problem'] = 'Add Problem';
 	$lang['search'] = 'Search';
 	$lang['search_title_and_source'] = 'Search titles and sources';
-	$lang['filter'] = 'Filter';
 	$lang['reverse_order'] = 'Reverse display order';
 	$lang['show_in_control'] = 'Show problems in my control';
 	$lang['including_hidden'] = '(including that are hidden)';

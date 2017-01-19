@@ -51,22 +51,21 @@
 
 <form class="form-inline" id="action_form" style="margin-left:10px; margin-right:10px">
 
-	<div id="div_search" class="control-group input-prepend input-append">
+	<div id="div_search" class="control-group input-prepend">
 		<span class="add-on"><strong><font color="#006652"><?=lang('search_title_and_source')?></font></strong></span>
 		<input type="text" id="search_content" class="input-xlarge" placeholder="Use '|' to split multiple keywords" value="<?=$keyword?>"/>
-		<select id="filter_content" style="width:140px">
-			<option value="0">All</option>
-		<?php
-			foreach ($category as $id => $name) {
-				if ($id == $filter) $selected = 'selected';
-				else $selected = '';
-				
-				echo "<option value='$id' $selected>$name</option>";
-			}
-		?>
-		</select>
-		<span id="search_button" class="btn"><?=lang('search')?></span>
 	</div>
+	<div id="div_search" class="control-group input-prepend">
+		<span class="add-on"><strong><font color="#006652"><?=lang('filter')?></font></strong></span>
+	</div>
+	<div id="div_search" class="control-group input-prepend">
+		<span id="tag_ajax"></span>
+		<script>
+			var currentFilter = <?=$filter ? $filter : "[]"?>; // json encoded
+			$("#tag_ajax").load("index.php/main/tagsearchbar");
+		</script>
+	</div>
+	<span id="search_button" class="btn"><?=lang('search')?></span>
 	<span id="adv_button" class="btn btn-link"><?=lang('p_advanced')?></span>
 	
 	<div id="div_goto_page" class="control-group input-prepend input-append pull-right">

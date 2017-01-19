@@ -513,6 +513,35 @@ class Main extends CI_Controller {
 		$this->load->view("main/tags", array("list" => $ret, "readonly" => $readonly, "pid" => $pid, "isAdmin" => $isAdmin));
 	}
 
+	function tagsearchbar()
+	{
+		$this->load->model("problems");
+
+		$tags = $this->problems->load_tags();
+		$byId = array();
+		foreach ($tags as $tag)
+		{
+			$byId[$tag->idCategory] = $tag;
+			$byId[$tag->idCategory]->subtags = array();
+		}
+		foreach ($tags as $tag)
+			if ($tag->prototype !== null)
+				$byId[$tag->prototype]->subtags[] = $tag->idCategory;
+
+		$sorted = array();
+		$sortTags = function($id, $prefix) use ($byId, &$sorted, &$sortTags) {
+			$byId[$id]->fullname = $prefix . ($prefix == '' ? '' : '/') . $byId[$id]->name;
+			$sorted[] = $byId[$id];
+			foreach ($byId[$id]->subtags as $subtag)
+				$sortTags($subtag, $byId[$id]->fullname);
+		};
+		foreach ($tags as $tag)
+			if ($tag->prototype === null)
+				$sortTags($tag->idCategory, '');
+
+		$this->load->view("main/tagsearchbar", array("tags" => $sorted));
+	}
+
 	public function addtag($pid){
 		$id = $this->input->get('tag', TRUE);
 		if (!$id) return;

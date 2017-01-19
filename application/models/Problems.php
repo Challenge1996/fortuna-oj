@@ -86,8 +86,13 @@ class Problems extends CI_Model{
 	function gen_filter_lim($filter)
 	{
 		if (!$filter) return 'TRUE';
-		$filter = $this->db->escape($filter);
-		return "pid in (SELECT pid FROM Categorization WHERE idCategory=$filter)";
+		$filter = array_map(function($x){return $this->db->escape($x);}, json_decode($filter));
+		$count = count($filter);
+		$filter = implode(',', $filter);
+		return "pid in 
+			(SELECT pid FROM 
+				(SELECT pid, COUNT(*) AS count FROM Categorization WHERE idCategory in ($filter) GROUP BY pid)T
+			WHERE count = '$count')";
 	}
 
 	function gen_bookmark_lim($show_starred, $show_note, $search_note)

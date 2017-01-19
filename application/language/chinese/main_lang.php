@@ -28,7 +28,6 @@
 	$lang['add_problem'] = '添加题目';
 	$lang['search'] = '搜索';
 	$lang['search_title_and_source'] = '搜索标题和来源';
-	$lang['filter'] = '过滤';
 	$lang['reverse_order'] = '题号倒序';
 	$lang['show_in_control'] = '显示我能管理的题目';
 	$lang['including_hidden'] = '（包括隐藏的）';
