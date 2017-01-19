@@ -5,8 +5,11 @@
 	<tbody>
 	<?php
 		foreach ($data as $row)
+		{
+			$row->description = htmlentities($row->description);
 			echo "<tr><td>$row->rank</td><td><a href=\"#users/$row->name\"><span class=\"label label-info\">$row->name</span></a>" . 
 				"</td><td>$row->description</td><td>$row->acCount</td><td>$row->solvedCount</td><td>$row->submitCount</td><td>$row->rate%</td></tr>";
+		}
 	?>
 	</tbody>
 </table>
