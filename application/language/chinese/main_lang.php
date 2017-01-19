@@ -5,6 +5,7 @@
 	$lang['ok'] = '确定';
 	$lang['foldup'] = '收起';
 	$lang['next_step'] = '下一步';
+	$lang['function_turned_off'] = '抱歉，管理员已关闭此功能。';
 
 //login
 	$lang['password'] = '密码';
@@ -150,6 +151,8 @@
 	$lang['global_settings_item_description_allow_message'] = '打开站内信功能';
 	$lang['global_settings_enum_yes'] = '是';
 	$lang['global_settings_enum_no'] = '否';
+	$lang['global_settings_item_key_allow_custom_test'] = '允许自定义测试';
+	$lang['global_settings_item_description_allow_custom_test'] = '打开自定义测试功能';
 	$lang['global_settings_item_key_allow_add_problem'] = '允许添加题目';
 	$lang['global_settings_item_description_allow_add_problem'] = '允许普通用户添加题目';
 	$lang['global_settings_item_key_allow_forum'] = '打开论坛';

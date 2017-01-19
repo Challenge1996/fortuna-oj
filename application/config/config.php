@@ -418,10 +418,13 @@ $config['sendgrid_api_key'] = 'bar'; // in overriding_config/secret.php
 $config['local_passwd'] = 'foobar'; // in overriding_config/secret.php
 
 // Allow using message function
-$config['allow_message'] = true;
+$config['allow_message'] = true; // in overriding_config/local.php
+
+// Allow using custom test
+$config['allow_custom_test'] = true; // in overriding_config/local.php
 
 // Allow normal user add problem
-$config['allow_add_problem'] = true;
+$config['allow_add_problem'] = true; // in overriding_config/local.php
 
 // Allow forum
 $config['allow_forum'] = true;

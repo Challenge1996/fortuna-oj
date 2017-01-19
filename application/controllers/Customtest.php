@@ -14,6 +14,10 @@ function find_abstract($path)
 class Customtest extends CI_Controller {
 
 	private function _redirect_page($method, $params = array()){
+		if (! $this->config->item('allow_custom_test')) {
+			$this->load->view('error', array('message' => lang('function_turned_off')));
+			return;
+		}
 		if (method_exists($this, $method))
 			return call_user_func_array(array($this, $method), $params);
 		else

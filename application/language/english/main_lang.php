@@ -5,6 +5,7 @@
 	$lang['ok'] = 'OK';
 	$lang['foldup'] = 'Fold';
 	$lang['next_step'] = 'Next';
+	$lang['function_turned_off'] = 'Sorry, administrators has turned this function off.';
 
 //login
 	$lang['password'] = 'Password';
@@ -150,6 +151,8 @@
 	$lang['global_settings_item_description_allow_message'] = 'Turn on private message function';
 	$lang['global_settings_enum_yes'] = 'Yes';
 	$lang['global_settings_enum_no'] = 'No';
+	$lang['global_settings_item_key_allow_custom_test'] = 'Allow Custom Test';
+	$lang['global_settings_item_description_allow_custom_test'] = 'Turn on Custeom Test function';
 	$lang['global_settings_item_key_allow_add_problem'] = 'Allow Adding Problems';
 	$lang['global_settings_item_description_allow_add_problem'] = 'Allow normal user to add problems';
 	$lang['global_settings_item_key_allow_forum'] = 'Allow Forum';
