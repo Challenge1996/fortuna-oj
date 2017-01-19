@@ -785,9 +785,10 @@ class Main extends CI_Controller {
 	
 	public function submission_change_access($sid){
 		$this->load->model('submission');
+		$this->load->model('user');
 		
-		if ($this->session->userdata('priviledge') == 'admin' ||
-			$this->session->userdata('uid') == $this->submission->load_uid($sid))
+		if (($this->user->uid() == $this->submission->load_uid($sid) || $this->user->is_admin()) &&
+			 $this->config->item('allow_normal_user_public') === true)
 			$this->submission->change_access($sid);
 	}
 

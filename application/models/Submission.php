@@ -172,6 +172,7 @@ class Submission extends CI_Model{
 		$this->load->model('user');
 		$result = $this->db->query("SELECT uid, pid, cid, private FROM Submission WHERE sid=?", array($sid));
 		if ($result->num_rows() == 0) return FALSE; else $result = $result->row();
+		if ($this->config->item('allow_normal_user_public') === "default_public") $result->private = 0;
 		if ($this->user->is_admin()) return TRUE;
 		$uid = $this->user->uid();
 

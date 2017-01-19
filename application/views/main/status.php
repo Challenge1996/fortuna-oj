@@ -199,11 +199,15 @@
 			echo "<td>$row->submitTime</td>";
 			
 			echo '<td>';
-			if ($this->user->uid() == $row->uid || $this->user->is_admin()){
+			if (($this->user->uid() == $row->uid || $this->user->is_admin()) && $this->config->item('allow_normal_user_public') === true){
 				echo "<a onclick=\"access_page('main/submission_change_access/$row->sid')\">";
-				if ($row->private == 1) echo '<i class="icon-lock"></i>'; else echo '<i class="icon-globe"></i>';
+				if ($row->private == 1)
+					echo '<i class="icon-lock"></i>';
+				else
+					echo '<i class="icon-globe"></i>';
 				echo '</a>';
-			} else if ($row->private == 0) echo '<i class="icon-globe"></i>';
+			} else if ($row->private == 0 || $this->config->item('allow_normal_user_public') === 'default_public')
+				echo '<i class="icon-globe"></i>';
 			echo '</td>';
 			
 			echo '<td>';
