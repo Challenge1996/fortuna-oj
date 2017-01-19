@@ -173,6 +173,7 @@ class User extends CI_Model{
 			'password' => md5(md5($post['password']) . $this->config->item('password_suffix')),
 			'email' => $post['email'],
 			'priviledge' => 'user',
+			'isEnabled' => ! $this->config->item('disable_new_user')
 		);
 		if (isset($post['school'])) $data['school'] = $post['school'];
 		if (isset($post['description'])) $data['description'] = $post['description'];

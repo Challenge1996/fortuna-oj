@@ -29,6 +29,8 @@ $assign_to_config['allow_add_problem']		= true;
 
 $assign_to_config['allow_download_first_wrong'] = true;
 
+$assign_to_config['disable_new_user']		= true;
+
 $assign_to_config['allow_sendgrid']			= true;
 
 $assign_to_config['fetch_contest_list']		= true;

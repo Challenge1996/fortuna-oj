@@ -162,3 +162,5 @@
 	$lang['global_settings_item_key_allow_normal_user_public'] = '允许开放代码';
 	$lang['global_settings_item_description_allow_normal_user_public'] = '允许普通用户将其代码设为公开。“默认公开”选项意为所有在列表中可见的提交之代码都是公开的。';
 	$lang['global_settings_enum_default_public'] = '默认公开';
+	$lang['global_settings_item_key_disable_new_user'] = '新用户默认禁用';
+	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';

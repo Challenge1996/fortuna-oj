@@ -414,20 +414,25 @@ $config['admin_email_name'] = 'JZOJ Admin';
 $config['sendgrid_api_user'] = 'foo'; // in overriding_config/secret.php
 $config['sendgrid_api_key'] = 'bar'; // in overriding_config/secret.php
 
+// Fetch recent contest list from HDU
+$config['fetch_contest_list' ] = true; // in overriding_config/local.php
+
+/* Options below are dynamic options, which can be modified in the site */
+
 // password for request from resque
-$config['local_passwd'] = 'foobar'; // in overriding_config/secret.php
+$config['local_passwd'] = 'foobar';
 
 // Allow using message function
-$config['allow_message'] = true; // in overriding_config/local.php
+$config['allow_message'] = true;
 
 // Allow using custom test
-$config['allow_custom_test'] = true; // in overriding_config/local.php
+$config['allow_custom_test'] = true;
 
 // Allow normal user add problem
-$config['allow_add_problem'] = true; // in overriding_config/local.php
+$config['allow_add_problem'] = true;
 
 // Allow user to download first wrong case
-$config['allow_download_first_wrong'] = true; // in overriding_config/local.php
+$config['allow_download_first_wrong'] = true;
 
 // Allow forum
 $config['allow_forum'] = true;
@@ -435,8 +440,8 @@ $config['allow_forum'] = true;
 // Allow normal users to switch their submissions as public
 $config['allow_normal_user_public'] = true;
 
-// Fetch recent contest list from HDU
-$config['fetch_contest_list' ] = true; // in overriding_config/local.php
+// New user will be disabled by default
+$config['disable_new_user'] = true;
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */

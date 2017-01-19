@@ -56,5 +56,12 @@ $dynamic_format = array (
 			'no' => false,
 			'default_public' => 'default_public'
 		)
+	),
+	'disable_new_user' => array (
+		'datatype' => 'enum',
+		'enum_value' => array (
+			'yes' => true,
+			'no' => false
+		)
 	)
 );
