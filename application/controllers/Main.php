@@ -787,8 +787,8 @@ class Main extends CI_Controller {
 		$this->load->model('submission');
 		$this->load->model('user');
 		
-		if (($this->user->uid() == $this->submission->load_uid($sid) || $this->user->is_admin()) &&
-			 $this->config->item('allow_normal_user_public') === true)
+		if ($this->user->uid() == $this->submission->load_uid($sid) && $this->config->item('allow_normal_user_public') === true ||
+			$this->user->is_admin() && $this->config->item('allow_normal_user_public') !== 'default_public')
 			$this->submission->change_access($sid);
 	}
 
