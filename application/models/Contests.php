@@ -109,7 +109,8 @@ class Contests extends CI_Model{
 		foreach ($problems as $row) $arr[]=$row->pid;
 		$this->db->select('cid, pid');
 		$this->db->order_by('cid desc, id asc');
-		$this->db->where_in('pid',$arr);
+		if ($arr)
+			$this->db->where_in('pid',$arr);
 		return $this->db->get('Contest_has_ProblemSet')->result();
 	}
 	
