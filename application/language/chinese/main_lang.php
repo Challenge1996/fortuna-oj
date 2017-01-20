@@ -6,6 +6,7 @@
 	$lang['foldup'] = '收起';
 	$lang['next_step'] = '下一步';
 	$lang['function_turned_off'] = '抱歉，管理员已关闭此功能。';
+	$lang['save'] = '保存';
 
 //login
 	$lang['password'] = '密码';
@@ -37,7 +38,7 @@
 	$lang['match_in_note'] = '搜索笔记内容';
 	$lang['page'] = '页面';
 	$lang['title'] = '标题';
-	$lang['Problemset_source'] = '来源';
+	$lang['Problemset_source'] = '来源/作者';
 	$lang['solved'] = '通过';
 	$lang['submit'] = '提交';
 	$lang['average'] = '平均分';
@@ -59,6 +60,7 @@
 	$lang['sample_output'] = '样例输出';
 	$lang['data_constraint'] = '数据范围限制';
 	$lang['hint'] = '提示';
+	$lang['copyright'] = '版权';
 	$lang['statistic'] = '统计';
 	$lang['tags'] = '标签';
 	$lang['solutions'] = '题解';

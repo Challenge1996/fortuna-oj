@@ -283,6 +283,7 @@ class Main extends CI_Controller {
 
 	public function show($pid){
 		$this->load->model('problems');
+		$this->load->model('user');
 		$this->load->model('misc');
 
 		$data = null;
@@ -326,6 +327,10 @@ class Main extends CI_Controller {
 			$categorization = $this->misc->load_categorization();
 			$data->category = $this->misc->load_problem_category($pid, $categorization);
 			$data->solutions = $this->problems->load_solutions($pid);
+
+			$copyright = null;
+			if ($this->config->item('show_copyright'))
+				$copyright = ($this->user->load_priviledge($data->uid) == 'admin' ? 'admin' : 'user');
 		} else $data = FALSE;
 	
 		if ($data == FALSE)
@@ -334,7 +339,8 @@ class Main extends CI_Controller {
 			$this->load->view('main/show', array(
 				'data' => $data,
 				'category' => $categorization,
-				'noSubmit' => $this->problems->no_submit($pid)
+				'noSubmit' => $this->problems->no_submit($pid),
+				'copyright' => $copyright
 			));
 	}
 

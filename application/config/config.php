@@ -417,6 +417,9 @@ $config['sendgrid_api_key'] = 'bar'; // in overriding_config/secret.php
 // Fetch recent contest list from HDU
 $config['fetch_contest_list' ] = true; // in overriding_config/local.php
 
+// Show copyright for each problem
+$config['show_copyright'] = false; // in overriding_config/local.php
+
 /* Options below are dynamic options, which can be modified in the site */
 
 // password for request from resque

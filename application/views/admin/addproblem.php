@@ -3,13 +3,13 @@
 
 <?=validation_errors()?>
 
-<div class="addproblem_form">
+<div class="addproblem_form container-fluid">
 
-	<form class="form-horizontal" action="index.php/admin/addproblem/<?=isset($pid) ? $pid : ''?>" method="post" id="addproblem">
+	<form action="index.php/admin/addproblem/<?=isset($pid) ? $pid : ''?>" method="post" id="addproblem">
 	
 		<input type="hidden" name="title" id="title_data" />
 		<fieldset>
-			<legend><h5>Title</h5></legend>
+			<legend><h5><?=lang('title')?></h5></legend>
 			<h3><div class="well" id="title" style="padding: 5px; text-align:center" contenteditable="true">
 				<?php if (isset($title)) echo $title; ?>
 			</div></h3>
@@ -17,70 +17,95 @@
 
 		<textarea id="problemDescription_data" name="problemDescription" style="display:none"></textarea>
 		<fieldset>
-			<legend><h5>Description</h5></legend>
+			<legend><h5><?=lang('description')?></h5></legend>
 			<div class="well" id="problemDescription" contenteditable="true">
 				<?php if (isset($problemDescription)) echo $problemDescription; ?>
 			</div>
 		</fieldset>
 
-		<textarea id="inputDescription_data" name="inputDescription" style="display:none"></textarea>
-		<fieldset class="span6" style="margin-left:0; clear:both">
-			<legend><h5>Input</h5></legend>
-			<div class="well" id="inputDescription" contenteditable="true">
-				<?php if (isset($inputDescription)) echo $inputDescription; ?>
-			</div>
-		</fieldset>
-		
-		<textarea id="outputDescription_data" name="outputDescription" style="display:none"></textarea>
-		<fieldset class="span6">
-			<legend><h5>Output</h5></legend>
-			<div class="well" id="outputDescription" contenteditable="true">
-				<?php if (isset($outputDescription)) echo $outputDescription; ?>
-			</div>
-		</fieldset>
-		<div class="clearfix"></div>
-		
-		<textarea id="inputSample_data" name="inputSample" style="display:none"></textarea>
-		<fieldset class="span6" style="margin-left:0">
-			<legend><h5>Sample Input</h5></legend>
-			<div class="well" id="inputSample" contenteditable="true">
-				<?php if (isset($inputSample)) echo $inputSample; ?>
-			</div>
-		</fieldset>
-		
-		<textarea id="outputSample_data" name="outputSample" style="display:none"></textarea>
-		<fieldset class="span6">
-			<legend><h5>Sample Output</h5></legend>
-			<div class="well" id="outputSample" contenteditable="true">
-				<?php if (isset($outputSample)) echo $outputSample; ?>
-			</div>
-		</fieldset>
-		<div class="clearfix"></div>
-		
+		<div class="row-fluid">
+			<textarea id="inputDescription_data" name="inputDescription" style="display:none"></textarea>
+			<fieldset class="span6" style="margin-left:0; clear:both">
+				<legend><h5><?=lang('input')?></h5></legend>
+				<div class="well" id="inputDescription" contenteditable="true">
+					<?php if (isset($inputDescription)) echo $inputDescription; ?>
+				</div>
+			</fieldset>
+
+			<textarea id="outputDescription_data" name="outputDescription" style="display:none"></textarea>
+			<fieldset class="span6">
+				<legend><h5><?=lang('output')?></h5></legend>
+				<div class="well" id="outputDescription" contenteditable="true">
+					<?php if (isset($outputDescription)) echo $outputDescription; ?>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="row-fluid">
+			<textarea id="inputSample_data" name="inputSample" style="display:none"></textarea>
+			<fieldset class="span6" style="margin-left:0">
+				<legend><h5><?=lang('sample_input')?></h5></legend>
+				<div class="well" id="inputSample" contenteditable="true">
+					<?php if (isset($inputSample)) echo $inputSample; ?>
+				</div>
+			</fieldset>
+
+			<textarea id="outputSample_data" name="outputSample" style="display:none"></textarea>
+			<fieldset class="span6">
+				<legend><h5><?=lang('sample_output')?></h5></legend>
+				<div class="well" id="outputSample" contenteditable="true">
+					<?php if (isset($outputSample)) echo $outputSample; ?>
+				</div>
+			</fieldset>
+		</div>
+
 		<textarea id="dataConstraint_data" name="dataConstraint" style="display:none"></textarea>
 		<fieldset>
-			<legend><h5>Data Constraint</h5></legend>
+			<legend><h5><?=lang('data_constraint')?></h5></legend>
 			<div class="well" id="dataConstraint" contenteditable="true">
 				<?php if (isset($dataConstraint)) echo $dataConstraint; ?>
 			</div>
 		</fieldset>
-		
+
 		<textarea id="hint_data" name="hint" style="display:none"></textarea>
 		<fieldset>
-			<legend><h5>Hint</h5></legend>
+			<legend><h5><?=lang('hint')?></h5></legend>
 			<div class="well" id="hint" contenteditable="true">
 				<?php if (isset($hint)) echo $hint; ?>
 			</div>
 		</fieldset>
-			
-			<label for="source" class="control-label">Source</label>
-			<div class="controls controls-row">
-				<input type="text" id="source" name="source"  class="input-xxlarge" value="<?=set_value('source', isset($source) ? $source : '', false)?>"/>
-			</div>
-			
+
+		<div class="row-fluid">
+			<fieldset class="span6">
+				<legend><h5><?=lang('Problemset_source')?></h5></legend>
+				<div class="controls controls-row">
+					<input type="text" id="source" name="source" style="width:100%" value="<?=set_value('source', isset($source) ? $source : '', false)?>"/>
+				</div>
+			</fieldset>
+			<?php if ($copyright): ?>
+				<fieldset class="span6">
+					<legend><h5><?=lang('copyright')?></h5></legend>
+						<label class="checkbox alert">
+							<input type="checkbox" id="acknowledged" style="height:25px; width:25px; margin:0px 10px"/>
+							<div style="margin-left:45px"><strong>我同意以下内容：</strong><span id="confirmation"></span></div>
+						</label>
+						<script>
+							$("#confirmation").load("static/copyright/<?=$copyright?>/confirmation.html");
+							$("#acknowledged").change(function() {
+								if ($("#acknowledged").is(":checked"))
+									$("#submit-button").removeAttr('disabled');
+								else
+									$("#submit-button").attr('disabled', true);
+							});
+							$("#submit-button").attr('disabled', true);
+						</script>
+				</fieldset>
+			<?php endif; ?>
+		</div>
+
 		<div>
-		
-		<button type="submit" class="btn btn-primary pull-right" onclick="return add_problem()">Save</button>
+			<button id="submit-button" type="submit" class="btn btn-primary pull-right" onclick="return add_problem()"><?=lang('save')?></button>
+		</div>
 		
 		<script type="text/javascript">
 			$(document).ready(function(){

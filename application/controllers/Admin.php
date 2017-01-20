@@ -71,6 +71,7 @@ class Admin extends CI_Controller {
 	
 	public function addproblem($pid = 0){
 		$this->load->model('problems');
+		$this->load->model('user');
 		if ($pid > 0 && ! $this->user->is_admin() && $this->problems->uid($pid) != $this->user->uid()) {
 			$this->load->view('error', array('message' => 'You are not allowed to edit this problem!'));
 			return;
@@ -88,6 +89,7 @@ class Admin extends CI_Controller {
 		//$this->form_validation->set_rules('dataConstraint', 'Data Constraint', 'required');
 		
 		if ($this->form_validation->run() == FALSE){
+			$data = array();
 			if ($pid > 0){
 				$data = (array)$this->db->query("SELECT * FROM ProblemSet WHERE pid=?", array($pid))->row();
 				$data['pid'] = $pid;
@@ -100,8 +102,15 @@ class Admin extends CI_Controller {
 				$data['outputSample']         = file_get_contents("$path/outputSample.html");
 				$data['dataConstraint']       = file_get_contents("$path/dataConstraint.html");
 				$data['hint']                 = file_get_contents("$path/hint.html");
-
-			}else $data = NULL;
+				if ($this->config->item('show_copyright'))
+					$data['copyright'] = ($this->user->load_priviledge($data['uid']) == 'admin' ? 'admin' : 'user');
+				else
+					$data['copyright'] = null;
+			} else
+				if ($this->config->item('show_copyright'))
+					$data['copyright'] = ($this->user->is_admin() ? 'admin' : 'user');
+				else
+					$data['copyright'] = null;
 
 			$this->load->view("admin/addproblem", $data);
 		}else{

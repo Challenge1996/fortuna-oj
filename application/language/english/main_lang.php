@@ -6,6 +6,7 @@
 	$lang['foldup'] = 'Fold';
 	$lang['next_step'] = 'Next';
 	$lang['function_turned_off'] = 'Sorry, administrators has turned this function off.';
+	$lang['save'] = 'Save';
 
 //login
 	$lang['password'] = 'Password';
@@ -37,7 +38,7 @@
 	$lang['match_in_note'] = 'Match what I wrote in notes';
 	$lang['page'] = 'Page';
 	$lang['title'] = 'Title';
-	$lang['Problemset_source'] = 'Source';
+	$lang['Problemset_source'] = 'Source / Author';
 	$lang['solved'] = 'Solved';
 	$lang['submit'] = 'Submit';
 	$lang['average'] = 'Average';
@@ -59,6 +60,7 @@
 	$lang['sample_output'] = 'Sample Output';
 	$lang['data_constraint'] = 'Data Constraint';
 	$lang['hint'] = 'Hint';
+	$lang['copyright'] = 'Copyright';
 	$lang['statistic'] = 'Statistic';
 	$lang['tags'] = 'Tags';
 	$lang['solutions'] = 'Solutions';

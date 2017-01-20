@@ -122,6 +122,16 @@
 					<div class="content"><?=nl2br($data->hint)?></div>
 				</fieldset></div>
 			<?php } ?>
+
+			<div style="text-align:center">
+				<?php if ($data->source): ?>
+					<p><?=lang('Problemset_source')?>: <?=$data->source?></p>
+				<?php endif; ?>
+				<?php if ($copyright): ?>
+					<p id="problem-copyright"></p>
+					<script> $("#problem-copyright").load("static/copyright/<?=$copyright?>/footnote.html"); </script>
+				<?php endif; ?>
+			</div>
 		</div>
 	</div>
 	

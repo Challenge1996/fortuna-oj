@@ -6,8 +6,6 @@
 
 $assign_to_config['base_url']				= 'http://fortuna-oj.com/oj';
 
-$assign_to_config['language']				= 'chinese';
-
 $assign_to_config['sess_cookie_name']		= 'foj_ci_session';
 
 $assign_to_config['cookie_path']			= "/oj";
@@ -21,6 +19,14 @@ $assign_to_config['servers']				= array('http://127.0.0.1:8389');
 
 $assign_to_config['oj_name']				= 'oj';
 
+$assign_to_config['fetch_contest_list']		= true;
+
+$assign_to_config['show_copyright']			= true;
+
+// Options below are dynamic options. These are default values
+
+$assign_to_config['language']				= 'chinese';
+
 $assign_to_config['allow_message']			= true;
 
 $assign_to_config['allow_custom_test']		= true;
@@ -32,8 +38,6 @@ $assign_to_config['allow_download_first_wrong'] = true;
 $assign_to_config['disable_new_user']		= true;
 
 $assign_to_config['allow_sendgrid']			= true;
-
-$assign_to_config['fetch_contest_list']		= true;
 
 // $db is loaded in application/config/database.php
 
