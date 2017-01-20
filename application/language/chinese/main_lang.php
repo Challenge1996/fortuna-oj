@@ -46,6 +46,7 @@
 	$lang['allow_submit'] = '允许提交';
 	$lang['edit_problem'] = '编辑题面';
 	$lang['configure_data'] = '配置数据';
+	$lang['total_count'] = '共%s道题目';
 	
 //show
 	$lang['time_limit'] = '时间限制';

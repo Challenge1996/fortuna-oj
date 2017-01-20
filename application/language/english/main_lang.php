@@ -46,6 +46,7 @@
 	$lang['allow_submit'] = 'Allow Submit';
 	$lang['edit_problem'] = 'Edit Problem';
 	$lang['configure_data'] = 'Configure Data';
+	$lang['total_count'] = '%s problems in total';
 	
 //show
 	$lang['time_limit'] = 'Time Limits';

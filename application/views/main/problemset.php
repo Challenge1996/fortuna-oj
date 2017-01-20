@@ -337,6 +337,8 @@
 	</tbody>
 </table></div>
 
+<em><?=sprintf(lang('total_count'), $count)?></em>
+
 <?=$this->pagination->create_links()?>
 
 <div class="modal hide fade" id="modal_confirm">
