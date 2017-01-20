@@ -121,11 +121,13 @@
 	$lang['disallowed'] = 'Disallowed';
 	$lang['edit'] = 'Edit';
 	$lang['configure'] = 'Configure';
+	$lang['switch_back_unreviewed'] = 'Click to switch back to unreviewed status (the user can edit it in unreviewed status)';
 	$lang['switch_hide_show'] = 'Click to switch showed/hidden';
 	$lang['switch_reviewing'] = 'Click to mark for / retrieve from reviewing';
 	$lang['accept_review'] = 'Accept';
 	$lang['reject_review'] = 'Reject';
 	$lang['input_reject'] = 'Input your rejection message';
+	$lang['reject_success'] = 'You have successfully rejected a problem';
 
 	$lang['add_tags'] = 'Add Tags';
 	$lang['manage_tags'] = 'Manage Tags';

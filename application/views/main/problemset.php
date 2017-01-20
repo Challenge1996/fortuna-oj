@@ -247,7 +247,9 @@
 						<button class="btn btn-small btn-danger reject-btn"><?=lang('reject_review')?></button>
 					<?php else: ?>
 						<a><?=$isShowed?></a>
-						<?php if ($this->user->is_admin()): ?>
+						<?php if ($row->isShowed && $this->user->load_priviledge($row->uid) != 'admin'):?>
+							<i class="icon-question-sign" title="<?=lang('switch_back_unreviewed')?>"></i>
+						<?php elseif ($this->user->is_admin()): ?>
 							<i class="icon-question-sign" title="<?=lang('switch_hide_show')?>"></i>
 						<?php elseif ($this->user->uid() == $row->uid): ?>
 							<i class="icon-question-sign" title="<?=lang('switch_reviewing')?>"></i>

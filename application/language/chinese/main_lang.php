@@ -121,11 +121,13 @@
 	$lang['disallowed'] = '禁止';
 	$lang['edit'] = '编辑';
 	$lang['configure'] = '配置';
+	$lang['switch_back_unreviewed'] = '点击以退回未审核状态（未审核状态中用户可编辑）';
 	$lang['switch_hide_show'] = '点击以切换显示/隐藏状态';
 	$lang['switch_reviewing'] = '点击以发送/撤回审核';
 	$lang['accept_review'] = '通过审核';
 	$lang['reject_review'] = '拒绝';
 	$lang['input_reject'] = '输入拒绝理由';
+	$lang['reject_success'] = '成功审核不通过一道题目';
 
 	$lang['add_tags'] = '添加标签';
 	$lang['manage_tags'] = '管理题目标签';

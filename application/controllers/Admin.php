@@ -139,7 +139,7 @@ class Admin extends CI_Controller {
 		if (isset($msg) && $msg){
 			$this->load->model('problems');
 			$this->problems->decline_review($pid, $msg);
-			$this->load->view('success');
+			$this->load->view('admin/decline_msg', array('success' => true));
 		} else {
 			$this->load->view('admin/decline_msg', array('pid' => $pid));
 		}
@@ -172,15 +172,13 @@ class Admin extends CI_Controller {
 		}
 
 		$problems_per_page = 20;
-		$uid = FALSE;
-		if ( ! $this->user->is_admin()) $uid = $this->user->uid();
 	
 		$this->load->model('problems');
-		$count = $this->problems->count($uid, TRUE);
+		$count = $this->problems->count(FALSE, TRUE);
 		if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
 			$page = ($count + $problems_per_page - 1) / $problems_per_page;
 		$row_begin = ($page - 1) * $problems_per_page;
-		$data = $this->problems->load_problemset($row_begin, $problems_per_page, TRUE, $uid, TRUE);
+		$data = $this->problems->load_problemset($row_begin, $problems_per_page, TRUE, FALSE, TRUE);
 		foreach ($data as $row)
 		{
 			$row->isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');

@@ -115,8 +115,12 @@ class Problems extends CI_Model{
 
 	function gen_admin_lim($admin)
 	{
+		$this->load->model("user");
 		if ($admin)
-			return 'TRUE';
+			if ($this->user->is_admin()) // admin won't be bothed by problems that haven't been submitted to review
+				return 'isShowed=1 OR reviewing=1 OR uid IN (SELECT uid FROM User WHERE priviledge="admin")';
+			else
+				return 'uid=' . $this->user->uid();
 		else
 			return 'isShowed=1';
 	}

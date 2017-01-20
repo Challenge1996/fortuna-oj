@@ -212,18 +212,14 @@ class Main extends CI_Controller {
 		else if ($page == 0)
 			$page = 1;
 
-		$filter_uid = FALSE;
-		if ($show_in_control && !$this->user->is_admin())
-			$filter_uid = $uid;
-
-		$count = $this->problems->count($filter_uid, $show_in_control,
+		$count = $this->problems->count(FALSE, $show_in_control,
 		    	$keyword, $filter, $show_starred, $show_note, $search_note);
 		if ($count > 0 && ceil($count / $problems_per_page) < $page)
 			$page = ceil($count / $problems_per_page);
 		$row_begin = ($page - 1) * $problems_per_page;
 
 		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $reverse,
-			$filter_uid, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
+			FALSE, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
 
 		foreach ($data as $row)
 			$row->hasControl = $this->problems->has_control($row->pid);
