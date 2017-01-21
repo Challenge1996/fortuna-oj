@@ -183,11 +183,15 @@ class Admin extends CI_Controller {
 		$problems_per_page = 20;
 	
 		$this->load->model('problems');
-		$count = $this->problems->count(FALSE, TRUE);
+		$query = (object)array(
+			'rev' => true,
+			'admin' => true,
+		);
+		$count = $this->problems->count($query);
 		if ($count > 0 && ($count + $problems_per_page - 1) / $problems_per_page < $page)
 			$page = ($count + $problems_per_page - 1) / $problems_per_page;
 		$row_begin = ($page - 1) * $problems_per_page;
-		$data = $this->problems->load_problemset($row_begin, $problems_per_page, TRUE, FALSE, TRUE);
+		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $query);
 		foreach ($data as $row)
 		{
 			$row->isShowed=($row->isShowed?'<span class="label label-success">Showed</span>':'<span class="label label-important">Hidden</span>');

@@ -69,7 +69,7 @@ class Problems extends CI_Model{
 		return false;
 	}
 
-	function gen_keyword_lim($keyword)
+	private function gen_keyword_lim($keyword)
 	{
 		if (!$keyword) return 'TRUE';
 		$pattern='';
@@ -83,7 +83,7 @@ class Problems extends CI_Model{
 		return $pattern;
 	}
 
-	function gen_filter_lim($filter)
+	private function gen_filter_lim($filter)
 	{
 		if (!$filter) return 'TRUE';
 		if (! is_numeric($filter))
@@ -99,7 +99,7 @@ class Problems extends CI_Model{
 			WHERE count = '$count')";
 	}
 
-	function gen_bookmark_lim($show_starred, $show_note, $search_note)
+	private function gen_bookmark_lim($show_starred, $show_note, $search_note)
 	{
 		$this->load->model('user');
 		$s = ($show_starred ? 'starred=1' : '');
@@ -110,14 +110,19 @@ class Problems extends CI_Model{
 		return ( $s ? "pid in (SELECT pid FROM Bookmark WHERE uid=$uid AND $s)" : 'TRUE');
 	}
 
-	function gen_uid_lim($uid)
+	private function gen_admin_only_lim($yes)
 	{
-		if (!$uid) return 'TRUE';
-		$uid = $this->db->escape($uid);
-		return "uid=$uid";
+		if (!$yes) return 'TRUE';
+		return "uid IN (SELECT uid FROM User WHERE priviledge='admin')";
 	}
 
-	function gen_admin_lim($admin)
+	private function gen_user_only_lim($yes)
+	{
+		if (!$yes) return 'TRUE';
+		return "uid IN (SELECT uid FROM User WHERE priviledge!='admin')";
+	}
+
+	private function gen_admin_lim($admin)
 	{
 		$this->load->model("user");
 		if ($admin)
@@ -129,7 +134,7 @@ class Problems extends CI_Model{
 			return 'isShowed=1';
 	}
 
-	function gen_restricted_lim()
+	private function gen_restricted_lim()
 	{
 		$this->load->model('user');
 		$uid = $this->user->uid();
@@ -140,36 +145,44 @@ class Problems extends CI_Model{
 			return 'TRUE';
 	}
 	
-	function count($uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
+	private function gen_lim($config)
 	{
-		$keyword_lim = $this->gen_keyword_lim($keyword);
-		$filter_lim = $this->gen_filter_lim($filter);
-		$bookmark_lim = $this->gen_bookmark_lim($show_starred, $show_note, $search_note);
-		$uid_lim = $this->gen_uid_lim($uid);
-		$admin_lim = $this->gen_admin_lim($admin);
-		$restricted_lim = $this->gen_restricted_lim();
+		return (object)array(
+			'rev' => (isset($config->rev) && $config->rev ? 'DESC' : ''),
+			'admin_only' => $this->gen_admin_only_lim(isset($config->admin_only) ? $config->admin_only : false),
+			'user_only' => $this->gen_user_only_lim(isset($config->user_only) ? $config->user_only : false),
+			'admin' => $this->gen_admin_lim(isset($config->admin) ? $config->admin : false),
+			'keyword' => $this->gen_keyword_lim(isset($config->keyword) ? $config->keyword : false),
+			'filter' => $this->gen_filter_lim(isset($config->filter) ? $config->filter : false),
+			'bookmark' => $this->gen_bookmark_lim(
+							isset($config->show_starred) ? $config->show_starred : false,
+							isset($config->show_note) ? $config->show_note : false,
+							isset($config->search_note) ? $config->search_note : false
+						  ),
+			'restricted' => $this->gen_restricted_lim()
+		);
+	}
 
+	function count($config)
+	{
+		$config = $this->gen_lim($config);
 		return $this->db->query("
 			SELECT COUNT(*) AS count FROM ProblemSet
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
+			WHERE ($config->keyword) AND ($config->filter) AND ($config->bookmark) AND ($config->admin_only) AND ($config->user_only) AND
+			      ($config->admin) AND ($config->restricted)
 			")->row()->count;
 	}
 
-	function load_problemset($row_begin, $count, $rev=FALSE, $uid=FALSE, $admin=FALSE, $keyword=FALSE, $filter=FALSE, $show_starred=FALSE, $show_note=FALSE, $search_note=FALSE)
+	function load_problemset($row_begin, $count, $config)
 	{
-		$keyword_lim = $this->gen_keyword_lim($keyword);
-		$filter_lim = $this->gen_filter_lim($filter);
-		$bookmark_lim = $this->gen_bookmark_lim($show_starred, $show_note, $search_note);
-		$uid_lim = $this->gen_uid_lim($uid);
-		$admin_lim = $this->gen_admin_lim($admin);
-		$rev_str = ($rev?"DESC":"");
-		$restricted_lim = $this->gen_restricted_lim();
+		$config = $this->gen_lim($config);
 
 		return $this->db->query("
 			SELECT pid, title, source, solvedCount, submitCount, scoreSum AS average, isShowed, reviewing, noSubmit, uname AS author, uid
 			FROM ProblemSet LEFT JOIN (SELECT uid AS uuid, name AS uname FROM User)T ON ProblemSet.uid=T.uuid
-			WHERE ($keyword_lim) AND ($filter_lim) AND ($bookmark_lim) AND ($uid_lim) AND ($admin_lim) AND ($restricted_lim)
-			ORDER BY isShowed ASC, pid $rev_str LIMIT ?, ?
+			WHERE ($config->keyword) AND ($config->filter) AND ($config->bookmark) AND ($config->admin_only) AND ($config->user_only) AND
+			      ($config->admin) AND ($config->restricted)
+			ORDER BY isShowed ASC, pid $config->rev LIMIT ?, ?
 			", array($row_begin, $count))->result();
 	}
 	

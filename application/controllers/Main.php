@@ -195,6 +195,8 @@ class Main extends CI_Controller {
 		$this->load->model('problems');
 		$this->load->model('misc');
 
+		$admin_only = $this->input->get('admin_only', TRUE);
+		$user_only = $this->input->get('user_only', TRUE); // these two are used with copyright
 		$keyword = $this->input->get('search',TRUE);
 		$filter = $this->input->get('filter',TRUE);
 		$show_starred = $this->input->get('show_starred',TRUE);
@@ -212,14 +214,24 @@ class Main extends CI_Controller {
 		else if ($page == 0)
 			$page = 1;
 
-		$count = $this->problems->count(FALSE, $show_in_control,
-		    	$keyword, $filter, $show_starred, $show_note, $search_note);
+		$query = (object)array(
+			'rev' => $reverse,
+			'admin_only' => $admin_only,
+			'user_only' => $user_only,
+			'admin' => $show_in_control,
+			'keyword' => $keyword,
+			'filter' => $filter,
+			'show_starred' => $show_starred,
+			'show_note' => $show_note,
+			'search_note' => $search_note
+		);
+
+		$count = $this->problems->count($query);
 		if ($count > 0 && ceil($count / $problems_per_page) < $page)
 			$page = ceil($count / $problems_per_page);
 		$row_begin = ($page - 1) * $problems_per_page;
 
-		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $reverse,
-			FALSE, $show_in_control, $keyword, $filter, $show_starred, $show_note, $search_note);
+		$data = $this->problems->load_problemset($row_begin, $problems_per_page, $query);
 
 		foreach ($data as $row)
 			$row->hasControl = $this->problems->has_control($row->pid);

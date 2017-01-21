@@ -130,6 +130,11 @@
 				<?php if ($copyright): ?>
 					<p id="problem-copyright"></p>
 					<script> $("#problem-copyright").load("static/copyright/<?=$copyright?>/footnote.html"); </script>
+					<p>
+						<a href="#main/problemset?<?=$copyright == 'admin' ? 'admin_only' : 'user_only'?>=1" style="text-decoration:underline">
+							所有<?=$copyright == 'admin' ? '管理员' : '普通用户'?>添加的题目
+						</a>使用此版权/授权形式
+					</p>
 				<?php endif; ?>
 			</div>
 		</div>
