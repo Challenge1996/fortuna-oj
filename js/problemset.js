@@ -204,7 +204,7 @@ $(document).ready(function(){
 			</div> \
 			<div> \
 				<label for="search_note_content">'+option_match_in_note+'</label> \
-				<input id="search_note_content" style="width:100%" onkeydown="search_note=$(this).val()">'+(search_note?search_note:'')+'</input> \
+				<input id="search_note_content" style="width:100%" onkeydown="search_note=$(this).val()" value="'+(search_note?search_note:'')+'"></input> \
 			</div>'
 	});
 	
