@@ -182,6 +182,7 @@ function on_hash_change() {
 		delete refresh_flag;
 	}
 	
+	document.title = OJTitle;
 	set_page_content('#page_content', hash_to_url(window.location.hash));
 }
 

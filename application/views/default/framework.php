@@ -12,6 +12,7 @@
 		<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 
+		<script> OJTitle = "<?=OJ_TITLE?>"; </script>
 		<script src="js/jquery.js"></script>
 		<script src="js/jquery.form.js"></script>
 		<script src="js/bootstrap.min.js"></script>

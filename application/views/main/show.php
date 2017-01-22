@@ -272,13 +272,9 @@
 			$("#add_tag_btn").show();
 			editing_tags = false;
 		});
-
-		$('#page_content').one('DOMNodeInserted', function(){
-			document.title = "<?=OJ_TITLE?>";
-		});
 	});
 
-	document.title = "<?=$data->pid . '. ' . rtrim($data->title) . ' ' . $IO?>";
+	document.title = <?=json_encode($data->pid . '. ' . rtrim($data->title) . ' ' . $IO)?>;
 </script>
 
 <!-- End of file show.php -->
