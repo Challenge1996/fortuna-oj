@@ -55,7 +55,6 @@
 <script>
 	CKEDITOR.disableAutoInline = true;
 	CKEDITOR.config.forcePasteAsPlainText = true;
-	CKEDITOR.config.htmlEncodeOutput = true;
 	CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
 	CKEDITOR.config.shiftEnterMode = CKEDITOR.ENTER_BR;
 	CKEDITOR.on( 'instanceReady', function( ev ) {
@@ -113,8 +112,8 @@
 		$('#submit').hide();
 		$('#modify').show();
 		$('#cancel').show();
-		title.setData($(".title[data-id='"+$(this).attr('data-id')+"']").html());
-		content.setData($(".content[data-id='"+$(this).attr('data-id')+"']").html());
+		title.editable().setHtml($(".title[data-id='"+$(this).attr('data-id')+"']").html());
+		content.editable().setHtml($(".content[data-id='"+$(this).attr('data-id')+"']").html());
 		window.scrollTo(0,1e10);
 	});
 

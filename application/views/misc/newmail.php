@@ -39,7 +39,6 @@
 		
 			CKEDITOR.disableAutoInline = true;
 			CKEDITOR.config.forcePasteAsPlainText = true;
-			CKEDITOR.config.htmlEncodeOutpuy = true;
 			CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
 			CKEDITOR.config.shiftEnterMode = CKEDITOR.ENTER_BR;
 //			var td = CKEDITOR.inline('title');

@@ -344,6 +344,7 @@ class Contest extends CI_Controller {
 
 	public function forum($cid)
 	{
+		$this->load->model('text');
 		if (! $this->config->item('allow_forum'))
 		{
 			$this->load->view('error', array('message' => 'Forum has been shut off by administrator'));
@@ -352,8 +353,8 @@ class Contest extends CI_Controller {
 		$del = $this->input->get('del');
 		$post = $this->input->get('post');
 		$mdfy = $this->input->get('mdfy');
-		$title = $this->input->post('title');
-		$content = $this->input->post('content');
+		$title = $this->text->bb2html($this->input->post('title'));
+		$content = $this->text->bb2html($this->input->post('content'));
 		if ($del)
 			$this->contests->del_post($del);
 		else if ($post)
@@ -380,11 +381,12 @@ class Contest extends CI_Controller {
 
 	public function reply($cid, $id, $to=-1)
 	{
+		$this->load->model('text');
 		if ($to == -1) $to = $id;
 		$del = $this->input->get('del');
 		$post = $this->input->get('post');
 		$mdfy = $this->input->get('mdfy');
-		$content = $this->input->post('content');
+		$content = $this->text->bb2html($this->input->post('content'));
 		if ($del)
 			$this->contests->del_post($del);
 		else if ($post)

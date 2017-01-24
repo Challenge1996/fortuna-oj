@@ -112,10 +112,8 @@
 				$('#editor_help').tooltip({placement: 'bottom'});
 			});
 		
-			CKEDITOR.config.extraPlugins = "base64image";
 			CKEDITOR.disableAutoInline = true;
 			CKEDITOR.config.forcePasteAsPlainText = true;
-			CKEDITOR.config.htmlEncodeOutput = true;
 			CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
 			CKEDITOR.config.shiftEnterMode = CKEDITOR.ENTER_BR;
 			CKEDITOR.on( 'instanceReady', function( ev ) {

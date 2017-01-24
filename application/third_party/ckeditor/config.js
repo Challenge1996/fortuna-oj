@@ -8,24 +8,18 @@ CKEDITOR.editorConfig = function( config ) {
 	// For the complete reference:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
-	config.extraPlugins = 'eqneditor';
+	config.extraPlugins = 'eqneditor,bbcode,base64image';
 
 	// The toolbar groups arrangement, optimized for two toolbar rows.
-	config.toolbarGroups = [
-		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-	//	{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-	//	{ name: 'links' },
-		{ name: 'insert' },
-	//	{ name: 'forms' },
-	//	{ name: 'tools' },
-	//	{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-	//	{ name: 'others' },
-	//	'/',
-		{ name: 'basicstyles', groups: [ 'basicstyles'/*, 'cleanup' */] },
-	//	{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-		{ name: 'styles' },
-	//	{ name: 'colors' },
-		{ name: 'about' }
+	config.toolbar = [
+		{ name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+		{ name: 'insert', items: ['Image', 'EqnEditor', /*'Smiley' <-- bbcode plugin will convert it to chars*/, 'SpecialChar'] },
+		{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat'] },
+		{ name: 'paragraph', items: ['NumberedList', 'BulletedList' , '-', 'Blockquote'] },
+		{ name: 'links', items: ['Link', 'Unlink'] },
+		// { name: 'styles', items: ['FontSize'] }, <-- bbcode plugin may have bugs with this
+		{ name: 'colors', items: ['TextColor'] },
+		{ name: 'about', items: ['About'] }
 	];
 
 	// Se the most common block elements.

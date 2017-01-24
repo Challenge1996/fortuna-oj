@@ -43,6 +43,7 @@ class Misc extends CI_Controller {
 		}
 
 		$this->load->model('user');
+		$this->load->model('text');
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_error_delimiters('<div class="alert alert-error">', '</div>');
@@ -53,7 +54,7 @@ class Misc extends CI_Controller {
 		if ($this->form_validation->run() == FALSE) {
 			$this->load->view('misc/newmail', array('username' => $username));
 		} else {
-			$data = $this->input->post(NULL, TRUE);
+			$data = $this->input->post(NULL, FALSE); // false because base64 images
 			$to_uid = $this->user->load_uid($data['to_user']);
 			if (! isset($to_uid) || ! $to_uid) {
 				$this->load->view('error', array('message' => 'User does not exist'));
@@ -64,6 +65,7 @@ class Misc extends CI_Controller {
 			$data['from_user'] = $this->user->username();
 			$data['to_uid'] = $to_uid;
 			$data['sendTime'] = date("Y-m-d H:i:s");
+			$data['content'] = $this->text->bb2html($data['content']);
 			$this->user->save_mail($data);
 
 			$this->load->view('success');

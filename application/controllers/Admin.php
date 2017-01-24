@@ -72,6 +72,7 @@ class Admin extends CI_Controller {
 	public function addproblem($pid = 0){
 		$this->load->model('problems');
 		$this->load->model('user');
+		$this->load->model('text');
 		if ($pid > 0 && ! $this->user->is_admin() && $this->problems->uid($pid) != $this->user->uid()) {
 			$this->load->view('error', array('message' => 'You are not allowed to edit this problem!'));
 			return;
@@ -114,7 +115,10 @@ class Admin extends CI_Controller {
 
 			$this->load->view("admin/addproblem", $data);
 		}else{
-			$data = $this->input->post(NULL);
+			$data = $this->input->post(NULL, FALSE);
+			foreach (array('title', 'problemDescription', 'inputDescription', 'outputDescription', 'inputSample', 'outputSample', 'dataConstraint', 'hint') as $key)
+				$data[$key] = $this->text->bb2html($data[$key]);
+
 			//$data['isShowed'] = 0;
 			if ($pid == 0){
 				$new = TRUE;
