@@ -45,7 +45,9 @@ class Text extends CI_Model
 				'[*]' => '<li>','[/*]' => '</li>',
 				'[code]' => '<code>','[/code]' => '</code>',
 				'[preformatted]' => '<pre>','[/preformatted]' => '</pre>',
-				'[pre]' => '<pre>','[/pre]' => '</pre>',		    
+				'[pre]' => '<pre>','[/pre]' => '</pre>',
+
+				'[quote]' => '<blockquote>','[/quote]' => '</blockquote>'
 		);
 
 		$bbextended = array(
