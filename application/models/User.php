@@ -365,10 +365,13 @@ class User extends CI_Model{
 	
 	function load_avatar($uid) {
 		if ( ! $uid) return;
-		return $this->db->query("SELECT avatar FROM User
-								WHERE uid=?",
-								array($uid))
-								->row()->avatar;
+		$ret = $this->db->query("SELECT avatar FROM User WHERE uid=?", array($uid))->row()->avatar;
+		if (! $ret) {
+			$this->load->model('images');
+			$ret = $this->images->genThumbnail('images/avatar/' . $this->load_userPicture($uid));
+			$this->save_avatar($uid, $ret);
+		}
+		return $ret;
 	}
 	
 	function save_user_picture($uid, $pic) {
