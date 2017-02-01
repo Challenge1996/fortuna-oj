@@ -93,7 +93,7 @@
 
 <div id='est-modal' class='modal hide fade'>
 	<div class='modal-header'>
-		<h3>Expected Score?</h3>
+		<h3><?=lang('expected_score')?></h3>
 	</div>
 	<div class='modal-body'>
 		<input id='est-input' type='number'></input>
@@ -224,7 +224,7 @@
 		});
 		if (new_lang) $("#cookie-lang").val(new_lang);
 
-		<?php if (isset($cid) && $cid && $this->contests->load_contest_mode($cid)=='OI Traditional'): ?>
+		<?php if (isset($cid) && $cid && $this->contests->load_contest_mode($cid)=='OI Traditional' && $this->config->item('estimate_score')): ?>
 			$('#est-modal').modal('show');
 		<?php else: ?>
 			final_submit();

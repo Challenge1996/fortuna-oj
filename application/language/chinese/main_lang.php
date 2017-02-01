@@ -112,6 +112,8 @@
 	$lang['score'] = '分数';
 	$lang['export'] = '导出';
 
+	$lang['expected_score'] = '预估分数?';
+
 //admin
 	$lang['manage_viewing_permissions'] = '管理题目查看权限';
 	$lang['rejudge'] = '重测';
@@ -169,3 +171,5 @@
 	$lang['global_settings_enum_default_public'] = '默认公开';
 	$lang['global_settings_item_key_disable_new_user'] = '新用户默认禁用';
 	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
+	$lang['global_settings_item_key_estimate_score'] = '估分';
+	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';

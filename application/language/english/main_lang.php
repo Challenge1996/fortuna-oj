@@ -112,6 +112,8 @@
 	$lang['score'] = 'Score';
 	$lang['export'] = 'Export';
 
+	$lang['expected_score'] = 'Expected score?';
+
 //admin
 	$lang['manage_viewing_permissions'] = 'Manage Viewing Permissions';
 	$lang['rejudge'] = 'Rejudge';
@@ -169,3 +171,5 @@
 	$lang['global_settings_enum_default_public'] = 'Public by default';
 	$lang['global_settings_item_key_disable_new_user'] = 'Disable new user';
 	$lang['global_settings_item_description_disable_new_user'] = 'New users will be disabled after registion until administrators authenticate them';
+	$lang['global_settings_item_key_estimate_score'] = 'Estimate score';
+	$lang['global_settings_item_description_estimate_score'] = 'Users participating contests in "OI Traditional" mode need to enter his estimated score when submitting';

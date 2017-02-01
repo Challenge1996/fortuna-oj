@@ -63,5 +63,12 @@ $dynamic_format = array (
 			'yes' => true,
 			'no' => false
 		)
+	),
+	'estimate_score' => array (
+		'datatype' => 'enum',
+		'enum_value' => array (
+			'yes' => true,
+			'no' => false
+		)
 	)
 );

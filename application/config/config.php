@@ -446,5 +446,8 @@ $config['allow_normal_user_public'] = true;
 // New user will be disabled by default
 $config['disable_new_user'] = true;
 
+// User need to estimate his score
+$config['estimate_score'] = true;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
