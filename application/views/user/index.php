@@ -51,6 +51,11 @@
 				
 				<dt class="user_specificator">Rate</dt>
 				<dd><span class="badge badge-info"><?=$data->rate . '%'?></span></dd>
+
+				<?php if ($data->description): ?>
+					<dt class="user_specificator">Description</dt>
+					<dd><i><?=$data->description?></i></dd>
+				<?php endif; ?>
 				
 			</dl></div>
 		</div>
