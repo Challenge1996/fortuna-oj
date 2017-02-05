@@ -4,6 +4,7 @@
 !dynamic.php
 !example.php
 !*.example
+!*.py
 !var
 var/*
 !var/README.md
