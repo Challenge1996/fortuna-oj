@@ -66,6 +66,7 @@
 	$lang['solutions'] = 'Solutions';
 	$lang['advanced'] = 'Advanced';
 	$lang['add'] = 'Add';
+	$lang['add_new_tags'] = 'Add new tags...';
 	
 //status
 	$lang['output_not_found'] = 'Output Not Found';

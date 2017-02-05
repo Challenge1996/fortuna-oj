@@ -1,3 +1,7 @@
+<?php
+	$this->load->model('user');
+?>
+
 <form>
 	<?php foreach($list as $item): ?>
 		<label class="checkbox">
@@ -15,7 +19,10 @@
 		</label>
 	<?php endforeach; ?>
 	<?php if (! $readonly): ?>
-		<em style="color: grey"><?=lang('add_subtag_note')?></em>
+		<p><em style="color: grey"><?=lang('add_subtag_note')?></em></p>
+		<?php if ($this->user->is_admin()): ?>
+			<p><a href="#admin/manage_tags"><?=lang('add_new_tags')?></a></p>
+		<?php endif; ?>
 	<?php endif; ?>
 </form>
 

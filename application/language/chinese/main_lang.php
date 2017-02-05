@@ -66,6 +66,7 @@
 	$lang['solutions'] = '题解';
 	$lang['advanced'] = '高级';
 	$lang['add'] = '添加';
+	$lang['add_new_tags'] = '添加新标签...';
 	
 //status
 	$lang['output_not_found'] = '无输出';
