@@ -168,12 +168,13 @@ class User extends CI_Model{
 	}
 	
 	function registion_success($post = array()){
+		$firstUser = ! $this->db->query("SELECT COUNT(*) AS cnt FROM User WHERE priviledge='admin' AND isEnabled=1")->row()->cnt;
 		$data = array(
 			'name' => $post['username'],
 			'password' => md5(md5($post['password']) . $this->config->item('password_suffix')),
 			'email' => $post['email'],
-			'priviledge' => 'user',
-			'isEnabled' => ! $this->config->item('disable_new_user')
+			'priviledge' => $firstUser ? 'admin' : 'user',
+			'isEnabled' => $firstUser ? 1 : ! $this->config->item('disable_new_user')
 		);
 		if (isset($post['school'])) $data['school'] = $post['school'];
 		if (isset($post['description'])) $data['description'] = $post['description'];
