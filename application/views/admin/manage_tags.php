@@ -16,6 +16,18 @@
 
 	<div class='container-fluid'>
 		<div class='row-fluid'>
+			<div class='span12'>
+				<ul class='nav nav-pills'>
+					<li ng-repeat='group in groups' ng-class="{'active': curGroup === group}">
+						<a ng-click='$parent.curGroup = group'>{{group === undefined ? '<?=lang('default_tag_group')?>' : group}}</a>
+					</li>
+					<li>
+						<a ng-click='showNewGroupModal = true'><strong style='font-size:300%'>+</strong></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class='row-fluid'>
 			<div class='span3 well'>
 				<div ng-if='chosen'>
 					<h4>{{chosen.name}}</h4>
@@ -62,7 +74,9 @@
 			<div class='span9'>
 				<select multiple ng-repeat='list in lists' ng-model='list.selection' ng-click='updList(list)' size="10">
 					<option value='null' selected>--</option>
-					<option value='{{item.idCategory}}' ng-repeat='item in tags' ng-if='item.prototype==list.prototype'>{{item.name}}</option>
+					<option value='{{item.idCategory}}' ng-repeat='item in tags' ng-if='item.prototype==list.prototype && item.properties.group===curGroup'>
+						{{item.name}}
+					</option>
 				</select>
 			</div>
 		</div>
@@ -79,6 +93,20 @@
 		<div class="modal-footer">
 			<button class="btn" aria-hidden="true" ng-click="showModal = false"><?=lang('close')?></button>
 			<button class="btn btn-primary" ng-click='add(); showModal = false'><?=lang('ok')?></button>
+		</div>
+	</div>
+
+	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" ak-modal="showNewGroupModal" data-keyboard="false" data-backdrop="static">
+		<div class="modal-header">
+			<button type="button" class="close" aria-hidden="true" ng-click="showNewGroupModal = false">×</button>
+			<h3><?=lang('please_input_tag_group_name')?></h3>
+		</div>
+		<div class="modal-body">
+			<p><input ng-model='inputGroupName'></input></p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" aria-hidden="true" ng-click="showNewGroupModal = false"><?=lang('close')?></button>
+			<button class="btn btn-primary" ng-click='addGroup(); showNewGroupModal = false'><?=lang('ok')?></button>
 		</div>
 	</div>
 </div>

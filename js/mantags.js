@@ -16,13 +16,21 @@ angular.module('appMantags', [])
 		updTags = function() {
 			$http.get('index.php/main/all_tags').then(function(res) {
 				$scope.tags = res.data;
+				var groupSet = new Set($scope.tags.map(function(x) { return x.properties.group; }));
+				$scope.groups = Array.from(groupSet);
+				if ($scope.groups === [])
+					$scope.groups = [undefined];
+				if (! groupSet.has($scope.curGroup))
+					$scope.curGroup = $scope.groups[0];
 			});
 		};
+		$scope.curGroup = undefined;
 		updTags();
 		$scope.lists = [{prototype: null, selection: ['null']}];
 		$scope.chosen = null;
 
-		$scope.showModal = false;
+		$scope.showModal = false; // this means modal for input new tag
+		$scope.showNewGroupModal = false;
 
 		$scope.updList = function(param) {
 			for (var i = 0; i < $scope.lists.length; i++) {
@@ -49,8 +57,11 @@ angular.module('appMantags', [])
 						ret = {id: id, name: $scope.tags[j].name, proto: $scope.tags[j].prototype, peers: [], properties: $scope.tags[j].properties};
 				if (! ret) return null;
 				for (var j in $scope.tags)
-					if ($scope.tags[j].idCategory != id && $scope.tags[j].prototype == ret.proto)
+					if ($scope.tags[j].idCategory != id && $scope.tags[j].prototype == ret.proto) {
+						if ($scope.tags[j].properties && ret.properties && $scope.tags[j].properties.group !== ret.properties.group)
+							continue;
 						ret.peers.push({id: $scope.tags[j].idCategory, name: $scope.tags[j].name});
+					}
 				for (var j in $scope.tags)
 					if ($scope.tags[j].idCategory == ret.proto) // null != 0 in javascript
 						ret.proto = {id: $scope.tags[j].idCategory, proto: $scope.tags[j].prototype};
@@ -70,8 +81,11 @@ angular.module('appMantags', [])
 		};
 
 		$scope.add = function() {
-			var url = 'index.php/admin/add_tag/' + $scope.inputName + '/' + ($scope.chosen ? $scope.chosen.id : '');
-			$http.get(url).then(function(res) {
+			$http.post(
+				'index.php/admin/add_tag/' + $scope.inputName + '/' + ($scope.chosen ? $scope.chosen.id : ''),
+				$.param({properties: JSON.stringify({group: $scope.curGroup})}),
+				{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+			).then(function(res) {
 				res = res.data;
 				if (res.status == "ok") {
 					updTags();
@@ -81,6 +95,10 @@ angular.module('appMantags', [])
 					alert(res.message);
 			});
 		};
+
+		$scope.addGroup = function() {
+			$scope.groups.push($scope.curGroup = $scope.inputGroupName);
+		}
 
 		$scope.changeProto = function(newProto) {
 			$http.get('index.php/admin/tag_change_proto/' + $scope.chosen.id + '/' + newProto).then(function(res) {

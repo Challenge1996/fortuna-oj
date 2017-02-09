@@ -397,11 +397,11 @@ class Problems extends CI_Model{
 		$this->db->query("DELETE FROM Category WHERE idCategory = ?", array($id));
 	}
 
-	function add_tag($name, $proto = NULL)
+	function add_tag($name, $proto = NULL, $properties = NULL)
 	{
 		if ($this->db->query("SELECT COUNT(*) AS count FROM Category WHERE name = ?", array($name))->row()->count)
 			return false;
-		$this->db->query("INSERT INTO Category (name, prototype) VALUES (?, ?)", array($name, $proto));
+		$this->db->query("INSERT INTO Category (name, prototype, properties) VALUES (?, ?, ?)", array($name, $proto, $properties));
 		return true;
 	}
 

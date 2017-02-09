@@ -498,32 +498,44 @@ class Main extends CI_Controller {
 
 		$readonly = ($this->input->get("readonly") == "true");
 
-		$tags = $this->problems->load_tags($readonly ? $pid : null);
-		$byId = array();
-		foreach ($tags as $tag)
-		{
-			$byId[$tag->idCategory] = $tag;
-			$byId[$tag->idCategory]->subtags = array();
-			$byId[$tag->idCategory]->chosen = false;
-		}
-		foreach ($tags as $tag)
-			if ($tag->prototype !== null)
-				$byId[$tag->prototype]->subtags[] = $tag->idCategory;
+		$flatTags = $this->problems->load_tags($readonly ? $pid : null);
 		$chosen = $this->problems->load_tags($pid);
-		foreach ($chosen as $tag)
-			$byId[$tag->idCategory]->chosen = true;
+		$groupedTags = array();
+		foreach ($flatTags as $tag)
+		{
+			$group = isset($tag->properties->group) ? $tag->properties->group : '';
+			if (! isset($groupedTags[$group])) $groupedTags[$group] = array();
+			$groupedTags[$group][] = $tag;
+		}
 
 		$ret = array();
-		$sortTags = function($id, $depth) use ($byId, &$ret, &$sortTags) { // function must be passed in as reference to recurse
-			$byId[$id]->depth = $depth;
-			$ret[] = $byId[$id];
-			foreach ($byId[$id]->subtags as $subtag)
-				$sortTags($subtag, $depth + 1);
-		};
-		foreach ($tags as $tag)
-			if ($tag->prototype === null)
-				$sortTags($tag->idCategory, 0);
+		foreach ($groupedTags as $group => $tags)
+		{
+			$byId = array();
+			foreach ($tags as $tag)
+			{
+				$byId[$tag->idCategory] = $tag;
+				$byId[$tag->idCategory]->subtags = array();
+				$byId[$tag->idCategory]->chosen = false;
+			}
+			foreach ($tags as $tag)
+				if ($tag->prototype !== null)
+					$byId[$tag->prototype]->subtags[] = $tag->idCategory;
+			foreach ($chosen as $tag)
+				if (isset($byId[$tag->idCategory]))
+					$byId[$tag->idCategory]->chosen = true;
 
+			$ret[$group] = array();
+			$sortTags = function($id, $depth, &$ret) use ($byId, &$sortTags) { // function must be passed in as reference to recurse
+				$byId[$id]->depth = $depth;
+				$ret[] = $byId[$id];
+				foreach ($byId[$id]->subtags as $subtag)
+					$sortTags($subtag, $depth + 1, $ret);
+			};
+			foreach ($tags as $tag)
+				if ($tag->prototype === null)
+					$sortTags($tag->idCategory, 0, $ret[$group]);
+		}
 		$isAdmin = $this->user->is_admin();
 		$this->load->view("main/tags", array("list" => $ret, "readonly" => $readonly, "pid" => $pid, "isAdmin" => $isAdmin));
 	}

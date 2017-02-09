@@ -140,12 +140,14 @@
 	$lang['please_choose_a_tag'] = 'Please choose a tag, or';
 	$lang['del_tag_confirm'] = 'Sure to delete this tag? This will affect all the problems that use this tag. All the sub-tags will be preserved.';
 	$lang['please_input_tag_name'] = 'Please input the name of the tag';
+	$lang['please_input_tag_group_name'] = 'Please input the name of the tags group';
 	$lang['error_tag_same_name'] = 'There is already a tag with the same name.';
 	$lang['move_up_tag'] = 'Move up this tag to be superior';
 	$lang['move_down_tag'] = 'Move up this tag to be inferior';
 	$lang['prohibited_tag'] = 'Prohibit normal user to tag problems with this tag.';
 	$lang['add_subtag_note'] = 'Superior tags will be automatically added if inferior tags are added.';
 	$lang['will_affect_inferior_tags'] = '(Will affect inferior tags)';
+	$lang['default_tag_group'] = 'Default tags group';
 
 	$lang['global_settings'] = 'Global Settings';
 	$lang['global_settings_description'] = '

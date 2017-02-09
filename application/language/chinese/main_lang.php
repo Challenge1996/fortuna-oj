@@ -140,12 +140,14 @@
 	$lang['please_choose_a_tag'] = '请选择一个标签，或';
 	$lang['del_tag_confirm'] = '确认删除此标签？这会影响所有加注此标签的题目。所有子标签会被保留。';
 	$lang['please_input_tag_name'] = '请输入标签名称';
+	$lang['please_input_tag_group_name'] = '请输入标签组名称';
 	$lang['error_tag_same_name'] = '已有相同名字的标签。';
 	$lang['move_up_tag'] = '移为更上级的标签';
 	$lang['move_down_tag'] = '移为更下级的标签';
 	$lang['prohibited_tag'] = '禁止普通用户加注此标签';
 	$lang['add_subtag_note'] = '添加子级标签后父级标签会被自动添加。';
 	$lang['will_affect_inferior_tags'] = '（会影响其子标签）';
+	$lang['default_tag_group'] = '默认标签组';
 
 	$lang['global_settings'] = '全局设定';
 	$lang['global_settings_description'] = '
