@@ -4,7 +4,7 @@
 
 <form>
 	<?php foreach($list as $group => $sublist): ?>
-		<div class='alert alert-info'>
+		<div class='alert alert-info' style='margin:10px -15px; padding:10px 0px'>
 			<?php if ($group): ?>
 				<em><?=$group?></em>
 			<?php endif; ?>
