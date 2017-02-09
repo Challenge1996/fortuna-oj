@@ -69,7 +69,7 @@
 		</div>
 		
 		<div class="modal-footer">
-			<button type="submit" class="btn pull-left" onclick="return login()">Login</button>
+			<span type="submit" class="btn pull-left" onclick="return login()">Login</span> <!-- Pressing ENTER in the form will automatically trigger the first <button> -->
 			<button type="submit" class="btn btn-primary" onclick="return register_submit()">Submit</button>
 		</div>
 	</form>
