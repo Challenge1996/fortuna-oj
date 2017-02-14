@@ -574,13 +574,15 @@ class Main extends CI_Controller {
 		if (!$id) return;
 		
 		$this->load->model('misc');
-		if ($this->misc->is_accepted($this->user->uid(), $pid) || $this->user->is_admin())
+		$this->load->model('problems');
+		if ($this->problems->allow($pid))
 			$this->misc->add_categorization($pid, $id);
 	}
 	
 	public function deltag($pid, $id){
 		$this->load->model('misc');
-		if ($this->misc->is_accepted($this->user->uid(), $pid) || $this->user->is_admin())
+		$this->load->model('problems');
+		if ($this->problems->allow($pid))
 			$this->misc->delete_categorization($pid, $id);		
 	}
 

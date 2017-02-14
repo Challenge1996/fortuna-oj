@@ -13,7 +13,7 @@ class Admin extends CI_Controller {
 		$this->load->model('user');
 		
 		$allowed_methods = array('problemset', 'change_problem_status');
-		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist');
+		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist', 'edit_tags');
 
 		if ($this->config->item('allow_add_problem'))
 			$allowed_methods[] = 'addproblem';
