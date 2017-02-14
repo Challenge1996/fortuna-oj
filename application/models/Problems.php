@@ -322,8 +322,12 @@ class Problems extends CI_Model{
 	 */
 	function allow($pid){
 		if (self::has_control($pid)) return true;
-		if (! $this->is_showed($pid)) return false;
+
 		$uid = $this->session->userdata('uid');
+		if ($this->db->query("SELECT uid FROM ProblemSet WHERE pid=?", array($pid))->row()->uid == $uid) return true;
+
+		if (! $this->is_showed($pid)) return false;
+
 		$this->load->model('user');
 		if ($this->user->load_priviledge($uid) != 'restricted') return true;
 		if ($this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt) return true;
