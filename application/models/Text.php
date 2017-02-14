@@ -4,6 +4,7 @@ class Text extends CI_Model
 {
 	function bb2html($bbtext)
 	{
+		
 		$bbtext = htmlentities($bbtext);
 
 		$bbtags = array(
@@ -47,7 +48,10 @@ class Text extends CI_Model
 				'[preformatted]' => '<pre>','[/preformatted]' => '</pre>',
 				'[pre]' => '<pre>','[/pre]' => '</pre>',
 
-				'[quote]' => '<blockquote>','[/quote]' => '</blockquote>'
+				'[quote]' => '<blockquote>','[/quote]' => '</blockquote>',
+
+				// '[' and ']' are escaped in the form, then '&' in the entity is escaped again, we need to restore them
+				'&amp;#91;' => '[', '&amp;#93;' => ']'
 		);
 
 		$bbextended = array(

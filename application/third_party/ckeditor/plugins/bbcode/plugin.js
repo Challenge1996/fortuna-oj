@@ -3,7 +3,46 @@
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
+/**
+ * XXX: THIS IS A MODIFIED VERSION TO SUPPORT '[' AND ']', UPDATE CAREFULLY!!  
+ * add function `buildTable`, see line 16
+ * add htmlFilter rule, see line 689
+ */
+
 ( function() {
+	
+	// Create a mapping table between one character and its entity form from a list of entity names.
+	// @param reverse {Boolean} Whether to create a reverse map from the entity string form to an actual character.
+	function buildTable( entities, reverse ) {
+		var table = {},
+			regex = [];
+
+		if ( !reverse && entities ) {
+			// Transforms the entities string into an array.
+			entities = entities.split( ',' );
+
+			// Put all entities inside a DOM element, transforming them to their
+			// final characters.
+			var div = document.createElement( 'div' ),
+				chars;
+			div.innerHTML = '&' + entities.join( ';&' ) + ';';
+			chars = div.innerHTML;
+			div = null;
+
+			// Add all characters to the table.
+			for ( var i = 0; i < chars.length; i++ ) {
+				var charAt = chars.charAt( i );
+				table[ charAt ] = '&' + entities[ i ] + ';';
+				regex.push( '\\' + charAt );
+			}
+		}
+
+		table.regex = regex.join( reverse ? '|' : '' );
+
+		return table;
+	}
+
+
 	CKEDITOR.on( 'dialogDefinition', function( ev ) {
 		var tab,
 			name = ev.data.name,
@@ -181,6 +220,7 @@
 	 * @returns {CKEDITOR.htmlParser.fragment} The fragment created.
 	 */
 	CKEDITOR.htmlParser.fragment.fromBBCode = function( source ) {
+
 		var parser = new CKEDITOR.BBCodeParser(),
 			fragment = new CKEDITOR.htmlParser.fragment(),
 			pendingInline = [],
@@ -646,7 +686,35 @@
 				}
 			} );
 
+			function getChar( character ) {
+				return baseEntitiesTable[ character ];
+			}
+
+			function getEntity( character ) {
+				return !entitiesTable[ character ] ? '&#' + character.charCodeAt( 0 ) + ';' : entitiesTable[ character ];
+			}
+
+			// Mandatory HTML basic entities.
+			var selectedEntities = [];
+
+			selectedEntities.push( '#91,#93' );
+
+			var entitiesTable = buildTable( selectedEntities.join( ',' ) );
+
+			// Create the Regex used to find entities in the text, leave it matches nothing if entities are empty.
+			var entitiesRegex = entitiesTable.regex ? '[' + entitiesTable.regex + ']' : 'a^';
+			delete entitiesTable.regex;
+
+			entitiesRegex = new RegExp( entitiesRegex, 'g' );
+
+			// Decode entities that the browsers has transformed
+			// at first place.
+
 			editor.dataProcessor.htmlFilter.addRules( {
+				text: function( text ) {
+					text = text.replace( entitiesRegex, getEntity );
+					return text;
+				},
 				elements: {
 					$: function( element ) {
 						var attributes = element.attributes,
