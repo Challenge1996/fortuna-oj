@@ -842,6 +842,7 @@ class Admin extends CI_Controller {
 
 	function add_tag($name, $proto = NULL)
 	{
+		$name = urldecode($name);
 		$this->load->model("problems");
 		$properties = $this->input->post('properties');
 		if ($this->problems->add_tag($name, $proto, $properties))
