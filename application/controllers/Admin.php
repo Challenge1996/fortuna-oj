@@ -13,7 +13,7 @@ class Admin extends CI_Controller {
 		$this->load->model('user');
 		
 		$allowed_methods = array('problemset', 'change_problem_status');
-		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist');
+		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist', 'edit_tags');
 
 		if ($this->config->item('allow_add_problem'))
 			$allowed_methods[] = 'addproblem';
@@ -842,6 +842,7 @@ class Admin extends CI_Controller {
 
 	function add_tag($name, $proto = NULL)
 	{
+		$name = urldecode($name);
 		$this->load->model("problems");
 		$properties = $this->input->post('properties');
 		if ($this->problems->add_tag($name, $proto, $properties))

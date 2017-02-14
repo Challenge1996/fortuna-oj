@@ -59,16 +59,6 @@ class Problems extends CI_Model{
 		return $this->db->query("SELECT uid FROM ProblemSet WHERE pid=?", array($pid))->row()->uid;
 	}
 
-	function allow($pid){
-		$uid = $this->session->userdata('uid');
-		$this->load->model('user');
-		if ($this->user->is_admin()) return true;
-		if (!$this->is_showed($pid)) return false;
-		if ($this->user->load_priviledge($uid) != 'restricted') return true;
-		if ($this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt) return true;
-		return false;
-	}
-
 	private function gen_keyword_lim($keyword)
 	{
 		if (!$keyword) return 'TRUE';
@@ -315,11 +305,29 @@ class Problems extends CI_Model{
 		return $this->db->query("SELECT noSubmit FROM ProblemSet WHERE pid=?", array($pid))->row()->noSubmit;
 	}
 
+	/**
+	 * Whether able to EDIT a problem
+	 * For VIEWING and SUBMITTING permission, go to `allow`
+	 */
 	function has_control($pid) {
 		$this->load->model('user');
 		if ($this->user->is_admin()) return true;
 		$row = $this->db->query("SELECT uid, isShowed, reviewing FROM ProblemSet WHERE pid=?", array($pid))->row();
 		return $this->user->uid() == $row->uid && ! $row->isShowed && ! $row->reviewing;
+	}
+
+	/**
+	 * Whether able to VIEW and SUBMIT TO a problem
+	 * For EDITTING permission, go to 'has_control'
+	 */
+	function allow($pid){
+		if (self::has_control($pid)) return true;
+		if (! $this->is_showed($pid)) return false;
+		$uid = $this->session->userdata('uid');
+		$this->load->model('user');
+		if ($this->user->load_priviledge($uid) != 'restricted') return true;
+		if ($this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt) return true;
+		return false;
 	}
 	
 	function load_problem_submission($pid){
