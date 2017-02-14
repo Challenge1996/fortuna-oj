@@ -19,7 +19,7 @@
 		<fieldset>
 			<legend><h5><?=lang('description')?></h5></legend>
 			<div class="well" id="problemDescription" contenteditable="true">
-				<?php if (isset($problemDescription)) echo $problemDescription; ?>
+				<?php if (isset($problemDescription)) echo nl2br($problemDescription); ?>
 			</div>
 		</fieldset>
 
@@ -28,7 +28,7 @@
 			<fieldset class="span6" style="margin-left:0; clear:both">
 				<legend><h5><?=lang('input')?></h5></legend>
 				<div class="well" id="inputDescription" contenteditable="true">
-					<?php if (isset($inputDescription)) echo $inputDescription; ?>
+					<?php if (isset($inputDescription)) echo nl2br($inputDescription); ?>
 				</div>
 			</fieldset>
 
@@ -36,7 +36,7 @@
 			<fieldset class="span6">
 				<legend><h5><?=lang('output')?></h5></legend>
 				<div class="well" id="outputDescription" contenteditable="true">
-					<?php if (isset($outputDescription)) echo $outputDescription; ?>
+					<?php if (isset($outputDescription)) echo nl2br($outputDescription); ?>
 				</div>
 			</fieldset>
 		</div>
@@ -46,7 +46,7 @@
 			<fieldset class="span6" style="margin-left:0">
 				<legend><h5><?=lang('sample_input')?></h5></legend>
 				<div class="well" id="inputSample" contenteditable="true">
-					<?php if (isset($inputSample)) echo $inputSample; ?>
+					<?php if (isset($inputSample)) echo nl2br($inputSample); ?>
 				</div>
 			</fieldset>
 
@@ -54,7 +54,7 @@
 			<fieldset class="span6">
 				<legend><h5><?=lang('sample_output')?></h5></legend>
 				<div class="well" id="outputSample" contenteditable="true">
-					<?php if (isset($outputSample)) echo $outputSample; ?>
+					<?php if (isset($outputSample)) echo nl2br($outputSample); ?>
 				</div>
 			</fieldset>
 		</div>
@@ -63,7 +63,7 @@
 		<fieldset>
 			<legend><h5><?=lang('data_constraint')?></h5></legend>
 			<div class="well" id="dataConstraint" contenteditable="true">
-				<?php if (isset($dataConstraint)) echo $dataConstraint; ?>
+				<?php if (isset($dataConstraint)) echo nl2br($dataConstraint); ?>
 			</div>
 		</fieldset>
 
@@ -71,7 +71,7 @@
 		<fieldset>
 			<legend><h5><?=lang('hint')?></h5></legend>
 			<div class="well" id="hint" contenteditable="true">
-				<?php if (isset($hint)) echo $hint; ?>
+				<?php if (isset($hint)) echo nl2br($hint); ?>
 			</div>
 		</fieldset>
 

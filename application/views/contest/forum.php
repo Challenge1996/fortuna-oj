@@ -16,7 +16,7 @@
 				<span class='pull-right btn btn-link mdfy' data-id='<?=$row->id?>'>Modify</span>
 			<?php endif; ?>
 			<br /><hr />
-			<div class='content' data-id='<?=$row->id?>'><?=$row->content?></div>
+			<div class='content' data-id='<?=$row->id?>'><?=nl2br($row->content)?></div>
 			<div class='span12'>
 				<span class='pull-right btn btn-link hide-reply' style='display:none' data-id='<?=$row->id?>'>Hide</span>
 				<span class='pull-right btn btn-link show-reply' data-id='<?=$row->id?>'>Reply(<?=$row->replyCnt?>)</span>
