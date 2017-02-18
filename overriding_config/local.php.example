@@ -23,6 +23,8 @@ $assign_to_config['fetch_contest_list']		= true;
 
 $assign_to_config['show_copyright']			= true;
 
+$assign_to_config['miitbeian']				= '';
+
 // Options below are dynamic options. These are default values
 
 $assign_to_config['language']				= 'chinese';

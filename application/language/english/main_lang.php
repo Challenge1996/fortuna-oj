@@ -8,9 +8,17 @@
 	$lang['function_turned_off'] = 'Sorry, administrators has turned this function off.';
 	$lang['save'] = 'Save';
 
+//framework
+	$lang['powered_by'] = 'Powered by %s';
+	$lang['icon_by'] = 'Icons provided by %s';
+	$lang['author'] = 'Author';
+	$lang['collaborator'] = 'Collaborator';
+	$lang['server_time'] = 'Server time';
+
 //login
 	$lang['password'] = 'Password';
 	$lang['remember_me'] = 'Remember me';
+
 //navigation
 	$lang['home'] = 'Home';
 	$lang['problemset'] = 'ProblemSet';

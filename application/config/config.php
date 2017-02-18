@@ -420,6 +420,9 @@ $config['fetch_contest_list' ] = true; // in overriding_config/local.php
 // Show copyright for each problem
 $config['show_copyright'] = false; // in overriding_config/local.php
 
+// ICP 备案
+$config['miitbeian'] = '';
+
 /* Options below are dynamic options, which can be modified in the site */
 
 // password for request from resque

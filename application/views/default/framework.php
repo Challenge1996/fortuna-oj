@@ -98,17 +98,21 @@
 		<!-- footer -->
 		<div class="row-fluid">
 			<div class="span12" id="copyleft">
-				<p>Project fortuna-oj hosting on <a href="http://github.com/roastduck/fortuna-oj">Github</a>.
-				Powered by Codeigniter / Bootstrap<br />
-				Author: <?=safe_mailto('moreDatPublic@gmail.com', 'moreD');?>, <?=safe_mailto('beantang.tang@gmail.com','RD')?><br />
 				<label id="server_time"></label>
+				<?=lang('author')?>: <a href="https://github.com/moreD">moreD</a>, <a href="https://github.com/roastduck">RD</a><br />
+				<?=lang('collaborator')?>: <a href="https://github.com/tarawa">twilight</a><br />
+				<?=sprintf(lang('powered_by'), 'Codeigniter / Bootstrap')?><br />
+				<?=sprintf(lang('icon_by'), '<a href="http://glyphicons.com/">Glyphicons</a>')?><br />
+				<?php if ($this->config->item('miitbeian')): ?>
+					<?=$this->config->item('miitbeian')?>
+				<?php endif; ?>
 			</div>
 		</div>
 		
 		<script type="text/javascript">
 			delta = 1000 * <?=time()?> - $.now();
 
-			setInterval("$('#server_time').html('Server Time: ' + (new Date($.now() + delta).toString()));", 1000);
+			setInterval("$('#server_time').html('<?=lang('server_time')?>: ' + (new Date($.now() + delta).toString()));", 1000);
 
 			//var remain = (new Date("2013/5/18,8:00:00").getTime() - new Date(timer).getTime());
 			//setInterval("$('#countdown').html('Time to GDOI:<br/><p style=\"text-align:center\">' + Math.floor(remain / (1000 * 86400)) + ' Days</p>'); remain += 1000;", 1000);

@@ -8,9 +8,17 @@
 	$lang['function_turned_off'] = '抱歉，管理员已关闭此功能。';
 	$lang['save'] = '保存';
 
+//framework
+	$lang['powered_by'] = '由 %s 驱动';
+	$lang['icon_by'] = '%s 提供图标';
+	$lang['author'] = '作者';
+	$lang['collaborator'] = '协力';
+	$lang['server_time'] = '服务器时间';
+
 //login
 	$lang['password'] = '密码';
 	$lang['remember_me'] = '下次自动登录';
+
 //navigation
 	$lang['home'] = '主页';
 	$lang['problemset'] = '题目';
