@@ -311,31 +311,92 @@ class Contest extends CI_Controller {
 		$pid = $this->contests->id_in_contest_to_pid($cid, $prob);
 		$this->contests->add_declaration($cid, $pid, $title, $decl);
 	}
-	
-	public function result($cid){
-		$info = $this->contests->load_contest_status($cid);
-		if ($info != FALSE){
-			if ($info->contestMode == 'ACM')
-				$data = $this->contests->load_contest_ranklist_ACM($cid);
-			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
-				$data = $this->contests->load_contest_ranklist_OI($cid, $info);
+
+	function merge($a, $b) {
+		if ($a == False) return $b;
+
+		$data = array();
+		foreach ($a as $row) {
+			if (property_exists($row, 'penalty'))
+				$row->penalty = '-';
+			if (property_exists($row, 'rank'))
+				$row->rank = '-';
+			$data[$row->name] = $row;
+		}
+
+		foreach ($b as $row) {
+			if (array_key_exists($row->name, $data)) {
+				$data[$row->name]->score += $row->score;
+				$data[$row->name]->attempt = $data[$row->name]->attempt + $row->attempt;
+				$data[$row->name]->acList = $data[$row->name]->acList + $row->acList;
+			} else {
+				if (property_exists($row, 'penalty'))
+					$row->penalty = '-';
+				if (property_exists($row, 'rank'))
+					$row->rank = '-';
+				$data[$row->name] = $row;
 			}
 		}
+
+		return $data;
+	}
+	
+	public function result(){
+		$cids = func_get_args();
+		$infos = array();
+		foreach ($cids as $cid) {
+			$info = $this->contests->load_contest_status($cid);
+			if (count($infos) > 0 && $infos[0]->contestMode != $info->contestMode)
+				$this->load->view("information", array('data' => 'Contest should be of the same mode!'));
+			$infos[] = $info;
+		}
+
+		$info_all = (object) array(
+						'contestMode' => $infos[0]->contestMode,
+						'problemset' => array());
+		$data = False;
+		foreach ($infos as $info) {
+			if ($info->contestMode == 'ACM')
+				$d = $this->contests->load_contest_ranklist_ACM($info->cid);
+			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
+				$d = $this->contests->load_contest_ranklist_OI($info->cid, $info);
+			}
+			$info_all->problemset = array_merge($info_all->problemset, $info->problemset);
+
+			$data = $this->merge($data, $d);
+		}
+		$info = $info_all;
 		
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
 		else if ($data != FALSE) $this->load->view('contest/result', array('data' => $data, 'info' => $info));
 	}
 	
-	public function fullresult($cid){
-		$info = $this->contests->load_contest_status($cid);
-		if ($info != FALSE){
-			if ($info->contestMode == 'ACM')
-				$data = $this->contests->load_contest_statistic_ACM($cid);
-			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
-				$data = $this->contests->load_contest_statistic_OI($cid, $info);
-			}
+	public function fullresult(){
+		$cids = func_get_args();
+		$infos = array();
+		foreach ($cids as $cid) {
+			$info = $this->contests->load_contest_status($cid);
+			if (count($infos) > 0 && $infos[0]->contestMode != $info->contestMode)
+				$this->load->view("information", array('data' => 'Contest should be of the same mode!'));
+			$infos[] = $info;
 		}
+
+		$info_all = (object) array(
+						'startTime' => $infos[0]->startTime,
+						'contestMode' => $infos[0]->contestMode,
+						'problemset' => array());
+		$data = False;
+		foreach ($infos as $info) {
+			if ($info->contestMode == 'ACM')
+				$d = $this->contests->load_contest_statistic_ACM($info->cid);
+			else if ($info->contestMode == 'OI' || $info->contestMode == 'OI Traditional'){
+				$d = $this->contests->load_contest_statistic_OI($info->cid, $info);
+			}
+			$info_all->problemset = array_merge($info_all->problemset, $info->problemset);
+			$data = $this->merge($data, $d);
+		}
+		$info = $info_all;
 		
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
