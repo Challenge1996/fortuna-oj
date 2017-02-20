@@ -312,7 +312,7 @@ class Contest extends CI_Controller {
 		$this->contests->add_declaration($cid, $pid, $title, $decl);
 	}
 
-	function merge($a, $b) {
+	private function merge($a, $b) {
 		if ($a == False) return $b;
 
 		$data = array();
