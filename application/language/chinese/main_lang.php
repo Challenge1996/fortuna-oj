@@ -19,6 +19,12 @@
 	$lang['password'] = '密码';
 	$lang['remember_me'] = '下次自动登录';
 
+//register
+	$lang['confirm_password'] = '确认密码';
+	$lang['email_address'] = '电子邮件';
+	$lang['school'] = '学校';
+	$lang['user_description'] = '简介';
+
 //navigation
 	$lang['home'] = '主页';
 	$lang['problemset'] = '题目';

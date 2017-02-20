@@ -19,6 +19,12 @@
 	$lang['password'] = 'Password';
 	$lang['remember_me'] = 'Remember me';
 
+//register
+	$lang['confirm_password'] = 'Confirm Password';
+	$lang['email_address'] = 'Email Address';
+	$lang['school'] = 'School';
+	$lang['user_description'] = 'Description';
+
 //navigation
 	$lang['home'] = 'Home';
 	$lang['problemset'] = 'ProblemSet';
