@@ -76,10 +76,10 @@
 			<img id="preview" width="225px" height="300px"></img>
 		</div>
 		<div class="pull-right">
-			<button class="fileinput-button btn btn-small btn-primary">
+			<label for='avatar' class="fileinput-button btn btn-small btn-primary">
 				Select Picture
 				<input type="file" id="avatar" name="avatar" data-url="index.php/users/<?=$data->name?>/avatar_upload" />
-			</button>
+			</label>
 			<button id="btn_upload" class="btn btn-small btn-success">Upload</button>
 		</div>
 	</div>
