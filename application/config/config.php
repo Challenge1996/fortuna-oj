@@ -388,6 +388,14 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '127.0.0.1'; // in overriding_config/secret.php
 
+/*
+ |-------------------------------------------------------------------------
+ | User Variables
+ |-------------------------------------------------------------------------
+ */
+// Main title
+$config['oj_title'] = 'Fortuna Online Judge System';
+
 // Redis Server (used by other than session driver)
 $config['redis_host'] = 'localhost';
 $config['redis_port'] = '6379';

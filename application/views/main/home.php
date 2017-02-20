@@ -1,6 +1,6 @@
 <div style="text-align:center; padding: 5px">
 	<div class="hero-unit">
-		<h2 class="text-error">Welcome to Fortuna Online Judge System!</h2>
+		<h2 class="text-error"><?=lang('welcome_to')?> <?=$this->config->item('oj_title')?>!</h2>
 		<p>This OJ is based on Ubuntu Server 14.04 LTS amd64.</p>
 		<p>Powered by Codeigniter / Bootstrap.</p>
 	</div>

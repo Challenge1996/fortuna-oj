@@ -2,7 +2,7 @@
 <html lang="<?=$this->config->item('language')=='english'?"en":"zh"?>">
 	<head>
 		<meta charset="utf-8">
-		<title><?=OJ_TITLE?></title>
+		<title><?=$this->config->item('oj_title')?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="Fortuna Online Judge System Default Framework" />
 		<meta name="author" content="moreD" />
@@ -12,7 +12,7 @@
 		<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 
-		<script> OJTitle = "<?=OJ_TITLE?>"; </script>
+		<script> OJTitle = "<?=$this->config->item('oj_title')?>"; </script>
 		<script src="js/jquery.js"></script>
 		<script src="js/jquery.form.js"></script>
 		<script src="js/bootstrap.min.js"></script>
@@ -99,7 +99,8 @@
 		<div class="row-fluid">
 			<div class="span12" id="copyleft">
 				<label id="server_time"></label>
-				<?=lang('author')?>: <a href="https://github.com/moreD">moreD</a>, <a href="https://github.com/roastduck">RD</a><br />
+				Fortuna OJ 项目<br />
+				<?=lang('author')?>: <a href="https://github.com/moreD">moreD</a>, <a href="https://github.com/roastduck">RD</a>;
 				<?=lang('collaborator')?>: <a href="https://github.com/tarawa">twilight</a><br />
 				<?=sprintf(lang('powered_by'), 'Codeigniter / Bootstrap')?><br />
 				<?=sprintf(lang('icon_by'), '<a href="http://glyphicons.com/">Glyphicons</a>')?><br />

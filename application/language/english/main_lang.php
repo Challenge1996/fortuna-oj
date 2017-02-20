@@ -36,6 +36,9 @@
 	$lang['customtest'] = 'CustomTest';
 	$lang['administer'] = 'Administer';
 
+//home
+	$lang['welcome_to'] = 'Welcome to';
+
 //problemset
 	$lang['p_advanced'] = 'Advanced...';
 	$lang['problem_id'] = 'Problem ID';

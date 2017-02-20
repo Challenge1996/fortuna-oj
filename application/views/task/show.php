@@ -146,7 +146,7 @@
 			$('#trigger').popover('hide')
 		}),
 		$('#page_content').one('DOMNodeInserted', function(){
-			document.title = "<?=OJ_TITLE?>";
+			document.title = "<?=$this->config->item('oj_title')?>";
 		})
 	});
 	

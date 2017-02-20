@@ -35,7 +35,10 @@
 	$lang['ranklist'] = '排行榜';
 	$lang['customtest'] = '测试';
 	$lang['administer'] = '管理';
-	
+
+//home
+	$lang['welcome_to'] = '欢迎来到';
+
 //problemset
 	$lang['p_advanced'] = '高级…';
 	$lang['problem_id'] = '题目编号';
