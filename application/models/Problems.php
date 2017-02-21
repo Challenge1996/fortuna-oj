@@ -271,6 +271,21 @@ class Problems extends CI_Model{
 		$this->db->query('ALTER TABLE ProblemSet AUTO_INCREMENT=?', array($cnt));
 
 		if ($pid == 0){
+			$this->load->model('user');
+			$genPid = function($lo, $hi) { // it's better to locate pid in [lo, hi), to distinguish problems added by admins and users
+				if ($hi === null)
+					$ret = $this->db->query("SELECT MAX(pid) AS max FROM ProblemSet")->row()->max;
+				else
+					$ret = $this->db->query("SELECT MAX(pid) AS max FROM ProblemSet WHERE pid < ?", array($hi))->row()->max;
+				$ret = max((int)$ret + 1, $lo);
+				if ($hi !== null && $ret >= $hi)
+					$ret = (int)($this->db->query("SELECT MAX(pid) AS max FROM ProblemSet")->row()->max) + 1;
+				return $ret;
+			};
+			if ($this->user->is_admin())
+				$data['pid'] = $pid = $genPid(1000, 100000);
+			else
+				$data['pid'] = $pid = $genPid(100000, null);
 			$data['uid'] = $this->user->uid();
 			$sql = $this->db->insert_string('ProblemSet', $data);
 			$this->db->query($sql);
