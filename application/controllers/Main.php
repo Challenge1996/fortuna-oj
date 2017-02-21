@@ -912,7 +912,7 @@ class Main extends CI_Controller {
 		
 		$temp_file = $_FILES['solution']['tmp_name'];
 		$target_path = $this->config->item('solution_path') . $pid . '/';
-		if (! is_dir($target_path)) mkdir($target_path);
+		if (! is_dir($target_path)) mkdir($target_path, 0777, true);
 		$sanitized_filename = $this->security->sanitize_filename($_FILES['solution']['name']);
 		$target_file = $target_path . $sanitized_filename;
 		
