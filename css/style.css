@@ -2,8 +2,8 @@ body, button {
 /* 	font-family: "微软雅黑", Microsoft YaHei, WenQuanYi MicroHei, "文泉驿微米黑", "宋体", sans-serif; */
 }
 
-a {color: #0c3463;}
-a:hover {color: #0088cc; text-decoration: none;}
+td a, li a {color: #0c3463;}
+td a:hover, li a:hover {color: #0088cc; text-decoration: none;}
 .label-info a, .badge-info a, .btn-primary a, .btn-info a{color: white;}
 .clear { background-color:#F9F9F9 }
 
