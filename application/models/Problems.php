@@ -414,6 +414,12 @@ class Problems extends CI_Model{
 			if ($item->prototype !== null) $item->prototype = (int)($item->prototype);
 			$item->properties = ($item->properties === null ? (object)null : json_decode($item->properties));
 		}
+		$cmp = function($a, $b) {
+			if ($a->properties->group < $b->properties->group) return -1;
+			if ($a->properties->group > $b->properties->group) return 1;
+			return 0;
+		};
+		usort($ret, $cmp);
 		return $ret;
 	}
 

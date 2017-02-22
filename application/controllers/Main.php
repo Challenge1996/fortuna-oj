@@ -255,11 +255,10 @@ class Main extends CI_Controller {
 				$bookmark["$row->pid"] = (object) array('starred'=>$row->starred, 'note'=>$row->note);
 		}
 
-		$categorization = $this->misc->load_categorization();
 		foreach ($data as $row){
 			if ($row->submitCount > 0) $row->average = $row->average / $row->submitCount;
 			
-			$row->category = $this->misc->load_problem_category($row->pid, $categorization);
+			$row->category = $this->problems->load_tags($row->pid);
 			$row->average = number_format($row->average, 2);
 			$row->status = '';
 			$row->ac = FALSE;
@@ -285,7 +284,6 @@ class Main extends CI_Controller {
 
 		$this->load->view('main/problemset', array(
 			'data' => $data,
-			'category' => $categorization,
 			'keyword' => $keyword,
 			'filter' => $filter,
 			'spliter' => $spliter,
@@ -336,8 +334,6 @@ class Main extends CI_Controller {
 							}
 				}
 			
-			$categorization = $this->misc->load_categorization();
-			$data->category = $this->misc->load_problem_category($pid, $categorization);
 			$data->solutions = $this->problems->load_solutions($pid);
 
 			$copyright = null;
@@ -350,7 +346,6 @@ class Main extends CI_Controller {
 		else
 			$this->load->view('main/show', array(
 				'data' => $data,
-				'category' => $categorization,
 				'noSubmit' => $this->problems->no_submit($pid),
 				'copyright' => $copyright
 			));

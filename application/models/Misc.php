@@ -24,14 +24,7 @@ class Misc extends CI_Model{
 		foreach ($result as $row) $data[$row->idCategory] = $row->name;
 		return $data;
 	}
-	
-	function load_problem_category($pid, &$categorization){
-		$result = $this->db->query("SELECT idCategory FROM Categorization WHERE pid=?", array($pid))->result();
-		$data = array();
-		foreach ($result as $row) $data[$row->idCategory] = $categorization[$row->idCategory];
-		return $data;
-	}
-	
+
 	function is_accepted($uid, $pid){
 		$count = $this->db->query("SELECT COUNT(*) AS count FROM Submission WHERE status=0 AND uid=? AND pid=?",
 									array($uid, $pid))->row()->count;
