@@ -194,10 +194,13 @@
 			</fieldset></div>
 		<?php } ?>
 
-		<div class="well"><fieldset>
-			<legend><h5><em><?=lang('advanced')?></em></h5></legend>
-			<span><a href='index.php/misc/testdata/<?=$data->pid?>' target="_blank">Download Data</a></span>
-		</fieldset></div>
+		<?php $this->load->model('user'); ?>
+		<?php if ($this->user->permission('testdata') || $this->user->is_admin()): ?>
+			<div class="well"><fieldset>
+				<legend><h5><em><?=lang('advanced')?></em></h5></legend>
+				<span><a href='index.php/misc/testdata/<?=$data->pid?>' target="_blank">Download Data</a></span>
+			</fieldset></div>
+		<?php endif; ?>
 	</div>
 </div>
 
