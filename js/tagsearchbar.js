@@ -23,7 +23,9 @@ angular.module('appTagbar', [])
 			if ($.inArray(tag, $scope.chosen) == -1) // because ng-repeat cannot resolve duplicated keys
 				$scope.chosen.push(tag);
 
-			// TODO: re-prompt the menu immediately
+			// re-prompt the menu immediately
+			// trigger `focus` after all other event processed
+			setTimeout(function(){ $("#tag-input").focus(); }, 0);
 		};
 
 		$scope.del = function(tag) {
