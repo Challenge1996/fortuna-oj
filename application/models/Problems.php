@@ -417,7 +417,7 @@ class Problems extends CI_Model{
 		$cmp = function($a, $b) {
 			if ($a->properties->group < $b->properties->group) return -1;
 			if ($a->properties->group > $b->properties->group) return 1;
-			return 0;
+			return $a->idCategory - $b->idCategory;
 		};
 		usort($ret, $cmp);
 		return $ret;
