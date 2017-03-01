@@ -74,10 +74,11 @@ class Misc extends CI_Controller {
 
 	function reset_password()
 	{
-		if ($this->config->item('allow_sendgrid') !== true)
+		if ($this->config->item('mail_method') === false)
 			exit('This feature has been turned off in config files');
 
 		$this->load->model('user');
+		$this->load->model('network');
 		$this->load->helper('email');
 		$this->load->helper('string');
 
@@ -97,28 +98,11 @@ class Misc extends CI_Controller {
 
 		$url = "$base_url/#main/reset_password/$name/$key";
 
-		$query = array
-			(
-				'to' => $this->user->load_email($name),
-				'toname' => $name,
-				'subject' => 'Reset Your JZOJ Password',
-				'html' => "Click this link <a href='$url'>$url</a> to reset your password for JZOJ.<br />If you didn't request to reset your password, please contact root for this incident.",
-				'from' => $this->config->item('admin_email'),
-				'fromname' => $this->config->item('admin_email_name'),
-				'api_user' => $this->config->item('sendgrid_api_user'),
-				'api_key' => $this->config->item('sendgrid_api_key')
-			);
-		$handle = curl_init("https://sendgrid.com/api/mail.send.json");
-		if (!$handle) exit('Error (0)');
-		if (!curl_setopt($handle, CURLOPT_POST, 1)) { curl_close($handle); exit('Error (1)'); }
-		if (!curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($query))) { curl_close($handle); exit('Error (2)'); }
-		if (!curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE)) { curl_close($handle); exit('Error (3)'); }
-		$result = curl_exec($handle);
-		curl_close($handle);
-		$result = json_decode($result);
-		if (!isset($result->message) || $result->message != "success") exit('Error (4)');
-
-		exit("OK. An Email is on the way to $address. It may take some time to process.");
+		$result = $this->network->send_mail($address, $name, 'Reset Your JZOJ Password', "Click this link <a href='$url'>$url</a> to reset your password for JZOJ.<br />If you didn't request to reset your password, please contact root for this incident.");
+		if ($result)
+			exit($result);
+		else
+			exit("OK. An Email is on the way to $address. It may take some time to process.");
 	}
 	
 	public function testdata($pid) {

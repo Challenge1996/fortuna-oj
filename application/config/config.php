@@ -416,9 +416,14 @@ $config['servers'] = array('http://127.0.0.1:8389'); // in overriding_config/loc
 $config['oj_name'] = 'yauj'; // in overriding_config/local.php
 
 // Sendgrid configurations (sending email via Sendgrid to restore accounts)
-$config['allow_sendgrid'] = true; // in overriding_config/local.php
-$config['admin_email'] = 'noreply@jzoj.net';
-$config['admin_email_name'] = 'JZOJ Admin';
+$config['mail_method'] = false; // false, 'smtp' or 'sendgrid', in overriding_config/local.php
+$config['admin_email'] = 'noreply@jzoj.net'; // in overriding_config/local.php
+$config['admin_email_name'] = 'JZOJ Admin'; // in overriding_config/local.php
+// if mail_method = 'smtp', set the following
+$config['smtp_host'] = 'foobar.com';
+$config['smtp_user'] = 'foo'; // in overriding_config/secret.php
+$config['smtp_password'] = 'bar'; // in overriding_config/secret.php
+// if mail_method = 'sendgrid', set the following
 $config['sendgrid_api_user'] = 'foo'; // in overriding_config/secret.php
 $config['sendgrid_api_key'] = 'bar'; // in overriding_config/secret.php
 

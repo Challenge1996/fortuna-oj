@@ -29,7 +29,7 @@
 					<?=lang('remember_me')?>
 				</div>
 			</div>
-			<?php if ($this->config->item('allow_sendgrid') === true): ?>
+			<?php if ($this->config->item('mail_method')): ?>
 				<div id="body1" style="display:none">
 					<h3>Send An Email To You And Reset Your Password?</h3>
 				</div>
@@ -38,13 +38,13 @@
 
 		<div class="modal-footer">
 			<div id="footer0">
-				<?php if ($this->config->item('allow_sendgrid') === true): ?>
+				<?php if ($this->config->item('mail_method')): ?>
 					<span class="btn btn-link pull-left" onclick="return load_forget()">Forgot your password?</span>
 				<?php endif; ?>
 				<button class="btn btn-primary pull-right" onclick="return login_submit()">Login</button>
 				<span class="btn" onclick="return register()">Register</span>
 			</div>
-			<?php if ($this->config->item('allow_sendgrid') === true): ?>
+			<?php if ($this->config->item('mail_method')): ?>
 				<div id="footer1" style="display:none">
 					<span class="btn btn-link pull-left" onclick="return hide_forget()">Back</span>
 					<span class="btn btn-danger pull-right" onclick="return send_reset()">Send</span>
