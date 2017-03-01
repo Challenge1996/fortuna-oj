@@ -31,7 +31,7 @@
 			</div>
 			<?php if ($this->config->item('mail_method')): ?>
 				<div id="body1" style="display:none">
-					<h3>Send An Email To You And Reset Your Password?</h3>
+					<h3><?=lang('resetpwd_description')?></h3>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -39,7 +39,7 @@
 		<div class="modal-footer">
 			<div id="footer0">
 				<?php if ($this->config->item('mail_method')): ?>
-					<span class="btn btn-link pull-left" onclick="return load_forget()">Forgot your password?</span>
+					<span class="btn btn-link pull-left" onclick="return load_forget()"><?=lang('resetpwd_link')?></span>
 				<?php endif; ?>
 				<button class="btn btn-primary pull-right" onclick="return login_submit()">Login</button>
 				<span class="btn" onclick="return register()">Register</span>

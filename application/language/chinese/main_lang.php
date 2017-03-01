@@ -132,6 +132,13 @@
 
 	$lang['expected_score'] = '预估分数?';
 
+//reset password
+	$lang['resetpwd_link'] = '忘记密码？';
+	$lang['resetpwd_description'] = '发送邮件以重置密码？';
+	$lang['resetpwd_mail_title'] = '重置%s的密码';
+	$lang['resetpwd_mail_body'] = "点击此链接 <a href='%s'>%s</a> 以重置 %s 的密码。<br />如果你并未请求重置密码，请联系管理员报告此错误。<br />请勿回复此邮件。";
+	$lang['resetpwd_mail_sent'] = '成功。已向 %s 发送了一封邮件，邮件到达邮箱需要一段时间，请稍安勿躁。';
+
 //admin
 	$lang['manage_viewing_permissions'] = '管理题目查看权限';
 	$lang['rejudge'] = '重测';

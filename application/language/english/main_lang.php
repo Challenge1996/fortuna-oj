@@ -132,6 +132,13 @@
 
 	$lang['expected_score'] = 'Expected score?';
 
+//reset password
+	$lang['resetpwd_link'] = 'Forgot your password?';
+	$lang['resetpwd_description'] = 'Send you an email to reset your password?';
+	$lang['resetpwd_mail_title'] = 'Reset your %s password';
+	$lang['resetpwd_mail_body'] = "Click this link <a href='%s'>%s</a> to reset your password for %s.<br />If you didn't request to reset your password, please contact root for this incident.<br />Please do not reply to this mail.";
+	$lang['resetpwd_mail_sent'] = 'OK. An Email is on the way to %s. It may take some time to process.';
+
 //admin
 	$lang['manage_viewing_permissions'] = 'Manage Viewing Permissions';
 	$lang['rejudge'] = 'Rejudge';

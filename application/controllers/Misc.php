@@ -98,11 +98,16 @@ class Misc extends CI_Controller {
 
 		$url = "$base_url/#main/reset_password/$name/$key";
 
-		$result = $this->network->send_mail($address, $name, 'Reset Your JZOJ Password', "Click this link <a href='$url'>$url</a> to reset your password for JZOJ.<br />If you didn't request to reset your password, please contact root for this incident.");
+		$result = $this->network->send_mail(
+			$address,
+			$name,
+			sprintf(lang('resetpwd_mail_title'), $this->config->item('oj_title')),
+			sprintf(lang('resetpwd_mail_body'), $url, $url, $this->config->item('oj_title'))
+		);
 		if ($result)
 			exit($result);
 		else
-			exit("OK. An Email is on the way to $address. It may take some time to process.");
+			exit(sprintf(lang('resetpwd_mail_sent'), $address));
 	}
 	
 	public function testdata($pid) {
