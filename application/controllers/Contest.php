@@ -352,6 +352,7 @@ class Contest extends CI_Controller {
 		}
 
 		$info_all = (object) array(
+						'startTime' => $infos[0]->startTime,
 						'contestMode' => $infos[0]->contestMode,
 						'problemset' => array());
 		$data = False;

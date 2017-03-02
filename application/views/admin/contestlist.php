@@ -3,6 +3,7 @@
 <h4>
 	Contest List
 	<button class="btn btn-primary btn-small pull-right" onclick="window.location.hash='admin/newcontest'">Add</button>
+	<button class="btn btn-small pull-right" id="btn_export_results">Export Results</button>
 </h4>
 <hr />
 
@@ -74,6 +75,27 @@
 	</div>
 </div>
 
+<div class="modal hide fade" id="modal_export">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Export results of multiple contests</h3>
+	</div>
+	<div class="modal-body">
+		<p>Please enter contest ids below, separated by comma(,):</p>
+		<input type="text" id="export_contest_ids" />
+		<p>Please also choose result type:</p>
+		<input type="radio" name="type" value="standing">Standing
+		<br>
+		<input type="radio" name="type" value="statistics" checked>Statistics
+	</div>
+	<div class="modal-footer">
+		<a class="btn" data-dismiss="modal">Close</a>
+		<a class="btn btn-success" id="export">Export</a>
+	</div>
+</div>
+
+<iframe id="downloader" style="display:none"></iframe>
+
 <script type="text/javascript">
 	function delete_contest(cid, selector){
 		$('#modal_confirm #delete').click(function(){
@@ -92,4 +114,20 @@
 		$('#modal_convert .info').html(cid + '. ' + selector.parent().parent().find('.title').html());
 		$('#modal_convert').modal();
 	}
+
+	$('#btn_export_results').click(function () {
+		$('#modal_export').modal();
+	});
+	$('#export').click(function () {
+		var ids = $('#export_contest_ids').val();
+		$('#export_contest_ids').val('');
+		$('#modal_export').modal('hide');
+		ids = ids.replace(',', '/');
+		var type = $("input[name='type']:checked").val();
+		if (type == 'standing') {
+			$("#downloader").attr('src', 'index.php/contest/result/' + ids);
+		} else {
+			$("#downloader").attr('src', 'index.php/contest/fullresult/' + ids);
+		}
+	});
 </script>
