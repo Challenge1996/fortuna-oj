@@ -115,7 +115,7 @@ class Misc extends CI_Controller {
 			$this->load->view('error', array('message' => 'You do not have permission to download!'));
 		} else {
 			$path = $this->config->item('data_path');
-			$command = "zip /tmp/$pid.zip $path/$pid/* -9 -j -D > /dev/null 2>&1";
+			$command = "cd $path/$pid && zip -9 -j -D -r /tmp/$pid.zip . -x init.src run.src make.log makefile yauj_judge > /dev/null 2>&1";
 			system($command);
 
 			$this->load->view('main/download', array('file' => "/tmp/$pid.zip", 'filename' => "$pid.zip", 'filetype' => 'application/zip'));
