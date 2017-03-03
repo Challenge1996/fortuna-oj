@@ -4,9 +4,13 @@
 		<p>This OJ is based on Ubuntu Server 14.04 LTS amd64.</p>
 		<p>Powered by Codeigniter / Bootstrap.</p>
 	</div>
-	<div class="container-fluid">
-		<h3>FAQ: 为什么我的程序在本地跑没事，交到你的OJ上就挂了(ノ=Д=)ノ┻━┻</h3>
-		<ul class="row-fluid text-left">
+	<div class="container-fluid text-left">
+		<h4>关于题目难度等级的说明</h4>
+		OJ上会以类似<span class="label">一级</span>的标签表示难度，具体说明见<a href="http://www.ccf.org.cn/ccf/contentcore/resource/download?ID=30933">此文件</a>
+	</div>
+	<div class="container-fluid text-left">
+		<h4>FAQ: 为什么我的程序在本地跑没事，交到你的OJ上就挂了(ノ=Д=)ノ┻━┻</h4>
+		<ul class="row-fluid">
 			<li>你的数组越界了，你的数组越界了，你的数组越界了！一些隐藏的数组越界可能在本地不会报错，而到了OJ上由于运行环境发生了变化，才发生错误。数组越界不仅可能导致运行错误，也可能导致答案错误或超时等，这是由于数组越界干扰了其他内存导致的。</li>
 			<li>不要使用gets等读取一行，因为这些函数使用换行符来判断行结束（当然也不要手动判断换行符）。Windows下换行符是\r\n，而Linux下换行符是\r。假设此题的数据是在Windows下生成的，那么他的换行符是\r\n，而OJ上的程序是在Linux下编译的，读取的换行符是\n，这样就错了。</li>
 			<li>请记得使用%lld而非%I64d。</li>
