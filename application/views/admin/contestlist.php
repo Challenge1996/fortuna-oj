@@ -81,7 +81,8 @@
 		<h3>Export results of multiple contests</h3>
 	</div>
 	<div class="modal-body">
-		<p>Please enter contest ids below, separated by comma(,):</p>
+		<p>Please enter contest ids below, separated by comma(,). Use '~' for continuous ids.</p>
+		<p>For example, '1000,1001' and '1000~1003,1005' are both valid inputs.</p>
 		<input type="text" id="export_contest_ids" />
 		<p>Please also choose result type:</p>
 		<input type="radio" name="type" value="standing">Standing
@@ -122,12 +123,38 @@
 		var ids = $('#export_contest_ids').val();
 		$('#export_contest_ids').val('');
 		$('#modal_export').modal('hide');
-		ids = ids.replace(',', '/');
+		var id_ranges = ids.split(',');
+		ids = '';
+		var success = true;
+		for (var i = 0; i < id_ranges.length; i++) {
+			var id_range = id_ranges[i];
+			if (id_range.indexOf('~') == -1) {
+				// assert number
+				if (/^\d+$/.test(id_range)) {
+					ids = ids + '/' + id_range;
+				} else {
+					alert('Error parsing input ' + id_range);
+					success = false;
+					return;
+				}
+			} else {
+				// assert two numbers
+				var id_seg = id_range.split('~');
+				if (id_seg.length != 2 || ! /^\d+$/.test(id_seg[0]) || ! /^\d+$/.test(id_seg[1])) {
+					alert('Error parsing input ' + id_range);
+					success = false;
+					return;
+				} else {
+					for (var id = parseInt(id_seg[0]); id <= parseInt(id_seg[1]); id++)
+						ids = ids + '/' + id;
+				}
+			}
+		}
 		var type = $("input[name='type']:checked").val();
 		if (type == 'standing') {
-			$("#downloader").attr('src', 'index.php/contest/result/' + ids);
+			$("#downloader").attr('src', 'index.php/contest/result' + ids);
 		} else {
-			$("#downloader").attr('src', 'index.php/contest/fullresult/' + ids);
+			$("#downloader").attr('src', 'index.php/contest/fullresult' + ids);
 		}
 	});
 </script>
