@@ -346,6 +346,7 @@ class Contest extends CI_Controller {
 		$infos = array();
 		foreach ($cids as $cid) {
 			$info = $this->contests->load_contest_status($cid);
+			if (! $info) continue;
 			if (count($infos) > 0 && $infos[0]->contestMode != $info->contestMode)
 				$this->load->view("information", array('data' => 'Contest should be of the same mode!'));
 			$infos[] = $info;
@@ -370,14 +371,22 @@ class Contest extends CI_Controller {
 		
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
-		else if ($data != FALSE) $this->load->view('contest/result', array('data' => $data, 'info' => $info));
+		else if ($data == FALSE)
+			$this->load->view("information", array('data' => 'No such result!'));
+		else {
+			header('Content-type:text/csv');
+			header('Content-Disposition:attachment;filename=result.csv');
+			$csv = $this->load->view('contest/result', array('data' => $data, 'info' => $info), true);
+			echo chr(255). chr(254). iconv("UTF-8", "UTF-16LE//IGNORE", $csv);
+		}
 	}
-	
+
 	public function fullresult(){
 		$cids = func_get_args();
 		$infos = array();
 		foreach ($cids as $cid) {
 			$info = $this->contests->load_contest_status($cid);
+			if (! $info) continue;
 			if (count($infos) > 0 && $infos[0]->contestMode != $info->contestMode)
 				$this->load->view("information", array('data' => 'Contest should be of the same mode!'));
 			$infos[] = $info;
@@ -401,7 +410,14 @@ class Contest extends CI_Controller {
 		
 		if  (strtotime($info->startTime) > strtotime('now') && ! $this->user->is_admin())
 			$this->load->view("information", array('data' => 'Contest NOT start!'));
-		else if ($data != FALSE) $this->load->view('contest/result', array('data' => $data, 'info' => $info));
+		else if ($data == FALSE)
+			$this->load->view("information", array('data' => 'No such result!'));
+		else {
+			header('Content-type:text/csv');
+			header('Content-Disposition:attachment;filename=result.csv');
+			$csv = $this->load->view('contest/result', array('data' => $data, 'info' => $info), true);
+			echo chr(255). chr(254). iconv("UTF-8", "UTF-16LE//IGNORE", $csv);
+		}
 	}
 
 	public function forum($cid)
