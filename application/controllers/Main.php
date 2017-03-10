@@ -678,7 +678,7 @@ class Main extends CI_Controller {
 				//unset($data['gid']);
 			} elseif (isset($data['cid'])) {
 				$this->load->model('contests');
-				if (! $this->contest->is_valid($data['cid'])) exit('not valid');
+				if (! $this->contests->is_valid($data['cid'])) exit('not valid');
 				$info = $this->contests->load_contest_status($data['cid']);
 				if (max(strtotime($info->startTime), strtotime($info->submitTime)) > time() || strtotime($info->endTime) < time()) exit('not yet');
 				if ($info->isTemplate) {
