@@ -348,7 +348,24 @@ class Problems extends CI_Model{
 		if ($this->db->query("SELECT COUNT(*) AS cnt FROM Allowed_Problem WHERE uid=? AND pid=?", array($uid, $pid))->row()->cnt) return true;
 		return false;
 	}
-	
+
+	/**
+	 * Same as `allow`, but hidden problems are avalible during contest
+	 */
+	function is_allowed($pid)
+	{
+		if (self::allow($pid)) return true;
+		$this->load->model('contests');
+		$data = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
+		$now = strtotime('now');
+		foreach ($data as $row)
+		{
+			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
+			if (strtotime($res->startTime)<=$now && strtotime($res->endTime)>=$now) return true;
+		}
+		return false;
+	}
+
 	function load_problem_submission($pid){
 		return $this->db->query("SELECT sid, cid FROM Submission WHERE pid=?", array($pid))->result();
 	}
@@ -478,22 +495,6 @@ class Problems extends CI_Model{
 		$this->db->query('UPDATE ProblemSet SET pushedServer=? WHERE pid=?', array(json_encode($s), $pid));
 	}
 	
-	function is_allowed($pid)
-	{
-		$this->load->model('user');
-		$this->load->model('contests');
-		if ($this->user->is_admin()) return true;
-		if ($this->is_showed($pid)) return true;
-		$data = $this->contests->load_problems_in_contests(array((object)array('pid'=>$pid)));
-		$now = strtotime('now');
-		foreach ($data as $row)
-		{
-			$res = $this->db->query('SELECT startTime,endTime FROM Contest WHERE cid=?', array($row->cid))->row();
-			if (strtotime($res->startTime)<=$now && strtotime($res->endTime)>=$now) return true;
-		}
-		return false;
-	}
-
 	function file_exist($pid, $filename, $require = '')
 	{
 		$path = $this->config->item('data_path') . $pid . '/' . $filename;
