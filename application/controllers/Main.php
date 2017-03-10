@@ -687,7 +687,7 @@ class Main extends CI_Controller {
 				}
 			} else {
 				$this->load->model('problems');
-				if (! $this->problem->allow($data['pid'])) exit('hidden');
+				if (! $this->problems->allow($data['pid'])) exit('hidden');
 				$showed = $this->problems->is_showed($data['pid']);
 				if ($showed == 0) $data['isShowed'] = 0;
 			}
