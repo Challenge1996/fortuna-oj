@@ -678,6 +678,7 @@ class Main extends CI_Controller {
 				//unset($data['gid']);
 			} elseif (isset($data['cid'])) {
 				$this->load->model('contests');
+				if (! $this->contests->is_valid($data['cid'])) exit('not valid');
 				$info = $this->contests->load_contest_status($data['cid']);
 				if (max(strtotime($info->startTime), strtotime($info->submitTime)) > time() || strtotime($info->endTime) < time()) exit('not yet');
 				if ($info->isTemplate) {
@@ -686,11 +687,9 @@ class Main extends CI_Controller {
 				}
 			} else {
 				$this->load->model('problems');
+				if (! $this->problems->allow($data['pid'])) exit('hidden');
 				$showed = $this->problems->is_showed($data['pid']);
-				if ($showed == 0) {
-					if ($this->user->is_admin()) $data['isShowed'] = 0;
-					else exit('hidden');
-				}
+				if ($showed == 0) $data['isShowed'] = 0;
 			}
 
 			$language = $this->input->post('language');
