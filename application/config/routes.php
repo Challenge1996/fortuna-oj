@@ -53,7 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = "main";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-$route["users/([a-zA-Z0-9%_-]+$)"] = 'users/index/$1';
+$route["users/(:any)"] = 'users/index/$1';
 $route['users/(:any)/(.*)'] = 'users/$2/$1';
 
 /* End of file routes.php */
