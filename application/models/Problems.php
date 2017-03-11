@@ -289,7 +289,6 @@ class Problems extends CI_Model{
 			$data['uid'] = $this->user->uid();
 			$sql = $this->db->insert_string('ProblemSet', $data);
 			$this->db->query($sql);
-			$pid = $this->db->query("SELECT MAX(pid) AS max FROM ProblemSet")->row()->max;
 		} else {
 			$sql = $this->db->update_string('ProblemSet', $data, "pid=$pid");
 			$this->db->query($sql);
@@ -305,7 +304,7 @@ class Problems extends CI_Model{
 		file_put_contents("$path/dataConstraint.html",          $dataConstraint);
 		file_put_contents("$path/hint.html",                    $hint);
 		
-		return $pid == 0 ? $this->db->insert_id() : $pid;
+		return $pid;
 	}
 	
 	function delete($pid){
