@@ -5,7 +5,12 @@
 <script src="js/login.js"></script>
 
 <div id="login_field" class="modal">
-	<div class="modal-header"><h3>Login</h3></div>
+	<div class="modal-header">
+		<h3>
+			<em>Login</em>
+			<span class="pull-right" style="color:red"><?=$this->config->item('oj_title')?></span>
+		</h3>
+	</div>
 
 	<form action="index.php/main/login" id="login_form" method="post">
 		<div class="modal-body">
