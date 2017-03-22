@@ -7,8 +7,8 @@
 <div id="login_field" class="modal">
 	<div class="modal-header">
 		<h3>
-			<div style="color:red"><?=$this->config->item('oj_title')?></div> <!-- span can't be used here -->
-			<em>Login</em>
+			<div style="text-align:center"><?=$this->config->item('oj_title')?></div> <!-- span can't be used here -->
+			<em style="font-size:80%">Login</em>
 		</h3>
 	</div>
 
