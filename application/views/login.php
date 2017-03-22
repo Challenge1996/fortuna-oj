@@ -7,8 +7,8 @@
 <div id="login_field" class="modal">
 	<div class="modal-header">
 		<h3>
+			<div style="color:red"><?=$this->config->item('oj_title')?></div> <!-- span can't be used here -->
 			<em>Login</em>
-			<span class="pull-right" style="color:red"><?=$this->config->item('oj_title')?></span>
 		</h3>
 	</div>
 
