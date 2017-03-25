@@ -151,7 +151,10 @@ class Submission extends CI_Model{
 	
 	function count($filter = NULL){
 		$conditions = self::filter_to_string($filter);
-		return $this->db->query("SELECT COUNT(*) AS count FROM Submission WHERE cid IS NULL $conditions")->row()->count;
+		return $this->db->query("SELECT COUNT(*) AS count FROM Submission
+			WHERE (cid IS NULL OR cid IN
+			(SELECT cid FROM Contest WHERE UNIX_TIMESTAMP(endTime)<UNIX_TIMESTAMP()))
+			$conditions")->row()->count;
 	}
 	
 	function load_status($row_begin, $count, $filter = NULL){
