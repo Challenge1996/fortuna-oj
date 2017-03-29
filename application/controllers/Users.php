@@ -76,7 +76,7 @@ class Users extends CI_Controller {
 			
 			$this->user->save_configuration($this->user->uid(), $config);
 			
-			if (isset($raw['old_password']) && isset($raw['new_password']) && $raw['old_password'] != '') {
+			if (isset($raw['old_password']) && isset($raw['new_password']) && $raw['old_password'] != '' && $raw['new_password'] != '') {
 				$this->user->save_password($this->user->uid(),
 										md5(md5($raw['new_password']) . $this->config->item('password_suffix')));
 			}

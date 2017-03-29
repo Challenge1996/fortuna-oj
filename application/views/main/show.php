@@ -100,12 +100,12 @@
 			<div>
 				<div class="span6 well"><fieldset>
 					<legend><h4><?=lang('sample_input')?></h4></legend>
-					<div class="content"><pre style='border:none;font-size:110%'><?=nl2br($data->inputSample)?></pre></div>
+					<div class="content"><pre style='border:none;font-size:110%'><?=$data->inputSample?></pre></div> <!-- no br needed in pre -->
 				</fieldset></div>
 			
 				<div class="span6 well"><fieldset>
 					<legend><h4><?=lang('sample_output')?></h4></legend>
-					<div class="content"><pre style='border:none;font-size:110%'><?=nl2br($data->outputSample)?></pre></div>
+					<div class="content"><pre style='border:none;font-size:110%'><?=$data->outputSample?></pre></div>
 				</fieldset></div>
 			</div>
 			<div class="clearfix"></div>
