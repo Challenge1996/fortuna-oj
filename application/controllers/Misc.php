@@ -28,6 +28,7 @@ class Misc extends CI_Controller {
 	}
 
 	function mail($user) {
+		$user = rawurldecode($user);
 		$uid = $this->user->load_uid($user);
 		$mails = $this->user->load_mail($uid);
 		$this->user->set_mail_read($this->user->uid());
@@ -36,6 +37,7 @@ class Misc extends CI_Controller {
 	}
 
 	function newmail($username = '') {
+		$username = rawurldecode($username);
 		if (! $this->config->item('allow_message'))
 		{
 			$this->load->view('error', array('message' => 'The Message System has been disabled'));
