@@ -431,8 +431,8 @@ class Problems extends CI_Model{
 			$item->properties = ($item->properties === null ? (object)null : json_decode($item->properties));
 		}
 		$cmp = function($a, $b) {
-			if ($a->properties->group < $b->properties->group) return -1;
-			if ($a->properties->group > $b->properties->group) return 1;
+			if (! isset($a->properties->group) || $a->properties->group < $b->properties->group) return -1;
+			if (! isset($b->properties->group) || $a->properties->group > $b->properties->group) return 1;
 			return $a->idCategory - $b->idCategory;
 		};
 		usort($ret, $cmp);
