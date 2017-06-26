@@ -66,7 +66,7 @@
 	<div class="control-group">
 		<label for="problems_per_page" class="control-label">Problems Per Page</label>
 		<div class="controls controls-row">
-			<input type="number" min="1" name="problems_per_page" id="problems_per_page" class="input-mini" value="<?=set_value('problems_per_page', $config->problemsPerPage)?>" />
+			<input type="number" min="1" max="100" name="problems_per_page" id="problems_per_page" class="input-mini" value="<?=set_value('problems_per_page', $config->problemsPerPage)?>" />
 			<?=form_error('problems_per_page')?>
 		</div>
 	</div>
@@ -74,7 +74,7 @@
 	<div class="control-group">
 		<label for="submission_per_page" class="control-label">Submission Per Page</label>
 		<div class="controls controls-row">
-			<input type="number" min="1" name="submission_per_page" id="submission_per_page" class="input-mini" value="<?=set_value('submission_per_page', $config->submissionPerPage)?>" />
+			<input type="number" min="1" max="100" name="submission_per_page" id="submission_per_page" class="input-mini" value="<?=set_value('submission_per_page', $config->submissionPerPage)?>" />
 			<?=form_error('submission_per_page')?>
 		</div>
 	</div>

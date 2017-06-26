@@ -71,8 +71,8 @@ class Users extends CI_Controller {
 			if (isset($raw['blog_url'])) $config['blogURL']=$raw['blog_url'];
 			if (isset($raw['description'])) $config['description'] = $raw['description'];
 			
-			$config['problemsPerPage'] = (int)$raw['problems_per_page'];
-			$config['submissionPerPage'] = (int)$raw['submission_per_page'];
+			$config['problemsPerPage'] = min(100, max(1, (int)$raw['problems_per_page']));
+			$config['submissionPerPage'] = min(100, max(1, (int)$raw['submission_per_page']));
 			
 			$this->user->save_configuration($this->user->uid(), $config);
 			
