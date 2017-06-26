@@ -6,7 +6,7 @@
 	<?php
 		foreach ($data as $row)
 		{
-			$row->description = htmlentities($row->description);
+			$row->description = htmlentities(mb_substr($row->description, 0, 50));
 			echo "<tr><td>$row->rank</td><td><a href=\"#users/$row->name\"><span class=\"label label-info\">$row->name</span></a>" . 
 				"</td><td>$row->description</td><td>$row->acCount</td><td>$row->solvedCount</td><td>$row->submitCount</td><td>$row->rate%</td></tr>";
 		}

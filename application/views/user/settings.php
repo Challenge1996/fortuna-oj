@@ -52,7 +52,7 @@
 	<div class="control-group">
 		<label for="description" class="control-label">Description</label>
 		<div class="controls controls-row">
-			<textarea name="description" id="description"><?=set_value('description', $config->description)?></textarea>
+			<textarea name="description" id="description" maxlength="50"><?=set_value('description', $config->description)?></textarea>
 		</div>
 	</div>
 
