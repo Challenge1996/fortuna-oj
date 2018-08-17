@@ -193,6 +193,14 @@ class Contest extends CI_Controller {
 					return;
 				}	
 				if ($data != FALSE){
+					// load the title of this problem from contest problemset
+					$contest_problemset = $this->contests->load_contest_problemset($cid);
+					foreach ($contest_problemset as $row)
+						if ($row->pid == $pid){
+							$data->title = $row->title;
+							break;
+						}
+					
 					$data->filemode = json_decode($data->confCache);
 					unset($data->confCache);
 
