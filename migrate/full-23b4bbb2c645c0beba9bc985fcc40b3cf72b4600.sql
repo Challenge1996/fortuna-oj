@@ -16,6 +16,17 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Set user and database
+--
+
+create database if not exists foj;
+
+grant all privileges on foj.* to 'foj'@'localhost' identified by 'foj';
+flush privileges;
+
+use foj;
+
+--
 -- Table structure for table `Allowed_Problem`
 --
 
