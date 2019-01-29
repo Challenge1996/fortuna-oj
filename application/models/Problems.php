@@ -431,9 +431,25 @@ class Problems extends CI_Model{
 			$item->properties = ($item->properties === null ? (object)null : json_decode($item->properties));
 		}
 		$cmp = function($a, $b) {
+			$seta = isset($a->properties->group);
+			$setb = isset($b->properties->group);
+			if (!$seta && !$setb)								// Both a and b not set group
+				return $a->idCategory - $b->idCategory;
+			if (!$seta)											// One of which not set group
+				return -1;
+			if (!$setb)
+				return 1;
+			if ($a->properties->group < $b->properties->group)	// If both set group then compare group name
+				return -1;
+			if ($a->properties->group > $b->properties->group)
+				return 1;
+			return $a->idCategory - $b->idCategory;				// Both in same group then compare idCategory
+			
+			/*
 			if (! isset($a->properties->group) || $a->properties->group < $b->properties->group) return -1;
 			if (! isset($b->properties->group) || $a->properties->group > $b->properties->group) return 1;
 			return $a->idCategory - $b->idCategory;
+			*/
 		};
 		usort($ret, $cmp);
 		return $ret;
