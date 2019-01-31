@@ -1,2 +1,2 @@
 ./index.php : 3, 184~237
-./system/core/Input.php : 727
+./system/core/Input.php : 725
