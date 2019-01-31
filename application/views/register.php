@@ -32,7 +32,7 @@
 			'name' => 'description',
 			'id' => 'description',
 			'value' => set_value('description'),
-			'placeholder' => lang('user_descrption'),
+			'placeholder' => lang('user_description'),
 		)
 	);
 ?>
