@@ -100,7 +100,7 @@ if ( ! function_exists('form_open'))
 		{
 			foreach ($hidden as $name => $value)
 			{
-				$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape($value).'" style="display:none;" />'."\n";
+				$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape($value).'" />'."\n";
 			}
 		}
 
@@ -568,7 +568,7 @@ if ( ! function_exists('form_label'))
 	 *
 	 * @param	string	The text to appear onscreen
 	 * @param	string	The id the label applies to
-	 * @param	string	Additional attributes
+	 * @param	array	Additional attributes
 	 * @return	string
 	 */
 	function form_label($label_text = '', $id = '', $attributes = array())
@@ -791,7 +791,7 @@ if ( ! function_exists('set_checkbox'))
 		// Unchecked checkbox and radio inputs are not even submitted by browsers ...
 		if ($CI->input->method() === 'post')
 		{
-			return ($input === 'value') ? ' checked="checked"' : '';
+			return ($input === $value) ? ' checked="checked"' : '';
 		}
 
 		return ($default === TRUE) ? ' checked="checked"' : '';
@@ -843,7 +843,7 @@ if ( ! function_exists('set_radio'))
 		// Unchecked checkbox and radio inputs are not even submitted by browsers ...
 		if ($CI->input->method() === 'post')
 		{
-			return ($input === 'value') ? ' checked="checked"' : '';
+			return ($input === $value) ? ' checked="checked"' : '';
 		}
 
 		return ($default === TRUE) ? ' checked="checked"' : '';

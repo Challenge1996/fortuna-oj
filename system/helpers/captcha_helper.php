@@ -110,7 +110,8 @@ if ( ! function_exists('create_captcha'))
 		$current_dir = @opendir($img_path);
 		while ($filename = @readdir($current_dir))
 		{
-			if (substr($filename, -4) === '.jpg' && (str_replace('.jpg', '', $filename) + $expiration) < $now)
+			if (in_array(substr($filename, -4), array('.jpg', '.png'))
+				&& (str_replace(array('.jpg', '.png'), '', $filename) + $expiration) < $now)
 			{
 				@unlink($img_path.$filename);
 			}
@@ -171,35 +172,36 @@ if ( ! function_exists('create_captcha'))
 				$byte_index = $word_index = 0;
 				while ($word_index < $word_length)
 				{
+					// Do we have more random data to use?
+					// It could be exhausted by previous iterations
+					// ignoring bytes higher than $rand_max.
+					if ($byte_index === $pool_length)
+					{
+						// No failures should be possible if the
+						// first get_random_bytes() call didn't
+						// return FALSE, but still ...
+						for ($i = 0; $i < 5; $i++)
+						{
+							if (($bytes = $security->get_random_bytes($pool_length)) === FALSE)
+							{
+								continue;
+							}
+
+							$byte_index = 0;
+							break;
+						}
+
+						if ($bytes === FALSE)
+						{
+							// Sadly, this means fallback to mt_rand()
+							$word = '';
+							break;
+						}
+					}
+
 					list(, $rand_index) = unpack('C', $bytes[$byte_index++]);
 					if ($rand_index > $rand_max)
 					{
-						// Was this the last byte we have?
-						// If so, try to fetch more.
-						if ($byte_index === $pool_length)
-						{
-							// No failures should be possible if
-							// the first get_random_bytes() call
-							// didn't return FALSE, but still ...
-							for ($i = 0; $i < 5; $i++)
-							{
-								if (($bytes = $security->get_random_bytes($pool_length)) === FALSE)
-								{
-									continue;
-								}
-
-								$byte_index = 0;
-								break;
-							}
-
-							if ($bytes === FALSE)
-							{
-								// Sadly, this means fallback to mt_rand()
-								$word = '';
-								break;
-							}
-						}
-
 						continue;
 					}
 

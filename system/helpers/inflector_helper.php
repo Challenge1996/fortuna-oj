@@ -219,7 +219,7 @@ if ( ! function_exists('humanize'))
 	 */
 	function humanize($str, $separator = '_')
 	{
-		return ucwords(preg_replace('/['.$separator.']+/', ' ', trim(MB_ENABLED ? mb_strtolower($str) : strtolower($str))));
+		return ucwords(preg_replace('/['.preg_quote($separator).']+/', ' ', trim(MB_ENABLED ? mb_strtolower($str) : strtolower($str))));
 	}
 }
 
@@ -238,8 +238,37 @@ if ( ! function_exists('is_countable'))
 		return ! in_array(
 			strtolower($word),
 			array(
-				'equipment', 'information', 'rice', 'money',
-				'species', 'series', 'fish', 'meta'
+				'audio',
+				'bison',
+				'chassis',
+				'compensation',
+				'coreopsis',
+				'data',
+				'deer',
+				'education',
+				'emoji',
+				'equipment',
+				'fish',
+				'furniture',
+				'gold',
+				'information',
+				'knowledge',
+				'love',
+				'rain',
+				'money',
+				'moose',
+				'nutrition',
+				'offspring',
+				'plankton',
+				'pokemon',
+				'police',
+				'rice',
+				'series',
+				'sheep',
+				'species',
+				'swine',
+				'traffic',
+				'wheat'
 			)
 		);
 	}
