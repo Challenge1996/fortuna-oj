@@ -9,6 +9,7 @@ config_file = [
     '/overriding_config/local.php',
     '/overriding_config/secret.php',
     '/scripts/init-db.sql'
+    '/application/daemon.php'
 ]
 
 config = {
@@ -101,7 +102,7 @@ def replace(match):
         exit()
         
 def replace_file(filename):
-    inputHandle = open('/var/www/foj' + filename)
+    inputHandle = open('/var/www/foj%s.example'%(filename))
     text = inputHandle.read()
     inputHandle.close()
     
@@ -140,18 +141,12 @@ for key, values in config.items():
             info = values[2]
         config[key][1] = info
         
-# Get ready for the config files
-run('cp /var/www/foj/scripts/init-db.sql.example /var/www/foj/scripts/init-db.sql')
-run('cp /var/www/foj/overriding_config/local.php.example /var/www/foj/overriding_config/local.php')
-run('cp /var/www/foj/overriding_config/secret.php.example /var/www/foj/overriding_config/secret.php')
-        
 for filename in config_file:
     replace_file(filename)
+    run('chown www-data:www-data /var/www/foj' + filename)
     
 run('mysql < /var/www/foj/scripts/init-db.sql')
 run('rm -f /var/www/foj/scripts/init-db.sql')
-run('chown www-data:www-data /var/www/foj/overriding_config/local.php')
-run('chown www-data:www-data /var/www/foj/overriding_config/secret.php')
 
 execute_command_block([
     'Configure NGINX',

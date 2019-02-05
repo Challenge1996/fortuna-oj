@@ -1,0 +1,25 @@
+<?php
+
+if (!$con = mysqli_connect("localhost", "{{db_user}}", "{{db_pwd}}"))
+        die('Error! Unable to connect: ' . mysqli_error());
+mysqli_select_db($con, "{{db_name}}");
+
+$start = date('Y-m-d H:i:s', time() - 600);
+$now = date('Y-m-d H:i:s');
+$sql = "SELECT cid FROM Contest WHERE endTime>='$start' AND endTime<='$now'";
+$result = mysqli_query($con, $sql);
+while ($row = mysqli_fetch_row($result)) {
+        $cid = (int)$row[0];
+        $sql = "SELECT pid FROM Contest_has_ProblemSet WHERE cid=$cid";
+        $problems = mysqli_query($con, $sql);
+        mysqli_query($con, "CALL upd_ac_count_cid($cid)");
+        while ($prob = mysqli_fetch_row($problems)) {
+                $pid = (int)$prob[0];
+                $sql = "UPDATE ProblemSet SET isShowed=1 WHERE pid=$pid";
+                mysqli_query($con, $sql);
+        }
+}
+
+mysqli_close($con);
+
+?>
