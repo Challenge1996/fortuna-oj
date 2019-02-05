@@ -125,7 +125,7 @@ print('(Input nothing to use default settings)')
 for key, values in config.items():
     if key.find('pwd') != -1:
         while True:
-            pwd = getpass.getpass('Input %s: ' % (values[0]))
+            pwd = getpass.getpass('Input %s (default: %s): ' % (values[0], values[2]))
             confirm = getpass.getpass('Confirm %s: ' % (values[0]))
             if pwd == confirm:
                 if pwd == '':
@@ -135,7 +135,7 @@ for key, values in config.items():
             else:
                 print('Passwords mismatch!')
     else:
-        info = input('Input ' + values[0] + ': ')
+        info = input('Input %s (default: %s): ' % (values[0], values[2]))
         if info == '':
             info = values[2]
         config[key][1] = info
