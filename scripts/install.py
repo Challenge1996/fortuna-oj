@@ -92,7 +92,9 @@ def execute_command_block(command_block):
         
 def replace(match):
     s = match.group(1)
-    if s in config:
+    if s == 'random':
+        return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(20))
+    elif s in config:
         return config[s][1]
     else:
         print('Unknown variable: ' + s)
@@ -132,8 +134,6 @@ for key, values in config.items():
                 break
             else:
                 print('Passwords mismatch!')
-    elif key == random:
-        config[key][1] = ''.join(random.choice(string.letters) for i in range(20))
     else:
         info = input('Input ' + values[0] + ': ')
         if info == '':
@@ -157,6 +157,6 @@ execute_command_block([
     'Configure NGINX',
     'cp /var/www/foj/scripts/foj-nginx.conf /etc/nginx/sites-enabled/',
     'rm /etc/nginx/sites-enabled/default',
-    'service nginx -t',
+    'nginx -t',
     'service nginx reload'
 ])
