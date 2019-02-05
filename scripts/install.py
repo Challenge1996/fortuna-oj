@@ -56,7 +56,7 @@ inst_env_command = [
         'Install PHP 7.2 and related components',
         'apt install -y software-properties-common apt-transport-https lsb-release ca-certificates',
         'add-apt-repository -y -u ppa:ondrej/php',
-        'apt install -y php7.2-fpm php7.2-mysql php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-xmlrpc php7.2-zip php7.2-opcache php7.2-redis',
+        'apt install -y php7.2-fpm php7.2-mysql php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-xmlrpc php7.2-zip php7.2-opcache php-redis',
         'service php7.2-fpm restart'
     ],
     [
