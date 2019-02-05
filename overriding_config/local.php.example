@@ -10,7 +10,7 @@ $assign_to_config['base_url']				= 'http://fortuna-oj.com/oj';
 
 $assign_to_config['sess_cookie_name']		= 'foj_ci_session';
 
-$assign_to_config['cookie_path']			= "/oj";
+$assign_to_config['cookie_path']			= "{{cookiepath}}";
 
 $assign_to_config['data_path']				= "/home/judge/newdata/oj/data/";
 $assign_to_config['code_path']				= "/home/judge/newdata/oj/code/";
@@ -49,6 +49,6 @@ $assign_to_config['estimate_score']			= true;
 
 // $db is loaded in application/config/database.php
 
-$db['default']['database']					= 'oj'; // in overriding_config/local.php
+$db['default']['database']					= '{{db_name}}'; // in overriding_config/local.php
 
 // End of File : overriding_config/local.php
