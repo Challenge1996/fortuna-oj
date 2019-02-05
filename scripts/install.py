@@ -46,8 +46,7 @@ inst_env_command = [
     ],
     [
         'Install MariaDB',
-        'apt install -y mariadb-server',
-        'service mariadb restart'
+        'apt install -y mariadb-server'
     ],
     [
         'Install Redis',
@@ -66,6 +65,11 @@ inst_env_command = [
         r'sed -i "s/.*unixsocketperm.*/unixsocketperm 770/" /etc/redis/redis.conf',
         'usermod -aG redis www-data',
         'service redis-server restart'
+    ],
+    [
+        'Configure max_connections for MariaDB',
+        r'grep "max_connections" /etc/mysql/my.cnf; if [ $? -eq 0 ]; then sed -i "s/.*max_connections.*/max_connections = 32768/" /etc/mysql/my.cnf; else echo "echo \"\n[mysqld]\nmax_connections = 32768\" >> /etc/mysql/my.cnf" | sudo sh; fi',
+        'service mariadb restart'
     ],
     [
         'Get fortuna-oj from GitHub',
