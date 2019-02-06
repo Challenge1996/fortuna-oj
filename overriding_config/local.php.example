@@ -10,7 +10,7 @@ $assign_to_config['base_url']				= 'http://fortuna-oj.com/oj';
 
 $assign_to_config['sess_cookie_name']		= 'foj_ci_session';
 
-$assign_to_config['cookie_path']			= "{{cookiepath}}";
+$assign_to_config['cookie_path']			= "{{oj_name}}";
 
 $assign_to_config['data_path']				= "/home/judge/newdata/oj/data/";
 $assign_to_config['code_path']				= "/home/judge/newdata/oj/code/";
@@ -19,7 +19,7 @@ $assign_to_config['problem_path']			= "/home/judge/newdata/oj/problem/";
 
 $assign_to_config['servers']				= array('http://127.0.0.1:8389');
 
-$assign_to_config['oj_name']				= 'oj';
+$assign_to_config['oj_name']				= "{{oj_name}}";
 
 $assign_to_config['fetch_contest_list']		= true;
 

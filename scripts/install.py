@@ -4,19 +4,21 @@ import re, random, string
 # Set default configs
 
 oj_branch = 'new-env'
+oj_name = '' # Input later
 
 config_file = [
     '/overriding_config/local.php',
     '/overriding_config/secret.php',
-    '/scripts/init-db.sql'
-    '/application/daemon.php'
+    '/scripts/init-db.sql',
+    '/application/daemon.php',
+    '/scripts/fonj-nginx.conf'
 ]
 
 config = {
-    'cookiepath': [
-        'cookie_path (keep default if you know nothing)',
+    'oj_name': [
+        'name of the fortuna-oj directory',
         '',
-        '/'
+        'foj'
     ],
     'db_user': [
         'username of the new database user',
@@ -68,14 +70,8 @@ inst_env_command = [
     ],
     [
         'Configure max_connections for MariaDB',
-        r'grep "max_connections" /etc/mysql/my.cnf; if [ $? -eq 0 ]; then sed -i "s/.*max_connections.*/max_connections = 32768/" /etc/mysql/my.cnf; else echo "echo \"\n[mysqld]\nmax_connections = 32768\" >> /etc/mysql/my.cnf" | sudo sh; fi',
+        r'grep "max_connections" /etc/mysql/mariadb.conf.d/50-server.cnf; if [ $? -eq 0 ]; then sed -i "s/.*max_connections.*/max_connections         = 32768/" /etc/mysql/mariadb.conf.d/50-server.cnf; else echo "echo \"\n[mysqld]\nmax_connections = 32768\" >> /etc/mysql/my.cnf" | sudo sh; fi',
         'service mariadb restart'
-    ],
-    [
-        'Get fortuna-oj from GitHub',
-        'mkdir -p /var/www/foj',
-        'chown www-data:www-data /var/www/foj',
-        'sudo -u www-data git clone -b ' + oj_branch + ' https://github.com/roastduck/fortuna-oj /var/www/foj'
     ]
 ]
 
@@ -106,13 +102,13 @@ def replace(match):
         exit()
         
 def replace_file(filename):
-    inputHandle = open('/var/www/foj%s.example'%(filename))
+    inputHandle = open('/var/www/%s%s.example' % (oj_name, filename))
     text = inputHandle.read()
     inputHandle.close()
     
     text = re.sub(r'{{(.*?)}}', replace, text)
     
-    outputHandle = open('/var/www/foj' + filename, 'w')
+    outputHandle = open('/var/www/%s%s' % (oj_name, filename), 'w')
     outputHandle.write(text)
     outputHandle.close()
             
@@ -122,11 +118,8 @@ if os.getuid():
     print("You must run this script with ROOT priviledge!")
     exit()
 
-for command_block in inst_env_command:
-    execute_command_block(command_block)
-
-output_bar('Create local settings')
-print('(Input nothing to use default settings)')
+output_bar('Collect local settings')
+print('(Empty input will use default settings)')
 for key, values in config.items():
     if key.find('pwd') != -1:
         while True:
@@ -144,18 +137,35 @@ for key, values in config.items():
         if info == '':
             info = values[2]
         config[key][1] = info
-        
+
+oj_name = config['oj_name'][1]
+
+for command_block in inst_env_command:
+    execute_command_block(command_block)
+
+execute_command_block([
+    'Get fortuna-oj from GitHub',
+    'mkdir -p /var/www/' + oj_name,
+    'chown www-data:www-data /var/www/' + oj_name,
+    'sudo -u www-data git clone -b %s https://github.com/roastduck/fortuna-oj /var/www/%s' % (oj_branch, oj_name)
+])
+
+output_bar("Create local settings")
 for filename in config_file:
     replace_file(filename)
-    run('chown www-data:www-data /var/www/foj' + filename)
+    run('chown www-data:www-data /var/www/%s %s' % (oj_name, filename))
     
-run('mysql < /var/www/foj/scripts/init-db.sql')
-run('rm -f /var/www/foj/scripts/init-db.sql')
+run('mysql < /var/www/%s/scripts/init-db.sql' % (oj_name))
+run('rm -f /var/www/%s/scripts/init-db.sql' % (oj_name))
 
 execute_command_block([
     'Configure NGINX',
-    'cp /var/www/foj/scripts/foj-nginx.conf /etc/nginx/sites-enabled/',
+    'mv /var/www/%s/scripts/foj-nginx.conf /etc/nginx/sites-enabled/' % (oj_name),
     'rm /etc/nginx/sites-enabled/default',
     'nginx -t',
     'service nginx reload'
 ])
+
+output_bar('!! Success !!')
+print("You are REQUIRED to reboot your system.")
+print("Have fun with fortuna-oj!")

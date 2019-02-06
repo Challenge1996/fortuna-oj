@@ -2,16 +2,23 @@ server {
 	listen 80;
 	listen [::]:80;
 	
-	root /var/www/foj;
+	root /var/www;
 	index index.html index.php;
 	
 	location ~* \.(ico|css|js|gif|jpe?g|png)(\?[0-9]+)?$ {
 		expires max;
 		log_not_found off;
 	}
-	
+
 	location / {
-		try_files $uri $uri/ /index.php;
+		if ($request_uri = "/") {
+			return 301 /{{oj_name}};
+		}
+		return 403;
+	}
+	
+	location /{{oj_name}} {
+		try_files $uri $uri/ /{{oj_name}}/index.php;
 	}
 	
 	location ~* \.php$ {
