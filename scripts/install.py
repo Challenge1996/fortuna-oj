@@ -58,8 +58,7 @@ inst_env_command = [
         'Install PHP 7.2 and related components',
         'apt install -y software-properties-common apt-transport-https lsb-release ca-certificates',
         'add-apt-repository -y -u ppa:ondrej/php',
-        'apt install -y php7.2-fpm php7.2-mysql php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-xmlrpc php7.2-zip php7.2-opcache php-redis',
-        'service php7.2-fpm restart'
+        'apt install -y php7.2-fpm php7.2-mysql php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-xmlrpc php7.2-zip php7.2-opcache php-redis'
     ],
     [
         'Configure Redis to listen to unix socket',
@@ -72,6 +71,11 @@ inst_env_command = [
         'Configure max_connections for MariaDB',
         r'grep "max_connections" /etc/mysql/mariadb.conf.d/50-server.cnf; if [ $? -eq 0 ]; then sed -i "s/.*max_connections.*/max_connections         = 32768/" /etc/mysql/mariadb.conf.d/50-server.cnf; else echo "echo \"\n[mysqld]\nmax_connections = 32768\" >> /etc/mysql/my.cnf" | sudo sh; fi',
         'service mariadb restart'
+    ],
+    [
+        'Configure env[PATH] for PHP',
+        r'sed -i "s/.*env\[PATH\].*/env\[PATH\] = \/usr\/local\/bin:\/usr\/bin:\/bin/" /etc/php/7.2/fpm/pool.d/www.conf',
+        'service php7.2-fpm restart'
     ]
 ]
 
