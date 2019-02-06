@@ -11,7 +11,7 @@ config_file = [
     '/overriding_config/secret.php',
     '/scripts/init-db.sql',
     '/application/daemon.php',
-    '/scripts/fonj-nginx.conf'
+    '/scripts/foj-nginx.conf'
 ]
 
 config = {
@@ -153,7 +153,7 @@ execute_command_block([
 output_bar("Create local settings")
 for filename in config_file:
     replace_file(filename)
-    run('chown www-data:www-data /var/www/%s %s' % (oj_name, filename))
+    run('chown www-data:www-data /var/www/%s%s' % (oj_name, filename))
     
 run('mysql < /var/www/%s/scripts/init-db.sql' % (oj_name))
 run('rm -f /var/www/%s/scripts/init-db.sql' % (oj_name))
@@ -161,6 +161,7 @@ run('rm -f /var/www/%s/scripts/init-db.sql' % (oj_name))
 execute_command_block([
     'Configure NGINX',
     'mv /var/www/%s/scripts/foj-nginx.conf /etc/nginx/sites-enabled/' % (oj_name),
+    'chown root:root /etc/nginx/sites-enabled/foj-nginx.conf',
     'rm /etc/nginx/sites-enabled/default',
     'nginx -t',
     'service nginx reload'
