@@ -1,0 +1,9 @@
+[
+	{
+		"webServer": "localhost",
+		"port": 8389,
+		"dataPath": "\/home\/judge\/data\/{{oj_name}}\/data",
+		"runPath": "\/tmp\/foj\/{{oj_name}}\/run",
+		"sourcePath": "\/home\/judge\/data\/{{oj_name}}\/code"
+	}
+]

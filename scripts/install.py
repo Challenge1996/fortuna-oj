@@ -11,7 +11,9 @@ config_file = [
     '/overriding_config/secret.php',
     '/scripts/init-db.sql',
     '/application/daemon.php',
-    '/scripts/foj-nginx.conf'
+    '/scripts/foj-nginx.conf',
+    '/scripts/yaujpushd',
+    '/scripts/daemon.json'
 ]
 
 config = {
@@ -76,6 +78,14 @@ inst_env_command = [
         'Configure env[PATH] for PHP',
         r'sed -i "s/.*env\[PATH\].*/env\[PATH\] = \/usr\/local\/bin:\/usr\/bin:\/bin/" /etc/php/7.2/fpm/pool.d/www.conf',
         'service php7.2-fpm restart'
+    ],
+    [
+        'Install YAUJ from GitHub',
+        'mkdir -p /home/judge',
+        'git clone https://github.com/roastduck/YAUJ /home/judge/yauj',
+        '/home/judge/yauj/init-env_bionic.sh',
+        'cd /home/judge/yauj && make',
+        'cd /home/judge/yauj && make install',
     ]
 ]
 
@@ -169,6 +179,19 @@ execute_command_block([
     'rm /etc/nginx/sites-enabled/default',
     'nginx -t',
     'service nginx reload'
+])
+
+execute_command_block([
+    'Setup services and daemons',
+    'echo "*/1 * * * * php /var/www/%s/application/daemon.php" | crontab -u www-data -' % (oj_name),
+    'mv /var/www/%s/scripts/daemon.json /etc/yauj/' % (oj_name),
+    'chown root:root /etc/yauj/daemon.json',
+    'cp /var/www/%s/scripts/yaujd /etc/init.d/' % (oj_name),
+    'mv /var/www/%s/scripts/yaujpushd /etc/init.d/' % (oj_name),
+    'chown root:root /etc/init.d/yauj*',
+    'chmod 755 /etc/init.d/yauj*',
+    'update-rc.d yaujd defaults',
+    'update-rc.d yaujpushd defaults'
 ])
 
 output_bar('!! Success !!')
