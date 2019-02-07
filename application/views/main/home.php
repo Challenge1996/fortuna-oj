@@ -1,8 +1,8 @@
 <div style="text-align:center; padding: 5px">
 	<div class="hero-unit">
 		<h2 class="text-error"><?=lang('welcome_to')?> <?=$this->config->item('oj_title')?>!</h2>
-		<p>This OJ is based on Ubuntu Server 14.04 LTS amd64.</p>
-		<p>Powered by Codeigniter / Bootstrap.</p>
+		<p><?=sprintf(lang('based_on_os'), 'Ubuntu 18.04 LTS amd64')?></p>
+		<p><?=sprintf(lang('powered_by'), 'CodeIgniter / Bootstrap')?></p>
 	</div>
 	<div class="container-fluid">
 		<h3>FAQ: 为什么我的程序在本地跑没事，交到你的OJ上就挂了(ノ=Д=)ノ┻━┻</h3>

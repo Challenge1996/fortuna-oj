@@ -38,6 +38,7 @@
 
 //home
 	$lang['welcome_to'] = '欢迎来到';
+	$lang['based_on_os'] = '本 OJ 网站运行于 %s';
 
 //problemset
 	$lang['p_advanced'] = '高级…';

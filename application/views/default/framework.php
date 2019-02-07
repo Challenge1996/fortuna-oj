@@ -99,10 +99,10 @@
 		<div class="row-fluid">
 			<div class="span12" id="copyleft">
 				<label id="server_time"></label>
-				Fortuna OJ 项目<br />
-				<?=lang('author')?>: <a href="https://github.com/moreD">moreD</a>, <a href="https://github.com/roastduck">RD</a>;
-				<?=lang('collaborator')?>: <a href="https://github.com/tarawa">twilight</a><br />
-				<?=sprintf(lang('powered_by'), 'Codeigniter / Bootstrap')?><br />
+				<a href="https://github.com/roastduck/fortuna-oj" target="_blank">Fortuna OJ 项目</a><br />
+				<?=lang('author')?>: <a href="https://github.com/moreD" target="_blank">moreD</a>, <a href="https://github.com/roastduck" target="_blank">RD</a>;
+				<?=lang('collaborator')?>: <a href="https://github.com/tarawa" target="_blank">twilight</a>, <a href="https://github.com/mchobbylong" target="_blank">McHobby</a><br />
+				<?=sprintf(lang('powered_by'), 'CodeIgniter / Bootstrap')?><br />
 				<?=sprintf(lang('icon_by'), '<a href="http://glyphicons.com/">Glyphicons</a>')?><br />
 				<?php if ($this->config->item('miitbeian')): ?>
 					<?=$this->config->item('miitbeian')?>

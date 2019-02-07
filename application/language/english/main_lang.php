@@ -38,6 +38,7 @@
 
 //home
 	$lang['welcome_to'] = 'Welcome to';
+	$lang['based_on_os'] = 'This OJ is based on %s.';
 
 //problemset
 	$lang['p_advanced'] = 'Advanced...';
