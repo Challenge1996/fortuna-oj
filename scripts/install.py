@@ -190,6 +190,7 @@ execute_command_block([
 execute_command_block([
     'Setup services and daemons',
     'echo "*/1 * * * * php /var/www/%s/application/daemon.php" | crontab -u www-data -' % (oj_name),
+    'mkdir -p /etc/yauj',
     'mv /var/www/%s/scripts/daemon.json /etc/yauj/' % (oj_name),
     'chown root:root /etc/yauj/daemon.json',
     'cp /var/www/%s/scripts/yaujd /etc/init.d/' % (oj_name),
