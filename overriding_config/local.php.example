@@ -10,7 +10,7 @@ $assign_to_config['base_url']				= 'http://localhost/{{oj_name}}';
 
 $assign_to_config['sess_cookie_name']		= 'foj_ci_session';
 
-$assign_to_config['cookie_path']			= "{{oj_name}}";
+$assign_to_config['cookie_path']			= "/{{oj_name}}";
 
 $assign_to_config['data_path']				= "/home/judge/data/{{oj_name}}/data/";
 $assign_to_config['code_path']				= "/home/judge/data/{{oj_name}}/code/";
@@ -23,7 +23,7 @@ $assign_to_config['oj_name']				= "{{oj_name}}";
 
 $assign_to_config['fetch_contest_list']		= true;
 
-$assign_to_config['show_copyright']			= true;
+$assign_to_config['show_copyright']			= false;
 
 $assign_to_config['miitbeian']				= '';
 
