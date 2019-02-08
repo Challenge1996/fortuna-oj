@@ -10,13 +10,14 @@ server {
 		log_not_found off;
 	}
 
-	location / {
-		if ($request_uri = "/") {
-			return 301 /{{oj_name}};
-		}
+	location = / {
+		return 302 /{{oj_name}};
+	}
+
+	location ~* /{{oj_name}}/(overriding_config|application|migrate|scripts|system) {
 		return 403;
 	}
-	
+
 	location /{{oj_name}} {
 		try_files $uri $uri/ /{{oj_name}}/index.php;
 	}
