@@ -603,12 +603,13 @@ class Problems extends CI_Model{
 			throw new MyException($err);
 		}
 		$confCache = str_replace(array(" ","\t","\n","\r"),array(),file_get_contents('conf.log'));
-		
-		chdir($cwd);
 
+		chdir($cwd);
 		$redis->del($pid);
 		$redis->close();
 
+		if (!copy("yauj_judge",$datapath.'/') || !copy("compile.log",$datapath.'/make.log'))
+			throw new MyException('Error when copying yauj_judge and make.log');
 		return $confCache;
 	}
 	
