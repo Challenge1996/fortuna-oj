@@ -2,7 +2,7 @@
 
 <?php
 	$this->load->model('submission');
-	$showName = (count($filemode[2])>1);
+	$showName = (count(get_object_vars($filemode[2]))>1);
 	$beenWrong = false;
 ?>
 
