@@ -604,12 +604,16 @@ class Problems extends CI_Model{
 		}
 		$confCache = str_replace(array(" ","\t","\n","\r"),array(),file_get_contents('conf.log'));
 
-		chdir($cwd);
 		$redis->del($pid);
 		$redis->close();
 
 		if (!copy("yauj_judge",$datapath.'/') || !copy("compile.log",$datapath.'/make.log'))
+		{
+			chdir($cwd);
 			throw new MyException('Error when copying yauj_judge and make.log');
+		}
+
+		chdir($cwd);
 		return $confCache;
 	}
 	
