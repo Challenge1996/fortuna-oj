@@ -15,7 +15,9 @@ server {
 	}
 
 	location ~* /{{oj_name}}/(overriding_config|application|migrate|scripts|system) {
-		return 403;
+		if ($request_uri !~* /{{oj_name}}/application/third_party/) {
+			return 403;
+		}
 	}
 
 	location /{{oj_name}} {
