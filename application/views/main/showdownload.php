@@ -1,5 +1,5 @@
 <?php
-	echo '<button class="btn btn-mini" onclick="javascript:history.back()">Return</button>';
+	echo '<button class="btn btn-small" onclick="javascript:history.back()">Return</button>';
 	echo '<table id="downloads" class="table table-bordered table-striped table-condensed"' .
 		 '<thead><tr><th>No.</th><th>File</th></tr></thead><tbody>';
 	$fileCnt = 1;

@@ -1,7 +1,7 @@
 <?php
 	if (!$simple)
 	{
-		echo '<button class="btn btn-mini" onclick="javascript:history.back()">Return</button>';
+		echo '<button class="btn btn-small" onclick="javascript:history.back()">Return</button>';
 		echo '<table id="limits" class="table table-bordered table-striped table-condensed"' .
 			'<thead><tr><th>Case/Test No.</th><th>Time</th><th>Memory</th></tr></thead><tbody>';
 	}
