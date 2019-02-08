@@ -613,6 +613,12 @@ class Problems extends CI_Model{
 			throw new MyException('Error when copying yauj_judge and make.log');
 		}
 
+		if (!chmod($datapath.'/yauj_judge', 0777))
+		{
+			chdir($cwd);
+			throw new MyException('Error when changing file mode');
+		}
+
 		chdir($cwd);
 		return $confCache;
 	}
