@@ -42,8 +42,8 @@ $assign_to_config['allow_download_first_wrong'] = true;
 $assign_to_config['disable_new_user']		= true;
 
 $assign_to_config['mail_method']			= false; // false, 'smtp' or 'sendgrid'
-$assign_to_config['admin_email']			= 'noreply@jzoj.net';
-$assign_to_config['admin_email_name']		= 'JZOJ Admin';
+$assign_to_config['admin_email']			= 'noreply@foj.net';
+$assign_to_config['admin_email_name']		= 'FOJ Admin';
 
 $assign_to_config['estimate_score']			= true;
 

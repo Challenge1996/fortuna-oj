@@ -278,7 +278,7 @@ $config['encryption_key'] = 'foobar'; // in overriding_config/secret.php
 |
 */
 $config['sess_driver']				= 'redis';
-$config['sess_cookie_name']			= 'jzoj_ci_session'; // in overriding_config/local.php
+$config['sess_cookie_name']			= 'foj_ci_session'; // in overriding_config/local.php
 $config['sess_expiration']			= 3600;
 $config['sess_save_path']			= 'unix:///var/run/redis/redis-server.sock'; // set permission to 0770 and add user 'www-data' to group 'redis'
 $config['sess_match_ip']			= FALSE;
@@ -417,8 +417,8 @@ $config['oj_name'] = 'yauj'; // in overriding_config/local.php
 
 // Sendgrid configurations (sending email via Sendgrid to restore accounts)
 $config['mail_method'] = false; // false, 'smtp' or 'sendgrid', in overriding_config/local.php
-$config['admin_email'] = 'noreply@jzoj.net'; // in overriding_config/local.php
-$config['admin_email_name'] = 'JZOJ Admin'; // in overriding_config/local.php
+$config['admin_email'] = 'noreply@foj.net'; // in overriding_config/local.php
+$config['admin_email_name'] = 'FOJ Admin'; // in overriding_config/local.php
 // if mail_method = 'smtp', set the following
 $config['smtp_host'] = 'foobar.com';
 $config['smtp_user'] = 'foo'; // in overriding_config/secret.php
