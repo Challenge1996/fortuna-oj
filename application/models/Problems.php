@@ -607,7 +607,7 @@ class Problems extends CI_Model{
 		$redis->del($pid);
 		$redis->close();
 
-		if (!copy("yauj_judge",$datapath.'/') || !copy("compile.log",$datapath.'/make.log'))
+		if (!copy("yauj_judge",$datapath.'/yauj_judge') || !copy("compile.log",$datapath.'/make.log'))
 		{
 			chdir($cwd);
 			throw new MyException('Error when copying yauj_judge and make.log');
