@@ -131,6 +131,20 @@
 
 <div class="clearfix"></div>
 
+<fieldset class="span5" id="compile_judge">
+<legend>Compile &amp; Judge</legend>
+<form id="compile_judge" class="form-horizontal">
+	<div class="control-group">
+		<label for="with_o2" class="control-label">With -O2</label>
+		<div class="controls">
+			<input type="checkbox" id="with_o2" />
+		</div>
+	</div>
+</form>
+</fieldset>
+
+<div class="clearfix"></div>
+
 <hr style="height:1px;border:none;border-top:1px dashed #0066CC"/>
 
 <div><button class="btn btn-primary offset5" type="submit" id="submit">Submit</button></div>

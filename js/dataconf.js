@@ -425,7 +425,7 @@ function loaded() {
 	});
 	$("#IOMode").change(function() { upd_IOmode(); getDataFromElement(); });
 	$("#spj").change(function() { upd_spj(); getDataFromElement(); });
-	$("input.in, input.out, input.user_input, input.user_output, input.time, input.memory, #spjMode, #spjFile").live('change',function() { getDataFromElement(); });
+	$("input.in, input.out, input.user_input, input.user_output, input.time, input.memory, #spjMode, #spjFile, #with_o2").live('change',function() { getDataFromElement(); });
 
 	$(".gc").live('mouseenter',function() { $(this).find('.panel').show(); });
 	$(".gc").live('mouseleave',function() { $(this).find('.panel').hide(); });
