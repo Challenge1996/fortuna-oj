@@ -82,3 +82,7 @@ td a:hover, li a:hover {color: #0088cc; text-decoration: none;}
 .filter .tooltip-inner {
 	background-color: transparent;
 }
+
+.btn_md {
+	margin-bottom: 10px;
+}
