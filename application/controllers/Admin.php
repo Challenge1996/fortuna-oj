@@ -518,6 +518,7 @@ class Admin extends CI_Controller {
 				$this->db->query("UPDATE User SET school=? WHERE uid=?", array($schoolName, $uid));
 
 		$data = $this->user->load_users_list();
+		$unused_count = $this->user->load_unused_user();
 		$groups = $this->misc->load_groups($this->user->uid());
 		foreach ($data as $row){
 			$row->groups = $this->user->load_user_groups($row->uid, $groups);
@@ -548,7 +549,7 @@ class Admin extends CI_Controller {
 			usort($data, $callback);
 		}
 
-		$this->load->view('admin/users', array('data' => $data, 'keyword' => $keyword, 'order' => $order));
+		$this->load->view('admin/users', array('data' => $data, 'unused' => $unused_count, 'keyword' => $keyword, 'order' => $order));
 	}
 	
 	function change_user_status($uid){
@@ -562,6 +563,10 @@ class Admin extends CI_Controller {
 	
 	function delete_user($uid){
 		$this->user->delete($uid);
+	}
+
+	function delete_unused_users(){
+		$this->user->delete_unused();
 	}
 
 	function setallowing($uid){

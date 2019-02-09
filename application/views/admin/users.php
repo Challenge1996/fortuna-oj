@@ -1,3 +1,4 @@
+<button class="btn btn-small btn-danger pull-right btn_md" onclick="delete_unused_users()">Delete <span id="unused_count"><?=$unused?></span> Unused Users</button>
 <table class="table table-bordered table-condensed table-stripped">
 	<thead>
 		<?php foreach (array(
@@ -59,7 +60,7 @@
 			echo '</td><td>';
 			foreach ($row->groups as $group) echo "<span class=\"label\">$group->name</span> ";
 			echo "<td>$row->lastIP</td>";
-			echo "<td>$row->lastLogin</td>";
+			echo "<td class='lastlogin'>$row->lastLogin</td>";
 			echo "</td><td><button class='close' onclick=\"delete_user($row->uid, $(this))\">&times;</button></td></tr>";
 		}
 	?></tbody>
@@ -80,6 +81,20 @@
 	</div>
 </div>
 
+<div class="modal hide fade" id="modal_confirm_unused">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Confirm Action</h3>
+	</div>
+	<div class="modal-body">
+		<h4>Are you sure to delete <span id="modal_unused_count"><?=$unused?></span> unused users?</h4>
+	</div>
+	<div class="modal-footer">
+		<a class="btn" data-dismiss="modal">Close</a>
+		<a class="btn btn-danger" id="delete">Delete</a>
+	</div>
+</div>
+
 <script type="text/javascript">
 	function delete_user(uid, selector){
 		$('#modal_confirm #delete').live('click', function(){
@@ -89,18 +104,33 @@
 		$('#modal_confirm #info').html(uid + '. ' + selector.parent().parent().find('.name').html());
 		$('#modal_confirm').modal({backdrop: 'static'});
 	}
+
+	function delete_unused_users(){
+		$('#modal_confirm_unused #delete').live('click', function(){
+			$('#modal_confirm_unused').modal('hide');
+			access_page('admin/delete_unused_users');
+		});
+		$('#modal_confirm_unused').modal({backdrop: 'static'});
+	}
 	
 	function user_change_status(uid, selector){
 		access_page('admin/change_user_status/' + uid, function(){
+			unused_count = $("#unused_count").html();
 			if (selector.hasClass('label-success')){
 				selector.removeClass('label-success');
 				selector.addClass('label-important');
 				selector.html('Disabled');
+				if (selector.parent().parent().find('.lastlogin').html() == "")
+					unused_count++;
 			} else {
 				selector.removeClass('label-important');
 				selector.addClass('label-success');
 				selector.html('Enabled');
+				if (selector.parent().parent().find('.lastlogin').html() == "")
+					unused_count--;
 			}
+			$("#unused_count").html(unused_count);
+			$("#modal_unused_count").html(unused_count);
 		}, false);
 	}
 

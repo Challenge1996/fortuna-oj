@@ -303,6 +303,10 @@ class User extends CI_Model{
 								ORDER BY uid DESC")
 								->result();
 	}
+
+	function load_unused_user(){
+		return $this->db->query("SELECT COUNT(IF(isEnabled=0 AND lastLogin is NULL, TRUE, NULL)) AS result FROM User")->row()->result;
+	}
 	
 	function load_user_groups($uid, &$groups){
 		$data = $this->db->query("SELECT gid FROM Group_has_User
@@ -326,6 +330,10 @@ class User extends CI_Model{
 		$this->db->query("DELETE FROM User
 						WHERE uid=?",
 						array($uid));
+	}
+
+	function delete_unused() {
+		$this->db->query("DELETE FROM User WHERE isEnabled=0 AND lastLogin is NULL");
 	}
 	
 	function load_statistic($uid) {
