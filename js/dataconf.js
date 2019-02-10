@@ -272,7 +272,7 @@ function init_codemirror()
 		smartIndent : true,
 		tabSize : 2,
 		indentWithTabs : false,
-		autofocus : true,
+		autofocus : false,
 		theme : 'neat',
 		readOnly : true
 	});
@@ -283,7 +283,7 @@ function init_codemirror()
 		smartIndent : true,
 		tabSize : 2,
 		indentWithTabs : false,
-		autofocus : true,
+		autofocus : false,
 		theme : 'neat',
 		readOnly : true
 	});
