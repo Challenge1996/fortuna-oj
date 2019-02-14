@@ -82,14 +82,14 @@ inst_env_command = [
     [
         'Install YAUJ from GitHub',
         'mkdir -p /home/judge/src',
-        'git clone https://github.com/roastduck/YAUJ /home/judge/src/yauj',
+        'git clone --depth=1 https://github.com/roastduck/YAUJ /home/judge/src/yauj',
         '/home/judge/src/yauj/init-env_bionic.sh',
         'cd /home/judge/src/yauj && make',
         'cd /home/judge/src/yauj && make install',
     ],
     [
         'Install vfk\'s sandbox',
-        'git clone https://github.com/roastduck/vfk_uoj_sandbox /home/judge/src/vfk_uoj_sandbox',
+        'git clone --depth=1 https://github.com/roastduck/vfk_uoj_sandbox /home/judge/src/vfk_uoj_sandbox',
         'cd /home/judge/src/vfk_uoj_sandbox && make',
         'cd /home/judge/src/vfk_uoj_sandbox && make install'
     ]
