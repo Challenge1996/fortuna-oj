@@ -86,7 +86,7 @@
 </div>
 
 
-<script src="js/jquery-ui.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script src="js/jquery.ui.widget.js"></script>
 <script src="js/jquery.iframe-transport.js"></script>
 <script src="js/jquery.fileupload.js"></script>
@@ -141,8 +141,8 @@
 	}]
 			
 	if ( typeof (Highcharts) == 'undefined') {
-		$.getScript("js/highcharts.js", function(script, textStatus, jqXHR) {
-			$.getScript("js/exporting.js", function(script, textStatus, jqXHR) {
+		$.getScript("https://cdn.bootcss.com/highcharts/3.0.2/highcharts.js", function(script, textStatus, jqXHR) {
+			$.getScript("https://cdn.bootcss.com/highcharts/3.0.2/modules/exporting.js", function(script, textStatus, jqXHR) {
 				initialize_chart()
 				render_pie('#chart-container', 'Verdicts Chart', verdicts)
 			})

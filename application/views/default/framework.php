@@ -8,20 +8,20 @@
 		<meta name="author" content="moreD" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 
 		<script> OJTitle = "<?=$this->config->item('oj_title')?>"; </script>
-		<script src="js/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/jquery/1.8.3/jquery.min.js"></script>
 		<script src="js/jquery.form.js"></script>
-		<script src="js/bootstrap.min.js"></script>
+		<script src="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 		<script src="js/framework.js"></script>
 		<script src="js/jquery.hashchange.min.js"></script>
 		<script src="application/third_party/ckeditor/ckeditor.js"></script>
 		<script src="application/third_party/ckfinder/ckfinder.js"></script>
 
-		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="https://cdn.bootcss.com/angular.js/1.5.8/angular.min.js"></script>
 
 		<?php if (isset($head)) echo $head?>
 		
