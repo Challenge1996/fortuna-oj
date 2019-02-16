@@ -83,6 +83,24 @@ td a:hover, li a:hover {color: #0088cc; text-decoration: none;}
 	background-color: transparent;
 }
 
-.btn_md {
+.mb_0 {
+	margin-bottom: 0px;
+}
+
+.mb_10 {
 	margin-bottom: 10px;
 }
+
+.form_block {
+	margin-bottom: 10px;
+}
+
+.form_block span {
+	display: inline-block;
+}
+
+.form_block input, .form_block select, .form_block .alert {
+	margin-bottom: 0px;
+}
+
+

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Contest extends CI_Controller {
+class Contest extends MY_Controller {
 
 	private function _redirect_page($method, $params = array()){
 		if (method_exists($this, $method))
@@ -22,40 +22,10 @@ class Contest extends CI_Controller {
 				}
 				$this->_redirect_page($method, $params);
 			}else
-				$this->load->view('error', array('message' => 'You are NOT participant of this contest'));
+				$this->load->view('error', array('message' => '<h5 class="alert">You are NOT participant of this contest</h5>'));
 		}
 		else
 			$this->login();
-	}
-	
-	function username_check($username){
-		return $this->user->username_check($username);
-	}
-
-	function password_check($password){
-		$password = md5(md5($password) . $this->config->item('password_suffix'));
-		return $this->user->login_check($this->input->post('username', TRUE), $password);
-	}
-	
-	function login(){
-		$this->load->library('form_validation');
-		
-		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');
-			
-		$this->form_validation->set_rules('username', 'Username', 'required|callback_username_check');
-		$this->form_validation->set_rules('password', 'Password', 'required|callback_password_check');
-			
-		$this->form_validation->set_message('required', "%s is required");
-		$this->form_validation->set_message('username_check', 'User NOT exist or DISABLED!');
-		$this->form_validation->set_message('password_check', 'Password Error!');
-
-		if ($this->form_validation->run() == FALSE){
-			$this->load->view('login');
-		}else{
-			$this->user->login_success($this->input->post(NULL, TRUE));
-			
-			$this->load->view('success');
-		}
 	}
 	
 	public function index($page = 1){

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Users extends CI_Controller {
+class Users extends MY_Controller {
 
 	private function _redirect_page($method, $params = array()){
 		if (method_exists($this, $method))
@@ -23,6 +23,8 @@ class Users extends CI_Controller {
 		$allowed_method = array('index', 'statistic');
 		if ($this->user->is_logged_in() && ($this->user->uid() == $user->uid || in_array($method, $allowed_method)))
 			$this->_redirect_page($method, $params);
+		else
+			$this->login();
 	}
 
 	public function index($user) {
@@ -35,12 +37,6 @@ class Users extends CI_Controller {
 		$user->blogURL = $this->user->load_blog_url($user->uid);
 		
 		$this->load->view('user/index', array('data' => $user));
-	}
-	
-	function password_check($password){
-		if ($this->input->post('new_password', TRUE) == '') return TRUE;
-		$password = md5(md5($password) . $this->config->item('password_suffix'));
-		return $this->user->password_check($this->user->username(), $password) != FALSE;
 	}
 	
 	public function settings($user){

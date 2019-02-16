@@ -11,7 +11,7 @@ function find_abstract($path)
 	return $s;
 }
 
-class Customtest extends CI_Controller {
+class Customtest extends MY_Controller {
 
 	private function _redirect_page($method, $params = array()){
 		if (! $this->config->item('allow_custom_test')) {
@@ -33,27 +33,6 @@ class Customtest extends CI_Controller {
 			$this->_redirect_page($method, $params);
 		else
 			$this->login();
-	}
-
-	function login(){
-		$this->load->library('form_validation');
-		
-		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');
-			
-		$this->form_validation->set_rules('username', 'Username', 'required|callback_username_check');
-		$this->form_validation->set_rules('password', 'Password', 'required|callback_password_check');
-			
-		$this->form_validation->set_message('required', "%s is required");
-		$this->form_validation->set_message('username_check', 'User NOT exist or DISABLED!');
-		$this->form_validation->set_message('password_check', 'Password Error!');
-
-		if ($this->form_validation->run() == FALSE){
-			$this->load->view('login');
-		}else{
-			$this->user->login_success($this->input->post(NULL, TRUE));
-			
-			$this->load->view('success');
-		}
 	}
 	
 	public function run() {
