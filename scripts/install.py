@@ -167,7 +167,7 @@ execute_command_block([
     'Get fortuna-oj from GitHub',
     'mkdir -p /var/www/' + oj_name,
     'chown www-data:www-data /var/www/' + oj_name,
-    'sudo -u www-data git clone -b %s https://github.com/roastduck/fortuna-oj /var/www/%s' % (oj_branch, oj_name)
+    'sudo -u www-data git clone --depth=1 -b %s https://github.com/roastduck/fortuna-oj /var/www/%s' % (oj_branch, oj_name)
 ])
 
 output_bar("Create local settings")
@@ -204,3 +204,4 @@ execute_command_block([
 output_bar('!! Success !!')
 print("You are REQUIRED to reboot your system.")
 print("Have fun with fortuna-oj!")
+print()
