@@ -8,7 +8,6 @@
 	<div class="modal-header">
 		<h3>
 			<div style="text-align:center"><?=$this->config->item('oj_title')?></div> <!-- span can't be used here -->
-			<em style="font-size:80%"><?=lang('login')?></em>
 		</h3>
 	</div>
 
