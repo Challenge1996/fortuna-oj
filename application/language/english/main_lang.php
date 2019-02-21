@@ -80,6 +80,8 @@
 //home
 	$lang['welcome_to'] = 'Welcome to';
 	$lang['based_on_os'] = 'This OJ is based on %s.';
+	$lang['users_online'] = 'Online User(s): ';
+	$lang['language_available'] = 'Available Languages';
 
 //problemset
 	$lang['p_advanced'] = 'Advanced...';

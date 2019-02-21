@@ -80,6 +80,8 @@
 //home
 	$lang['welcome_to'] = '欢迎来到';
 	$lang['based_on_os'] = '本 OJ 网站运行于 %s';
+	$lang['users_online'] = '在线用户人数：';
+	$lang['language_available'] = '可用编程语言';
 
 //problemset
 	$lang['p_advanced'] = '高级…';
@@ -216,9 +218,6 @@
 	$lang['default_tag_group'] = '默认标签组';
 
 	$lang['global_settings'] = '全局设定';
-	$lang['global_settings_description'] = '
-		以下是此部分OJ（高中、初中或小学）的全局设定， 
-		这些设定影响使用此部分OJ的所有人。';
 	$lang['global_settings_item_key_language'] = '语言';
 	$lang['global_settings_item_description_language'] = '选择一种语言';
 	$lang['global_settings_enum_chinese'] = '中文';
