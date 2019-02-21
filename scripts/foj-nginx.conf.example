@@ -14,7 +14,7 @@ server {
 		return 302 /{{oj_name}};
 	}
 
-	location ~* /{{oj_name}}/(overriding_config|application|migrate|scripts|system) {
+	location ~* /{{oj_name}}/(overriding_config|application|migrate|scripts|system|.git) {
 		if ($request_uri !~* /{{oj_name}}/application/third_party/) {
 			return 403;
 		}
