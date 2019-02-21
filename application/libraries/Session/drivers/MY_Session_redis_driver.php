@@ -106,7 +106,8 @@ class MY_Session_redis_driver extends CI_Session_redis_driver
 
 		return FALSE;
 	}
-
+	
+	/*
 	public function read($session_id)
 	{
 		if (isset($this->_redis) && $this->_get_lock($session_id))
@@ -158,4 +159,5 @@ class MY_Session_redis_driver extends CI_Session_redis_driver
 		}
 		return $this->_failure;
 	}
+	*/
 }
