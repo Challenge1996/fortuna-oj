@@ -14,6 +14,7 @@ class Admin extends MY_Controller {
 		
 		$allowed_methods = array('problemset', 'change_problem_status');
 		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist', 'edit_tags');
+		$payment_methods = array('items', 'change_item', 'delete_item', 'orders');
 
 		if ($this->config->item('allow_add_problem'))
 			$allowed_methods[] = 'addproblem';
@@ -21,15 +22,20 @@ class Admin extends MY_Controller {
 			$restricted_methods[] = 'addproblem';
 
 		if ($this->user->is_logged_in()){
-			if ($this->user->is_admin() || in_array($method, $allowed_methods))
-				$this->_redirect_page($method, $params);
+			if ($this->user->is_admin() || in_array($method, $allowed_methods)){
+				if (in_array($method, $payment_methods) && !$this->config->item('enable_payment'))
+					$this->load->view('error', array('message' => lang('function_turned_off')));
+				else
+					$this->_redirect_page($method, $params);
+			}
 			else if (in_array($method, $restricted_methods)){
 				$this->load->model('problems');
 				if (isset($params[0]) && $this->problems->has_control($params[0]))
 					$this->_redirect_page($method, $params);
 				else
 					$this->load->view('error', array('message' => '<h5 class="alert">Operation not permitted!</h5>'));
-			}else
+			}
+			else
 				$this->load->view('error', array('message' => '<h5 class="alert">You are not administrators!</h5>'));
 		}
 		else
@@ -489,7 +495,7 @@ class Admin extends MY_Controller {
 				$this->db->query("UPDATE User SET school=? WHERE uid=?", array($schoolName, $uid));
 
 		$data = $this->user->load_users_list();
-		$unused_count = $this->user->load_unused_user();
+		$unused_count = $this->user->count_unused_user();
 		$groups = $this->misc->load_groups($this->user->uid());
 		foreach ($data as $row){
 			$row->groups = $this->user->load_user_groups($row->uid, $groups);
@@ -513,6 +519,7 @@ class Admin extends MY_Controller {
 		case 'groups':
 		case 'lastIP':
 		case 'lastLogin':
+		case 'expiration':
 			if ($order != 'reverse')
 				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword > $rhs->$keyword; };
 			else
@@ -522,7 +529,7 @@ class Admin extends MY_Controller {
 
 		$this->load->view('admin/users', array('data' => $data, 'unused' => $unused_count, 'keyword' => $keyword, 'order' => $order));
 	}
-	
+
 	function change_user_status($uid){
 		$this->user->change_status($uid);
 	}
@@ -855,6 +862,123 @@ class Admin extends MY_Controller {
 			exit("<i class='icon-remove'></i>File not exists");
 	}
 
+	public function items(){
+		$this->load->model('payment');
+
+		$data = $this->payment->get_items_list();
+
+		$keyword = $this->input->get('sort');
+		$order = $this->input->get('order');
+		if (!isset($keyword))
+			$keyword = 'itemid';
+		if (!isset($order))
+			$order = null;
+		switch ($keyword)
+		{
+		case 'itemid':
+		case 'itemDescription':
+		case 'price':
+		case 'type':
+			if ($order != 'reverse')
+				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword > $rhs->$keyword; };
+			else
+				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword < $rhs->$keyword; };
+			usort($data, $callback);
+			break;
+		case 'timeInt':
+			if ($order != 'reverse')
+				$callback = function($lhs, $rhs) { return $this->payment->get_expiration($lhs->type, $lhs->timeInt) > $this->payment->get_expiration($rhs->type, $rhs->timeInt); };
+			else
+				$callback = function($lhs, $rhs) { return $this->payment->get_expiration($lhs->type, $lhs->timeInt) < $this->payment->get_expiration($rhs->type, $rhs->timeInt); };
+			usort($data, $callback);
+		}
+
+		$this->load->view('admin/pay_items', array('data' => $data, 'keyword' => $keyword, 'order' => $order));
+	}
+	
+	function two_decimal_places($num){
+		$num *= 100;
+		if ($num - floor($num) != 0){
+			$this->form_validation->set_message('two_decimal_places', '%s only allows <=2 decimal places!');
+			return false;
+		}
+		return true;
+	}
+
+	public function change_item($itemid){
+		$this->load->library('form_validation');
+		$this->load->model('payment');
+
+		$this->form_validation->set_error_delimiters('<div class="control-group"><span class="controls add-on alert alert-error">', '</span></div>');
+		
+		$this->form_validation->set_rules('itemDescription', 'lang:item_description', 'required');
+		$this->form_validation->set_rules('price', 'lang:price', 'greater_than_equal_to[0]|callback_two_decimal_places');
+		$this->form_validation->set_rules('type', 'lang:type', 'required|is_natural|less_than[2]');
+		$this->form_validation->set_rules('timeInt', 'lang:time_int', 'required|is_natural_no_zero');
+
+		$this->form_validation->set_message('required', '%s is required!');
+		$this->form_validation->set_message('greater_than_equal_to', '%s must be >=0!');
+		$this->form_validation->set_message('is_natural', '%s must be in range!');
+		$this->form_validation->set_message('less_than', '%s must be in range!');
+		$this->form_validation->set_message('is_natural_no_zero', '%s must be a positive number!');
+		
+		if ($this->form_validation->run() == FALSE)
+			if ($itemid == 0)
+				$this->load->view('admin/form_item');
+			else
+				$this->load->view('admin/form_item', array('item' => $this->payment->get_item($itemid)));
+		else {
+			$this->payment->set_item($this->input->post('itemid'),
+									$this->input->post('itemDescription'),
+									$this->input->post('price'),
+									$this->input->post('type'),
+									$this->input->post('timeInt'));
+			$this->load->view('success');
+		}
+	}
+
+	public function delete_item($itemid){
+		$this->load->model('payment');
+		$this->payment->delete_item($itemid);
+	}
+
+	public function orders(){
+		$this->load->model('payment');
+
+		$data = $this->payment->get_orders_list();
+
+		$keyword = $this->input->get('sort');
+		$order = $this->input->get('order');
+		if (!isset($keyword)){
+			$keyword = 'orderid';
+			$order = 'reverse';
+		}
+		else if (!isset($order))
+			$order = 'null';
+		switch ($keyword)
+		{
+		case 'orderid':
+		case 'payid':
+		case 'uid':
+		case 'name':
+		case 'itemDescription':
+		case 'expiration':
+		case 'price':
+		case 'realPrice':
+		case 'method':
+		case 'status':
+		case 'createTime':
+		case 'finishTime':
+			if ($order != 'reverse')
+				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword > $rhs->$keyword; };
+			else
+				$callback = function($lhs, $rhs) use($keyword) { return $lhs->$keyword < $rhs->$keyword; };
+			usort($data, $callback);
+		}
+
+		$this->load->view('admin/pay_orders', array('data' => $data, 'keyword' => $keyword, 'order' => $order));
+	}
+	
 	// temp
 
 	/*public function rejudgeall()

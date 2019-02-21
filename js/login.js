@@ -4,6 +4,12 @@ function register()
 	load_page('main/register');
 }
 
+function pay()
+{
+	$('#login_field').modal('hide');
+	load_page('main/pay');
+}
+
 function load_forget()
 {
 	if (!$('#username').val())

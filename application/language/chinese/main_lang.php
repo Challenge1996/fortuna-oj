@@ -16,6 +16,7 @@
 	$lang['server_time'] = '服务器时间';
 
 //login
+	$lang['login'] = '登录';
 	$lang['password'] = '密码';
 	$lang['remember_me'] = '下次自动登录';
 
@@ -24,6 +25,46 @@
 	$lang['email_address'] = '电子邮件';
 	$lang['school'] = '学校';
 	$lang['user_description'] = '简介';
+
+//pay
+	$lang['enable_account'] = '启用账户';
+	$lang['pay_item'] = '购买选项';
+	$lang['alipay'] = '支付宝支付';
+	$lang['wepay'] = '微信支付';
+
+//manage_item
+	$lang['manage_items'] = '商品管理';
+	$lang['add_item'] = '添加商品';
+	$lang['change_item'] = '修改商品';
+	$lang['item_description'] = '商品描述';
+	$lang['price'] = '价格';
+	$lang['pay_method'] = '支付方式';
+	$lang['type'] = '类型';
+	$lang['time_int'] = '时长/时间点';
+	$lang['item_type0'] = '时长';
+	$lang['item_type1'] = '时间点';
+
+//manage_order
+	$lang['manage_orders'] = '订单管理';
+	$lang['payapi_id'] = '支付接口订单号';
+	$lang['realprice'] = '实际支付';
+	$lang['create_time'] = '创建时间';
+	$lang['finish_time'] = '完成时间';
+
+//pay_check
+	$lang['pay_check_message'] = '正在检查订单状态……';
+	$lang['pay_check_query'] = '已查询次数：';
+	$lang['pay_success0'] = '订单购买成功！';
+	$lang['pay_success1'] = '账号已解锁并允许登录。';
+	$lang['pay_fail0'] = '订单超时！';
+	$lang['pay_fail1'] = '请咨询系统管理员。';
+
+//user
+	$lang['username'] = '用户名';
+	$lang['expiration'] = '到期时间';
+	$lang['day'] = '天';
+	$lang['hour'] = '小时';
+	$lang['minute'] = '分钟';
 
 //navigation
 	$lang['home'] = '主页';

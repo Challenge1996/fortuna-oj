@@ -6,11 +6,13 @@
 
 $assign_to_config['oj_title']				= 'Fortuna Online Judge System';
 
-$assign_to_config['base_url']				= 'http://localhost/{{oj_name}}';
+$assign_to_config['oj_name']				= "{{oj_name}}";
+
+$assign_to_config['base_url']				= 'http://localhost/'.$assign_to_config['oj_name'];
 
 $assign_to_config['sess_cookie_name']		= 'foj_ci_session';
 
-$assign_to_config['cookie_path']			= "/{{oj_name}}";
+$assign_to_config['cookie_path']			= "/".$assign_to_config['oj_name'];
 
 $assign_to_config['data_path']				= "/home/judge/data/{{oj_name}}/data/";
 $assign_to_config['code_path']				= "/home/judge/data/{{oj_name}}/code/";
@@ -18,8 +20,6 @@ $assign_to_config['solution_path']			= "/home/judge/data/{{oj_name}}/solution/";
 $assign_to_config['problem_path']			= "/home/judge/data/{{oj_name}}/problem/";
 
 $assign_to_config['servers']				= array('http://127.0.0.1:8389');
-
-$assign_to_config['oj_name']				= "{{oj_name}}";
 
 $assign_to_config['fetch_contest_list']		= true;
 
@@ -50,5 +50,18 @@ $assign_to_config['estimate_score']			= true;
 // $db is loaded in application/config/database.php
 
 $db['default']['database']					= '{{db_name}}'; // in overriding_config/local.php
+
+// Payment configs
+// To enable payment, please set 'enable payment' to 'true'
+
+$assign_to_config['enable_payment']			= false;
+$assign_to_config['pay_uid']				= 'test';   // uid in paysapi
+$assign_to_config['pay_token']				= 'test';   // token in paysapi
+
+// Pay method. 1 for alipay, 2 for wechat pay
+// Two methods are enabled by default
+// To disable one of the methods, delete the corresponding number in the array below
+
+$assign_to_config['pay_method']				= array(1, 2);
 
 // End of File : overriding_config/local.php

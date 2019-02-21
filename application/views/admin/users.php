@@ -1,15 +1,19 @@
-<button class="btn btn-small btn-danger pull-right btn_md" onclick="delete_unused_users()">Delete <span id="unused_count"><?=$unused?></span> Unused Users</button>
+<div class="mb_10 pull-right">
+	<i class="icon-info-sign" style="vertical-align:middle" title="Only users that not enabled and never login will be deleted."></i>
+	<button class="btn btn-small btn-danger" onclick="delete_unused_users()"><i class="icon-eye-close icon-white"></i> Delete <span id="unused_count"><?=$unused?></span> Unused Users</button>
+</div>
 <table class="table table-bordered table-condensed table-stripped">
-	<thead>
+	<thead style="background-color:#89cff0">
 		<?php foreach (array(
-			'uid' => 'uid',
+			'uid' => 'UID',
 			'name' => 'Name',
 			'school' => 'School',
 			'isEnabled' => 'Status',
 			'priviledge' => 'Privilege',
 			'groups' => 'Groups',
 			'lastIP' => 'Last IP Address',
-			'lastLogin' => 'Last Login Time') as $key => $title): ?>
+			'lastLogin' => 'Last Login Time',
+			'expiration' => 'Expiration') as $key => $title): ?>
 			<th style='white-space: nowrap'>
 				<?php
 					$iconType = $keyword!=$key?'icon-resize-vertical':($order!='reverse'?'icon-arrow-up':'icon-arrow-down');
@@ -59,9 +63,12 @@
 			echo '</div>';
 			echo '</td><td>';
 			foreach ($row->groups as $group) echo "<span class=\"label\">$group->name</span> ";
-			echo "<td>$row->lastIP</td>";
+			echo "</td><td>$row->lastIP</td>";
 			echo "<td class='lastlogin'>$row->lastLogin</td>";
-			echo "</td><td><button class='close' onclick=\"delete_user($row->uid, $(this))\">&times;</button></td></tr>";
+			echo "<td>$row->expiration</td>";
+			echo "<td><button class='close' onclick=\"delete_user($row->uid, $(this))\">&times;</button>";
+			if ($row->isUnused) echo "<span><i class='icon-eye-close'></i></span>";
+			echo "</td></tr>";
 		}
 	?></tbody>
 </table>

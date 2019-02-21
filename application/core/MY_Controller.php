@@ -23,7 +23,7 @@ class MY_Controller extends CI_Controller {
 		return $this->user->login_check($this->input->post('username', TRUE), $password);
 	}
 	
-	function login(){
+	public function login(){
 		$this->load->library('form_validation');
 		
 		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');

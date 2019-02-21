@@ -1,9 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once 'application/vendor/autoload.php';
 require_once 'application/myjob.php';
 
-class Main extends CI_Controller {
+class Main extends MY_Controller {
 
 	private function _redirect_page($method, $params = array()){
 		if (method_exists($this, $method))
@@ -16,63 +15,23 @@ class Main extends CI_Controller {
 		$this->load->model('user');
 		
 		$allowed_methods = array('index', 'register', 'userinfo', 'logout', 'reset_password');
+		$payment_methods = array('pay', 'pay_notify', 'pay_check', 'pay_status');
+
 		if ($this->user->is_logged_in() || in_array($method, $allowed_methods))
 			$this->_redirect_page($method, $params);
+		else if (in_array($method, $payment_methods)){
+			if ($this->config->item('enable_payment'))
+				$this->_redirect_page($method, $params);
+			else
+				$this->load->view('error', array('message' => lang('function_turned_off')));
+		}
 		else
 			$this->login();
 	}
 	
 	public function logout(){
 		$this->user->logout();
-		$this->load->view('main/home');
-	}
-	
-	function username_check($username){
-		return $this->user->username_check($username);
-	}
-
-	function password_check($password){
-		$saltl = $this->session->userdata('saltl');
-		$saltr = $this->session->userdata('saltr');
-		$this->session->unset_userdata('saltl');
-		$this->session->unset_userdata('saltr');
-
-		$lenfull = strlen($password);
-		$lenl = strlen($saltl);
-		$lenr = strlen($saltr);
-
-		if (strpos($password, $saltl) !== 0 || strrpos($password, $saltr) + $lenr !== $lenfull) return false;
-		$password = substr($password, $lenl, $lenfull - $lenl - $lenr);
-
-		$password = md5(md5($password) . $this->config->item('password_suffix'));
-		return $this->user->login_check($this->input->post('username', TRUE), $password);
-	}
-	
-	function login(){
-		$this->load->library('form_validation');
-		
-		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');
-			
-		$this->form_validation->set_rules('username', 'Username', 'required|callback_username_check');
-		$this->form_validation->set_rules('password', 'Password', 'required|callback_password_check');
-			
-		$this->form_validation->set_message('required', "%s is required");
-		$this->form_validation->set_message('username_check', 'User Error!');
-		$this->form_validation->set_message('password_check', 'Password Error!');
-
-		if ($this->form_validation->run() == FALSE){
-			$this->load->helper('string');
-			$saltl = random_string('alnum', rand(5, 10));
-			$saltr = random_string('alnum', rand(5, 10));
-			$this->session->set_userdata('saltl', $saltl);
-			$this->session->set_userdata('saltr', $saltr);
-
-			$this->load->view('login', array('saltl' => $saltl, 'saltr' => $saltr));
-		}else{
-			$this->user->login_success($this->input->post(NULL, TRUE));
-			
-			$this->load->view('success');
-		}
+		$this->login();
 	}
 	
 	public function userinfo(){
@@ -151,6 +110,87 @@ class Main extends CI_Controller {
 			$this->user->save_password($uid, md5(md5($data['password']) . $this->config->item('password_suffix')));
 			$this->load->view('success');
 		}
+	}
+
+	public function pay(){
+		$this->load->library('form_validation');
+		$this->load->model('user');
+		$this->load->model('payment');
+
+		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');
+
+		$this->form_validation->set_rules('username', 'Username', 'required|callback_username_check');
+		$this->form_validation->set_rules('itemid', 'Pay Item', 'required');
+
+		$this->form_validation->set_message('required', '%s is required!');
+		$this->form_validation->set_message('username_check', 'User does not exist!');
+
+		if ($this->form_validation->run() == FALSE) {
+			$this->load->view('pay', array(
+				'pay_item' => $this->payment->get_items_list(),
+				'pay_method' => $this->config->item('pay_method')
+			));
+		}
+		else {
+			$name = $this->input->post('username');
+			$uid = $this->user->load_uid($name);
+			$pay_uid = $this->config->item('pay_uid');
+			$istype = $this->input->post('istype');
+
+			$itemid = $this->input->post('itemid');
+			$item = $this->payment->get_item($itemid);
+			$price = $item->price;
+
+			$notify_url = base_url('main/pay_notify');
+			$return_url = base_url('#main/pay_check');
+
+			// $orderid = 1;
+			$orderid = $this->payment->new_order($uid, $name, $item, $istype);
+
+			$key = md5($istype.$notify_url.$orderid.$uid.$price.$return_url.$this->config->item('pay_token').$pay_uid);
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode(array(
+					'uid' => $pay_uid,
+					'price' => $price,
+					'istype' => intval($istype),
+					'notify_url' => $notify_url,
+					'return_url' => $return_url,
+					'orderid' => $orderid,
+					'orderuid' => $uid,
+					'key' => $key
+				)));
+		}
+	}
+
+	public function pay_notify(){
+		$paysapi_id = $this->input->post('paysapi_id');
+		$orderid = $this->input->post('orderid');
+		$price = $this->input->post('price');
+		$realprice = $this->input->post('realprice');
+		$orderuid = $this->input->post('orderuid');
+		$key = $this->input->post('key');
+		
+		if ($key != md5($orderid.$orderuid.$paysapi_id.$price.$realprice.$this->config->item('pay_token'))){
+			set_status_header(401);
+			return;
+		}
+
+		$this->load->model('user');
+		$this->load->model('payment');
+		$this->payment->finish_order($paysapi_id, $orderid, $realprice);
+		$this->user->set_expiration(intval($orderuid), $this->payment->get_order($orderid)->expiration);
+	}
+
+	public function pay_check(){
+		$this->load->view('pay_check', array('orderid' => $this->input->get('orderid')));
+	}
+
+	public function pay_status(){
+		$this->load->model('payment');
+		$this->output
+			->set_content_type('text/html')
+			->set_output($this->payment->get_order($this->input->post('orderid'))->status);
 	}
 
 	public function index(){

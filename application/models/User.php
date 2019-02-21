@@ -156,11 +156,20 @@ class User extends CI_Model{
 			//$this->db->query("UPDATE User SET identifier='' WHERE uid=?", array($result->row()->uid));
 			$this->input->set_cookie(array('name' => 'identifier', 'value' => '', 'expire' => '0'));
 		}
-
+		
 		$ip = $this->input->ip_address();
-		$handle = popen("curl -s -m 1 cip.cc/$ip | grep 地址 | sed \"s/地址\\t: //g\"", "r");
-		$addr = fread($handle, 45);
-		pclose($handle);
+		// Get IP location from freeapi.ipip.net
+		$addr_obj = json_decode(file_get_contents("http://freeapi.ipip.net/$ip"));
+		if (!isset($addr_obj) || $addr_obj == NULL){
+			// Get IP location from cip.cc
+			$handle = popen("curl -s -m 1 cip.cc/$ip | grep 地址 | sed \"s/地址\\t: //g\"", "r");
+			$addr = str_replace(PHP_EOL, '', fread($handle, 45));
+			pclose($handle);
+		}
+		else {
+			$addr = "$addr_obj[0]  $addr_obj[1]";
+			if ($addr_obj[2] != '') $addr = "$addr  $addr_obj[2]";
+		}
 		$ip = "$ip ($addr)";
 		$this->db->query("UPDATE User SET lastLogin=now(), lastIP=?
 						WHERE uid=?",
@@ -299,12 +308,12 @@ class User extends CI_Model{
 	}
 	
 	function load_users_list(){
-		return $this->db->query("SELECT uid, name, school, isEnabled, priviledge, lastIP, lastLogin FROM User
+		return $this->db->query("SELECT uid, name, school, isEnabled, priviledge, lastIP, lastLogin, expiration, IF(isEnabled=0 AND lastLogin is NULL, TRUE, NULL) AS isUnused FROM User
 								ORDER BY uid DESC")
 								->result();
 	}
 
-	function load_unused_user(){
+	function count_unused_user(){
 		return $this->db->query("SELECT COUNT(IF(isEnabled=0 AND lastLogin is NULL, TRUE, NULL)) AS result FROM User")->row()->result;
 	}
 	
@@ -319,6 +328,9 @@ class User extends CI_Model{
 	function change_status($uid) {
 		$this->db->query("UPDATE User SET isEnabled=1-isEnabled
 						WHERE uid=?",
+						array($uid));
+		$this->db->query("UPDATE User SET expiration=NULL
+						WHERE uid=? AND isEnabled=1 AND expiration<=now()",
 						array($uid));
 	}
 
@@ -491,5 +503,9 @@ class User extends CI_Model{
 		$ret = $this->db->query("SELECT blogURL FROM User WHERE uid=?", array($uid));
 		if (!$ret->num_rows()) return FALSE;
 		return $ret->row()->blogURL;
+	}
+
+	function set_expiration($uid, $datetime = NULL) {
+		$this->db->query("UPDATE User SET expiration=? WHERE uid=?", array($datetime, $uid));
 	}
 }

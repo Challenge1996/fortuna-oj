@@ -8,7 +8,7 @@
 	<div class="modal-header">
 		<h3>
 			<div style="text-align:center"><?=$this->config->item('oj_title')?></div> <!-- span can't be used here -->
-			<em style="font-size:80%">Login</em>
+			<em style="font-size:80%"><?=lang('login')?></em>
 		</h3>
 	</div>
 
@@ -46,8 +46,11 @@
 				<?php if ($this->config->item('mail_method')): ?>
 					<span class="btn btn-link pull-left" onclick="return load_forget()"><?=lang('resetpwd_link')?></span>
 				<?php endif; ?>
-				<button class="btn btn-primary pull-right" onclick="return login_submit()">Login</button>
-				<span class="btn" onclick="return register()">Register</span>
+				<button class="btn btn-primary pull-right" style="margin-left:5px" onclick="return login_submit()"><?=lang('login')?></button>
+				<span class="btn pull-right" onclick="return register()"><?=lang('register')?></span>
+				<?php if ($this->config->item('enable_payment')): ?>
+					<span class="btn btn-info pull-right" onclick="return pay()"><?=lang('enable_account')?></span>
+				<?php endif; ?>
 			</div>
 			<?php if ($this->config->item('mail_method')): ?>
 				<div id="footer1" style="display:none">
