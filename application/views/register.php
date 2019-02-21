@@ -38,7 +38,7 @@
 ?>
 	
 <div id="register_field" class="modal" style="width:700px;max-height:100%;max-width:100%;overflow-Y:auto">
-	<div class="modal-header"><h3><em>Register</em></h3></div>
+	<div class="modal-header"><h3><?=lang('register')?></h3></div>
 	
 	<form action="index.php/main/register" id="register_form" class="form" method="post">
 		<div class="modal-body form-horizontal">
