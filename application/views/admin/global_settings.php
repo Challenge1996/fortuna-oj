@@ -2,10 +2,6 @@
 
 <hr />
 
-<div class='alert alert-block alert-info'>
-	<?=lang('global_settings_description')?>
-</div>
-
 <dl class="dl-horizontal">
 	<?php foreach ($data as $key => $config): ?>
 		<dt><?=lang("global_settings_item_key_$key")?></dt>
