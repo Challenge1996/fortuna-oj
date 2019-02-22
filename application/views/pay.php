@@ -98,7 +98,6 @@
 
 	function change_pay_item(){
 		$('#expire_info').html(expiration[$('#pay_item').val()]);
-		console.log($('#pay_item').val());
 	}
 
 	$('#pay_item').change(function(){
