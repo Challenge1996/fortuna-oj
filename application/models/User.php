@@ -512,5 +512,9 @@ class User extends CI_Model{
 
 	function set_expiration($uid, $datetime = NULL) {
 		$this->db->query("UPDATE User SET expiration=? WHERE uid=?", array($datetime, $uid));
+		if (strtotime($datetime) > time())
+			$this->db->query("UPDATE User SET isEnabled=1
+							WHERE uid=?",
+							array($uid));
 	}
 }
