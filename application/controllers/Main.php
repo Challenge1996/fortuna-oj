@@ -112,6 +112,10 @@ class Main extends MY_Controller {
 		}
 	}
 
+	function username_exist($username){
+		return $this->user->username_exist($username);
+	}
+
 	public function pay(){
 		$this->load->library('form_validation');
 		$this->load->model('user');
@@ -119,11 +123,11 @@ class Main extends MY_Controller {
 
 		$this->form_validation->set_error_delimiters('<span class="add-on alert alert-error">', '</span>');
 
-		$this->form_validation->set_rules('username', 'Username', 'required|callback_username_check');
-		$this->form_validation->set_rules('itemid', 'Pay Item', 'required');
+		$this->form_validation->set_rules('username', 'lang:username', 'required|callback_username_exist');
+		$this->form_validation->set_rules('itemid', 'lang:pay_item', 'required');
 
 		$this->form_validation->set_message('required', '%s is required!');
-		$this->form_validation->set_message('username_check', 'User does not exist!');
+		$this->form_validation->set_message('username_exist', lang('form_user_not_exist'));
 
 		if ($this->form_validation->run() == FALSE) {
 			$this->load->view('pay', array(

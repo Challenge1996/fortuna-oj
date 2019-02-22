@@ -241,3 +241,6 @@
 	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
 	$lang['global_settings_item_key_estimate_score'] = '估分';
 	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
+
+//form_validation
+	$lang['form_user_not_exist'] = '用户名不存在！';

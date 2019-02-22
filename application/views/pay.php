@@ -28,7 +28,7 @@
 					?>
 				</select>
 
-				<?=form_error('pay_item')?>
+				<?=form_error('itemid')?>
 			</div>
 
 			<div class="alert alert-info mb_0">

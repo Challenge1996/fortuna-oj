@@ -95,6 +95,11 @@ class User extends CI_Model{
 		if ($result->num_rows() == 0 || ! $result->row()->isEnabled) return FALSE;
 		return TRUE;
 	}
+
+	function username_exist($username){
+		$result = $this->db->select('isEnabled')->where('name', $username)->get('User');
+		return $result->num_rows() > 0;
+	}
 	
 	function password_check($username, $password){
 		$result = $this->db->query("SELECT priviledge, password FROM User
