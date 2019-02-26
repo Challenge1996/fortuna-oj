@@ -224,7 +224,7 @@
 		$('#input_file_display').css('display','block');
 	}
 
-	loadJsFile("jquery-ui", "js/jquery-ui.js", loaded);
+	loadJsFile("jquery-ui", "https://cdn.bootcss.com/jqueryui/1.10.3/jquery-ui.min.js", loaded);
 	loadJsFile("jquery.ui.widget", "js/jquery.ui.widget.js", loaded);
 	loadJsFile("jquery.iframe-transport", "js/jquery.iframe-transport.js", loaded);
 	loadJsFile("jquery.fileupload", "js/jquery.fileupload.js", loaded);

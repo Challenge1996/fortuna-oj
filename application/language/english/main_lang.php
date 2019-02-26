@@ -16,6 +16,7 @@
 	$lang['server_time'] = 'Server time';
 
 //login
+	$lang['login'] = 'Login';
 	$lang['password'] = 'Password';
 	$lang['remember_me'] = 'Remember me';
 
@@ -24,6 +25,46 @@
 	$lang['email_address'] = 'Email Address';
 	$lang['school'] = 'School';
 	$lang['user_description'] = 'Description';
+
+//pay
+	$lang['enable_account'] = 'Enable Account';
+	$lang['pay_item'] = 'Pay Option';
+	$lang['alipay'] = 'Alipay';
+	$lang['wepay'] = 'WechatPay';
+
+//manage_item
+	$lang['manage_items'] = 'Manage Items';
+	$lang['add_item'] = 'Add Item';
+	$lang['change_item'] = 'Modify Item';
+	$lang['item_description'] = 'Item Description';
+	$lang['price'] = 'Price';
+	$lang['pay_method'] = 'Method of Payment';
+	$lang['type'] = 'Type';
+	$lang['time_int'] = 'Period / Time Point';
+	$lang['item_type0'] = 'Period';
+	$lang['item_type1'] = 'Time Point';
+
+//manage_order
+	$lang['manage_orders'] = 'Manage Orders';
+	$lang['payapi_id'] = 'PayAPI ID';
+	$lang['realprice'] = 'Real Price';
+	$lang['create_time'] = 'Create Time';
+	$lang['finish_time'] = 'Finish Time';
+
+//pay_check
+	$lang['pay_check_message'] = 'Checking payment result...';
+	$lang['pay_check_query'] = 'Query times: ';
+	$lang['pay_success0'] = 'Payment succeed!';
+	$lang['pay_success1'] = 'Your account is unlocked and ready to use.';
+	$lang['pay_fail0'] = 'Payment is out of time!';
+	$lang['pay_fail1'] = 'Please contact to administrators.';
+
+//user
+	$lang['username'] = 'Username';
+	$lang['expiration'] = 'Expiration';
+	$lang['day'] = 'Day';
+	$lang['hour'] = 'Hour';
+	$lang['minute'] = 'Minute';
 
 //navigation
 	$lang['home'] = 'Home';
@@ -38,6 +79,9 @@
 
 //home
 	$lang['welcome_to'] = 'Welcome to';
+	$lang['based_on_os'] = 'This OJ is based on %s.';
+	$lang['users_online'] = 'Online User(s): ';
+	$lang['language_available'] = 'Available Languages';
 
 //problemset
 	$lang['p_advanced'] = 'Advanced...';
@@ -200,3 +244,7 @@
 	$lang['global_settings_item_description_disable_new_user'] = 'New users will be disabled after registion until administrators authenticate them';
 	$lang['global_settings_item_key_estimate_score'] = 'Estimate score';
 	$lang['global_settings_item_description_estimate_score'] = 'Users participating contests in "OI Traditional" mode need to enter his estimated score when submitting';
+
+//form_validation
+	$lang['form_user_not_exist'] = 'User does not exist!';
+	

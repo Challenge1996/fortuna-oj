@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="application/third_party/highlight/styles/xcode.css">
 <script src="application/third_party/highlight/highlight.pack.js"></script>
 
-<button class="btn btn-mini" onclick="javascript:history.back()">Return</button>
+<button class="btn btn-small" onclick="javascript:history.back()">Return</button>
 
 <?php foreach ($data as $name => $content): ?>
 	<div class="well">

@@ -1,5 +1,5 @@
 <h3 style="text-align:center">
-	<button class="pull-left btn btn-mini" onclick="javascript:history.back()">back</button>
+	<button class="pull-left btn btn-small" onclick="javascript:history.back()">Back</button>
 	Mails
 	<button class="pull-right btn btn-small btn-primary" onclick="load_page('misc/newmail/<?=$user?>')">Reply</button>
 </h3>

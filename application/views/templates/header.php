@@ -9,10 +9,10 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 		<link href="/css/bootstrap.css" rel="stylesheet">
-		<link href="/css/bootstrap-responsive.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link href="/css/style.css" rel="stylesheet">
 
-		<script src="/js/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/jquery/1.8.3/jquery.min.js"></script>
 		<script src="/js/bootstrap.js"></script>
 		<?php if (isset($head)) echo $head;?>
 		

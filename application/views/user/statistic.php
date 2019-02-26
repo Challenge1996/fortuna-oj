@@ -166,8 +166,8 @@
 	}
 
 	if ( typeof (Highcharts) == 'undefined') {
-		$.getScript("js/highcharts.js", function() {
-			$.getScript("js/exporting.js", function() {
+		$.getScript("https://cdn.bootcss.com/highcharts/3.0.2/highcharts.js", function() {
+			$.getScript("https://cdn.bootcss.com/highcharts/3.0.2/modules/exporting.js", function() {
 				initialize_chart()
 				render()
 			})

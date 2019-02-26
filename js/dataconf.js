@@ -272,7 +272,7 @@ function init_codemirror()
 		smartIndent : true,
 		tabSize : 2,
 		indentWithTabs : false,
-		autofocus : true,
+		autofocus : false,
 		theme : 'neat',
 		readOnly : true
 	});
@@ -283,7 +283,7 @@ function init_codemirror()
 		smartIndent : true,
 		tabSize : 2,
 		indentWithTabs : false,
-		autofocus : true,
+		autofocus : false,
 		theme : 'neat',
 		readOnly : true
 	});
@@ -425,7 +425,7 @@ function loaded() {
 	});
 	$("#IOMode").change(function() { upd_IOmode(); getDataFromElement(); });
 	$("#spj").change(function() { upd_spj(); getDataFromElement(); });
-	$("input.in, input.out, input.user_input, input.user_output, input.time, input.memory, #spjMode, #spjFile").live('change',function() { getDataFromElement(); });
+	$("input.in, input.out, input.user_input, input.user_output, input.time, input.memory, #spjMode, #spjFile, #with_o2").live('change',function() { getDataFromElement(); });
 
 	$(".gc").live('mouseenter',function() { $(this).find('.panel').show(); });
 	$(".gc").live('mouseleave',function() { $(this).find('.panel').hide(); });
@@ -581,7 +581,7 @@ function loaded() {
 }
 
 $(document).ready(function(){
-	loadJsFile("jquery-ui", "js/jquery-ui.js", loaded);
+	loadJsFile("jquery-ui", "https://cdn.bootcss.com/jqueryui/1.10.3/jquery-ui.min.js", loaded);
 	loadJsFile("jquery.ui.widget", "js/jquery.ui.widget.js", loaded);
 	loadJsFile("jquery.iframe-transport", "js/jquery.iframe-transport.js", loaded);
 	loadJsFile("jquery.fileupload", "js/jquery.fileupload.js", loaded);

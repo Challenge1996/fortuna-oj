@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Users extends CI_Controller {
+class Users extends MY_Controller {
 
 	private function _redirect_page($method, $params = array()){
 		if (method_exists($this, $method))
@@ -23,6 +23,8 @@ class Users extends CI_Controller {
 		$allowed_method = array('index', 'statistic');
 		if ($this->user->is_logged_in() && ($this->user->uid() == $user->uid || in_array($method, $allowed_method)))
 			$this->_redirect_page($method, $params);
+		else
+			$this->login();
 	}
 
 	public function index($user) {
@@ -35,12 +37,6 @@ class Users extends CI_Controller {
 		$user->blogURL = $this->user->load_blog_url($user->uid);
 		
 		$this->load->view('user/index', array('data' => $user));
-	}
-	
-	function password_check($password){
-		if ($this->input->post('new_password', TRUE) == '') return TRUE;
-		$password = md5(md5($password) . $this->config->item('password_suffix'));
-		return $this->user->password_check($this->user->username(), $password) != FALSE;
 	}
 	
 	public function settings($user){
@@ -69,7 +65,7 @@ class Users extends CI_Controller {
 			if (isset($raw['email'])) $config['email'] = $raw['email'];
 			if (isset($raw['school'])) $config['School'] = $raw['school'];
 			if (isset($raw['blog_url'])) $config['blogURL']=$raw['blog_url'];
-			if (isset($raw['description'])) $config['description'] = mb_substr($raw['description'], 0, 50);
+			if (isset($raw['description'])) $config['description'] = htmlspecialchars(mb_substr($raw['description'], 0, 50));
 			
 			$config['problemsPerPage'] = min(100, max(1, (int)$raw['problems_per_page']));
 			$config['submissionPerPage'] = min(100, max(1, (int)$raw['submission_per_page']));

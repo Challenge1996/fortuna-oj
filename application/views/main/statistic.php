@@ -1,5 +1,5 @@
 <?php
-	echo '<button class="btn btn-mini" onclick="javascript:history.back()">Return</button>';
+	echo '<button class="btn btn-small" onclick="javascript:history.back()">Return</button>';
 
 	echo '<div class="status"><table class="table table-striped table-condensed table-bordered">';
 	echo '<thead><tr>';

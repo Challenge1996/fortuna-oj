@@ -32,13 +32,13 @@
 			'name' => 'description',
 			'id' => 'description',
 			'value' => set_value('description'),
-			'placeholder' => lang('user_escrption'),
+			'placeholder' => lang('user_description'),
 		)
 	);
 ?>
 	
 <div id="register_field" class="modal" style="width:700px;max-height:100%;max-width:100%;overflow-Y:auto">
-	<div class="modal-header"><h3><em>Register</em></h3></div>
+	<div class="modal-header"><h3><?=lang('register')?></h3></div>
 	
 	<form action="index.php/main/register" id="register_form" class="form" method="post">
 		<div class="modal-body form-horizontal">
@@ -69,8 +69,8 @@
 		</div>
 		
 		<div class="modal-footer">
-			<span type="submit" class="btn pull-left" onclick="return login()">Login</span> <!-- Pressing ENTER in the form will automatically trigger the first <button> -->
-			<button type="submit" class="btn btn-primary" onclick="return register_submit()">Submit</button>
+			<span type="submit" class="btn pull-left" onclick="return login()"><?=lang('login')?></span> <!-- Pressing ENTER in the form will automatically trigger the first <button> -->
+			<button type="submit" class="btn btn-primary" onclick="return register_submit()"><?=lang('register')?></button>
 		</div>
 	</form>
 </div>

@@ -352,6 +352,49 @@ CREATE TABLE `Miscellaneousness` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Orders`
+--
+
+DROP TABLE IF EXISTS `Orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `orderid` varchar(16) NOT NULL,
+  `payid` varchar(60) DEFAULT NULL,
+  `uid` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `itemDescription` varchar(256) NOT NULL,
+  `expiration` datetime NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `realPrice` decimal(10,2) DEFAULT NULL,
+  `method` tinyint(4) NOT NULL,
+  `status` tinyint(4) DEFAULT '0',
+  `createTime` datetime NOT NULL,
+  `finishTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `orderid_UNIQUE` (`orderid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `PayItem`
+--
+
+DROP TABLE IF EXISTS `PayItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PayItem` (
+  `itemid` int(11) NOT NULL AUTO_INCREMENT,
+  `itemDescription` varchar(256) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `timeInt` bigint(20) NOT NULL,
+  PRIMARY KEY (`itemid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `ProblemSet`
 --
 
@@ -566,6 +609,7 @@ CREATE TABLE `User` (
   `permission` varchar(256) DEFAULT '',
   `verificationKey` varchar(32) DEFAULT NULL,
   `blogURL` varchar(256) NOT NULL,
+  `expiration` datetime DEFAULT NULL,
   PRIMARY KEY (`uid`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   UNIQUE KEY `uid_UNIQUE` (`uid`),

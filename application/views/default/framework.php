@@ -8,20 +8,20 @@
 		<meta name="author" content="moreD" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 
 		<script> OJTitle = "<?=$this->config->item('oj_title')?>"; </script>
-		<script src="js/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/jquery/1.8.3/jquery.min.js"></script>
 		<script src="js/jquery.form.js"></script>
-		<script src="js/bootstrap.min.js"></script>
+		<script src="https://cdn.bootcss.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 		<script src="js/framework.js"></script>
 		<script src="js/jquery.hashchange.min.js"></script>
 		<script src="application/third_party/ckeditor/ckeditor.js"></script>
 		<script src="application/third_party/ckfinder/ckfinder.js"></script>
 
-		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="https://cdn.bootcss.com/angular.js/1.5.8/angular.min.js"></script>
 
 		<?php if (isset($head)) echo $head?>
 		
@@ -79,6 +79,8 @@
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/functions"><?=lang('misc')?></a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/global_settings"><?=lang('global_settings')?></a></li>
 									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/manage_tags"><?=lang('manage_tags')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/items"><?=lang('manage_items')?></a></li>
+									<li class="nav_bar nav_admin" style="display:none"><a href="#admin/orders"><?=lang('manage_orders')?></a></li>
 								</ul>
 							</li>
 						</ul>
@@ -99,10 +101,10 @@
 		<div class="row-fluid">
 			<div class="span12" id="copyleft">
 				<label id="server_time"></label>
-				Fortuna OJ 项目<br />
-				<?=lang('author')?>: <a href="https://github.com/moreD">moreD</a>, <a href="https://github.com/roastduck">RD</a>;
-				<?=lang('collaborator')?>: <a href="https://github.com/tarawa">twilight</a><br />
-				<?=sprintf(lang('powered_by'), 'Codeigniter / Bootstrap')?><br />
+				<a href="https://github.com/roastduck/fortuna-oj" target="_blank">Fortuna OJ 项目</a><br />
+				<?=lang('author')?>: <a href="https://github.com/moreD" target="_blank">moreD</a>, <a href="https://github.com/roastduck" target="_blank">RD</a>;
+				<?=lang('collaborator')?>: <a href="https://github.com/tarawa" target="_blank">twilight</a>, <a href="https://github.com/mchobbylong" target="_blank">McHobby</a><br />
+				<?=sprintf(lang('powered_by'), 'CodeIgniter / Bootstrap')?><br />
 				<?=sprintf(lang('icon_by'), '<a href="http://glyphicons.com/">Glyphicons</a>')?><br />
 				<?php if ($this->config->item('miitbeian')): ?>
 					<?=$this->config->item('miitbeian')?>

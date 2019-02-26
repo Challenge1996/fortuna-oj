@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Misc extends CI_Controller {
+class Misc extends MY_Controller {
 
 	private function _redirect_page($method, $params = array()){
 		if (method_exists($this, $method)){
@@ -15,6 +15,8 @@ class Misc extends CI_Controller {
 		$allowed_methods = array('reset_password', 'push_data', 'push_submission', 'serverstatus');
 		if ($this->user->is_logged_in() || in_array($method, $allowed_methods))
 			$this->_redirect_page($method, $params);
+		else
+			$this->login();
 	}
 
 	function mailbox($page = 1) {

@@ -6,24 +6,24 @@
 
 $assign_to_config['oj_title']				= 'Fortuna Online Judge System';
 
-$assign_to_config['base_url']				= 'http://fortuna-oj.com/oj';
+$assign_to_config['oj_name']				= "oj";
+
+$assign_to_config['base_url']				= 'http://localhost/oj';
 
 $assign_to_config['sess_cookie_name']		= 'foj_ci_session';
 
 $assign_to_config['cookie_path']			= "/oj";
 
-$assign_to_config['data_path']				= "/home/judge/newdata/oj/data/";
-$assign_to_config['code_path']				= "/home/judge/newdata/oj/code/";
-$assign_to_config['solution_path']			= "/home/judge/newdata/oj/solution/";
-$assign_to_config['problem_path']			= "/home/judge/newdata/oj/problem/";
+$assign_to_config['data_path']				= "/home/judge/data/oj/data/";
+$assign_to_config['code_path']				= "/home/judge/data/oj/code/";
+$assign_to_config['solution_path']			= "/home/judge/data/oj/solution/";
+$assign_to_config['problem_path']			= "/home/judge/data/oj/problem/";
 
 $assign_to_config['servers']				= array('http://127.0.0.1:8389');
 
-$assign_to_config['oj_name']				= 'oj';
-
 $assign_to_config['fetch_contest_list']		= true;
 
-$assign_to_config['show_copyright']			= true;
+$assign_to_config['show_copyright']			= false;
 
 $assign_to_config['miitbeian']				= '';
 
@@ -42,13 +42,26 @@ $assign_to_config['allow_download_first_wrong'] = true;
 $assign_to_config['disable_new_user']		= true;
 
 $assign_to_config['mail_method']			= false; // false, 'smtp' or 'sendgrid'
-$assign_to_config['admin_email']			= 'noreply@jzoj.net';
-$assign_to_config['admin_email_name']		= 'JZOJ Admin';
+$assign_to_config['admin_email']			= 'noreply@foj.net';
+$assign_to_config['admin_email_name']		= 'FOJ Admin';
 
 $assign_to_config['estimate_score']			= true;
 
 // $db is loaded in application/config/database.php
 
 $db['default']['database']					= 'oj'; // in overriding_config/local.php
+
+// Payment configs
+// To enable payment, please set 'enable payment' to 'true'
+
+$assign_to_config['enable_payment']			= false;
+$assign_to_config['pay_uid']				= 'test';   // uid in paysapi
+$assign_to_config['pay_token']				= 'test';   // token in paysapi
+
+// Pay method. 1 for alipay, 2 for wechat pay
+// Two methods are enabled by default
+// To disable one of the methods, delete the corresponding number in the array below
+
+$assign_to_config['pay_method']				= array(1, 2);
 
 // End of File : overriding_config/local.php

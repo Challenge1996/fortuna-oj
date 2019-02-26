@@ -16,6 +16,7 @@
 	$lang['server_time'] = '服务器时间';
 
 //login
+	$lang['login'] = '登录';
 	$lang['password'] = '密码';
 	$lang['remember_me'] = '下次自动登录';
 
@@ -24,6 +25,46 @@
 	$lang['email_address'] = '电子邮件';
 	$lang['school'] = '学校';
 	$lang['user_description'] = '简介';
+
+//pay
+	$lang['enable_account'] = '启用账户';
+	$lang['pay_item'] = '购买选项';
+	$lang['alipay'] = '支付宝支付';
+	$lang['wepay'] = '微信支付';
+
+//manage_item
+	$lang['manage_items'] = '商品管理';
+	$lang['add_item'] = '添加商品';
+	$lang['change_item'] = '修改商品';
+	$lang['item_description'] = '商品描述';
+	$lang['price'] = '价格';
+	$lang['pay_method'] = '支付方式';
+	$lang['type'] = '类型';
+	$lang['time_int'] = '时长/时间点';
+	$lang['item_type0'] = '时长';
+	$lang['item_type1'] = '时间点';
+
+//manage_order
+	$lang['manage_orders'] = '订单管理';
+	$lang['payapi_id'] = '支付接口订单号';
+	$lang['realprice'] = '实际支付';
+	$lang['create_time'] = '创建时间';
+	$lang['finish_time'] = '完成时间';
+
+//pay_check
+	$lang['pay_check_message'] = '正在检查订单状态……';
+	$lang['pay_check_query'] = '已查询次数：';
+	$lang['pay_success0'] = '订单购买成功！';
+	$lang['pay_success1'] = '账号已解锁并允许登录。';
+	$lang['pay_fail0'] = '订单超时！';
+	$lang['pay_fail1'] = '请咨询系统管理员。';
+
+//user
+	$lang['username'] = '用户名';
+	$lang['expiration'] = '到期时间';
+	$lang['day'] = '天';
+	$lang['hour'] = '小时';
+	$lang['minute'] = '分钟';
 
 //navigation
 	$lang['home'] = '主页';
@@ -38,6 +79,9 @@
 
 //home
 	$lang['welcome_to'] = '欢迎来到';
+	$lang['based_on_os'] = '本 OJ 网站运行于 %s';
+	$lang['users_online'] = '在线用户人数：';
+	$lang['language_available'] = '可用编程语言';
 
 //problemset
 	$lang['p_advanced'] = '高级…';
@@ -174,9 +218,6 @@
 	$lang['default_tag_group'] = '默认标签组';
 
 	$lang['global_settings'] = '全局设定';
-	$lang['global_settings_description'] = '
-		以下是此部分OJ（高中、初中或小学）的全局设定， 
-		这些设定影响使用此部分OJ的所有人。';
 	$lang['global_settings_item_key_language'] = '语言';
 	$lang['global_settings_item_description_language'] = '选择一种语言';
 	$lang['global_settings_enum_chinese'] = '中文';
@@ -200,3 +241,6 @@
 	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
 	$lang['global_settings_item_key_estimate_score'] = '估分';
 	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
+
+//form_validation
+	$lang['form_user_not_exist'] = '用户名不存在！';

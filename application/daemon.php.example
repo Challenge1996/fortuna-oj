@@ -1,0 +1,35 @@
+<?php
+
+if (!$con = mysql_connect("localhost", "root", "root"))
+	die('Error! Unable to connect: ' . mysql_error());
+mysql_query("SET NAMES 'UTF8'", $con);
+mysql_select_db("oj", $con);
+$start = date('Y-m-d H:i:s', time() - 600);
+$now = date('Y-m-d H:i:s');
+$sql = "SELECT cid FROM Contest WHERE endTime>='$start' AND endTime<='$now'";
+$result = mysql_query($sql);
+
+while ($row = mysql_fetch_row($result)) {
+	$cid = (int)$row[0];
+	$sql = "SELECT pid FROM Contest_has_ProblemSet WHERE cid=$cid";
+	$problems = mysql_query($sql);
+	mysql_query("CALL upd_ac_count_cid($cid)");
+	while ($prob = mysql_fetch_row($problems)) {
+		$pid = (int)$prob[0];
+		$sql = "UPDATE ProblemSet SET isShowed=1 WHERE pid=$pid";
+		mysql_query($sql);
+	}
+}
+
+// Check users expiration
+$sql = "UPDATE User SET isEnabled=0 WHERE expiration>='$start' AND expiration<='$now' AND isEnabled=1";
+mysql_query($sql);
+
+// Check orders expiration
+$hourago = date('Y-m-d H:i:s', time() - 3600);
+$sql = "UPDATE Orders SET status=-1 WHERE status=0 AND createTime<='$hourago'";
+mysql_query($sql);
+
+mysql_close();
+
+?>

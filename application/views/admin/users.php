@@ -1,14 +1,19 @@
+<div class="mb_10 pull-right">
+	<i class="icon-info-sign" style="vertical-align:middle" title="Only users that not enabled and never login will be deleted."></i>
+	<button class="btn btn-small btn-danger" onclick="delete_unused_users()"><i class="icon-eye-close icon-white"></i> Delete <span id="unused_count"><?=$unused?></span> Unused Users</button>
+</div>
 <table class="table table-bordered table-condensed table-stripped">
-	<thead>
+	<thead style="background-color:#89cff0">
 		<?php foreach (array(
-			'uid' => 'uid',
+			'uid' => 'UID',
 			'name' => 'Name',
 			'school' => 'School',
 			'isEnabled' => 'Status',
 			'priviledge' => 'Privilege',
 			'groups' => 'Groups',
 			'lastIP' => 'Last IP Address',
-			'lastLogin' => 'Last Login Time') as $key => $title): ?>
+			'lastLogin' => 'Last Login Time',
+			'expiration' => 'Expiration') as $key => $title): ?>
 			<th style='white-space: nowrap'>
 				<?php
 					$iconType = $keyword!=$key?'icon-resize-vertical':($order!='reverse'?'icon-arrow-up':'icon-arrow-down');
@@ -58,9 +63,12 @@
 			echo '</div>';
 			echo '</td><td>';
 			foreach ($row->groups as $group) echo "<span class=\"label\">$group->name</span> ";
-			echo "<td>$row->lastIP</td>";
-			echo "<td>$row->lastLogin</td>";
-			echo "</td><td><button class='close' onclick=\"delete_user($row->uid, $(this))\">&times;</button></td></tr>";
+			echo "</td><td>$row->lastIP</td>";
+			echo "<td class='lastlogin'>$row->lastLogin</td>";
+			echo "<td>$row->expiration</td>";
+			echo "<td><button class='close' onclick=\"delete_user($row->uid, $(this))\">&times;</button>";
+			if ($row->isUnused) echo "<span><i class='icon-eye-close'></i></span>";
+			echo "</td></tr>";
 		}
 	?></tbody>
 </table>
@@ -80,6 +88,20 @@
 	</div>
 </div>
 
+<div class="modal hide fade" id="modal_confirm_unused">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Confirm Action</h3>
+	</div>
+	<div class="modal-body">
+		<h4>Are you sure to delete <span id="modal_unused_count"><?=$unused?></span> unused users?</h4>
+	</div>
+	<div class="modal-footer">
+		<a class="btn" data-dismiss="modal">Close</a>
+		<a class="btn btn-danger" id="delete">Delete</a>
+	</div>
+</div>
+
 <script type="text/javascript">
 	function delete_user(uid, selector){
 		$('#modal_confirm #delete').live('click', function(){
@@ -89,18 +111,33 @@
 		$('#modal_confirm #info').html(uid + '. ' + selector.parent().parent().find('.name').html());
 		$('#modal_confirm').modal({backdrop: 'static'});
 	}
+
+	function delete_unused_users(){
+		$('#modal_confirm_unused #delete').live('click', function(){
+			$('#modal_confirm_unused').modal('hide');
+			access_page('admin/delete_unused_users');
+		});
+		$('#modal_confirm_unused').modal({backdrop: 'static'});
+	}
 	
 	function user_change_status(uid, selector){
 		access_page('admin/change_user_status/' + uid, function(){
+			unused_count = $("#unused_count").html();
 			if (selector.hasClass('label-success')){
 				selector.removeClass('label-success');
 				selector.addClass('label-important');
 				selector.html('Disabled');
+				if (selector.parent().parent().find('.lastlogin').html() == "")
+					unused_count++;
 			} else {
 				selector.removeClass('label-important');
 				selector.addClass('label-success');
 				selector.html('Enabled');
+				if (selector.parent().parent().find('.lastlogin').html() == "")
+					unused_count--;
 			}
+			$("#unused_count").html(unused_count);
+			$("#modal_unused_count").html(unused_count);
 		}, false);
 	}
 

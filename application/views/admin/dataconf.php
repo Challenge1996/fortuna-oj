@@ -43,7 +43,7 @@
 
 <p class="alert-error">For Output Only problem, if there are additional files, please compress them as data.zip and upload with testdata if you don't use script.</p>
 
-<fieldset class="span5" id="data_config">
+<fieldset class="span4" id="data_config">
 <legend>Data Configuration</legend>
 <form id="data_configuration" class="form-horizontal">
 	<div class="control-group">
@@ -108,7 +108,7 @@
 </form>
 </fieldset>
 
-<fieldset class="span5" id="data_identify">
+<fieldset class="span4" id="data_identify">
 <legend>Data Identification</legend>
 <form id="data_identification" class="form-horizontal" action="index.php/admin/scan/<?=$pid?>">
 	<p class="alert-error">Custom Match: Use * for variables, eg. data*.in</p>
@@ -126,6 +126,18 @@
 	</div>
 	
 	<button id="btn_scan" class="btn btn-small btn-primary pull-right" onclick="return false;">Scan Server</button>
+</form>
+</fieldset>
+
+<fieldset class="span2" id="compile_judge">
+<legend>Compile &amp; Judge</legend>
+<form id="compile_judge" class="form-horizontal">
+	<div class="control-group">
+		<label for="with_o2" class="control-label">With -O2</label>
+		<div class="controls">
+			<input type="checkbox" id="with_o2" />
+		</div>
+	</div>
 </form>
 </fieldset>
 

@@ -56,7 +56,7 @@ function form2script(form)
 		init += 'filemode[4]["' + form.spjFile + '"]={}; // not needed. you can set limits of spj here.\n';
 	if (form.IOMode == 0 || form.IOMode == 1)
 	{
-		run += 'compile(range(0,' + cnt + '),submission["SRC"],"SRC","EXE"); // throw when CE.\n';
+		run += 'compile(range(0,' + cnt + '),submission["SRC"],"SRC","EXE"' + ($('#with_o2').attr('checked') ? ',true' : '') + '); // throw when CE.\n';
 		run += 'length = len(read("SRC"));\n';
 		run += 'for (i=0; i<' + cnt + '; i++) result[i]["codeLength"]["SRC"] = length;\n';
 		run += 'if (length>50*1024) { for (i=0; i<' + cnt + '; i++) { result[i]["status"]="compile error"; result[i]["message"]="the code is too long."; } throw; }\n';

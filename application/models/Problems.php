@@ -603,12 +603,23 @@ class Problems extends CI_Model{
 			throw new MyException($err);
 		}
 		$confCache = str_replace(array(" ","\t","\n","\r"),array(),file_get_contents('conf.log'));
-		
-		chdir($cwd);
 
 		$redis->del($pid);
 		$redis->close();
 
+		if (!copy("yauj_judge",$datapath.'/yauj_judge') || !copy("compile.log",$datapath.'/make.log'))
+		{
+			chdir($cwd);
+			throw new MyException('Error when copying yauj_judge and make.log');
+		}
+
+		if (!chmod($datapath.'/yauj_judge', 0777))
+		{
+			chdir($cwd);
+			throw new MyException('Error when changing file mode');
+		}
+
+		chdir($cwd);
 		return $confCache;
 	}
 	
