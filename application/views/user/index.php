@@ -54,7 +54,7 @@
 
 				<?php if ($data->description): ?>
 					<dt class="user_specificator">Description</dt>
-					<dd><i><?=$data->description?></i></dd>
+					<dd><i><?=htmlspecialchars($data->description)?></i></dd>
 				<?php endif; ?>
 				
 			</dl></div>
