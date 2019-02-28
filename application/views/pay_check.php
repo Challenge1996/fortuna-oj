@@ -42,7 +42,7 @@
 	function pay_query(){
 		$.ajax({
 			type:"POST",
-			url:"main/pay_status",
+			url:"index.php/main/pay_status",
 			data:{orderid:orderid},
 			success: function(data) {
 				if (data == 1){

@@ -145,7 +145,7 @@ class Main extends MY_Controller {
 			$item = $this->payment->get_item($itemid);
 			$price = $item->price;
 
-			$notify_url = base_url('main/pay_notify');
+			$notify_url = base_url('index.php/main/pay_notify');
 			$return_url = base_url('#main/pay_check');
 
 			// $orderid = 1;
