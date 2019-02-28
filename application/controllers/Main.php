@@ -944,7 +944,10 @@ class Main extends MY_Controller {
 		$this->load->model('problems');
 		
 		$is_accepted = $this->misc->is_accepted($this->user->uid(), $pid);
-		//if ( ! $is_accepted && ! $this->user->is_admin()) return;
+		if (! $this->user->is_admin()){
+			$this->load->view('error', array('message' => lang('error_admin_only')));
+			return;
+		}
 		
 		if ( !isset($_FILES['solution'])) return;
 		

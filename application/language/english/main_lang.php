@@ -247,4 +247,7 @@
 
 //form_validation
 	$lang['form_user_not_exist'] = 'User does not exist!';
-	
+
+//error text
+	$lang['error_admin_only'] = 'You are NOT administrators!';
+
