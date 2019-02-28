@@ -256,6 +256,8 @@
 				type: 'post',
 				success: function(responseText, stautsText){
 					if (responseText == 'success') refresh_page();
+					else
+					if (responseText != '') $('#page_content').html(responseText);
 					else alert("Failed to upload!");
 				}
 			});

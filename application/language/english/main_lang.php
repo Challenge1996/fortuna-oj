@@ -247,4 +247,6 @@
 
 //form_validation
 	$lang['form_user_not_exist'] = 'User does not exist!';
-	
+
+//error text
+	$lang['error_admin_only'] = '此功能仅管理员可用！';
