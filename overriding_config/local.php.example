@@ -27,6 +27,19 @@ $assign_to_config['show_copyright']			= false;
 
 $assign_to_config['miitbeian']				= '';
 
+// Payment configs
+// To enable payment, please set 'enable payment' to 'true'
+
+$assign_to_config['enable_payment']			= false;
+$assign_to_config['pay_uid']				= 'test';   // uid in paysapi
+$assign_to_config['pay_token']				= 'test';   // token in paysapi
+
+// Pay method. 1 for alipay, 2 for wechat pay
+// Two methods are enabled by default
+// To disable one of the methods, delete the corresponding number in the array below
+
+$assign_to_config['pay_method']				= array(1, 2);
+
 // Options below are dynamic options. These are default values
 
 $assign_to_config['language']				= 'chinese';
@@ -52,18 +65,5 @@ $assign_to_config['solution_upload_priviledge'] = true;
 // $db is loaded in application/config/database.php
 
 $db['default']['database']					= '{{db_name}}'; // in overriding_config/local.php
-
-// Payment configs
-// To enable payment, please set 'enable payment' to 'true'
-
-$assign_to_config['enable_payment']			= false;
-$assign_to_config['pay_uid']				= 'test';   // uid in paysapi
-$assign_to_config['pay_token']				= 'test';   // token in paysapi
-
-// Pay method. 1 for alipay, 2 for wechat pay
-// Two methods are enabled by default
-// To disable one of the methods, delete the corresponding number in the array below
-
-$assign_to_config['pay_method']				= array(1, 2);
 
 // End of File : overriding_config/local.php
