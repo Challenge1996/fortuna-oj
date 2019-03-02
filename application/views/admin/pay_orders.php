@@ -4,7 +4,7 @@
 	<thead style="background-color:#89cff0">
 		<?php foreach (array(
 			'status' => '',
-			'orderid' => '#',
+			'orderid' => lang('order_id'),
 			'uid' => 'UID',
 			'name' => lang('username'),
 			'itemDescription' => lang('item_description'),

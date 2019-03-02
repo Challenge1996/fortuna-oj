@@ -47,6 +47,7 @@
 //manage_order
 	$lang['manage_orders'] = 'Manage Orders';
 	$lang['payapi_id'] = 'PayAPI ID';
+	$lang['order_id'] = 'Order ID';
 	$lang['realprice'] = 'Real Price';
 	$lang['create_time'] = 'Create Time';
 	$lang['finish_time'] = 'Finish Time';
@@ -218,9 +219,6 @@
 	$lang['default_tag_group'] = 'Default tags group';
 
 	$lang['global_settings'] = 'Global Settings';
-	$lang['global_settings_description'] = '
-		These are global settings for the current OJ (senior, junior or elementary part). 
-		Changes are applied to everyone using this part of OJ';
 	$lang['global_settings_item_key_language'] = 'Language';
 	$lang['global_settings_item_description_language'] = 'Choose a language';
 	$lang['global_settings_enum_chinese'] = 'Chinese';
@@ -245,7 +243,7 @@
 	$lang['global_settings_item_key_estimate_score'] = 'Estimate score';
 	$lang['global_settings_item_description_estimate_score'] = 'Users participating contests in "OI Traditional" mode need to enter his estimated score when submitting';
 
-//form_validation
+//form validation
 	$lang['form_user_not_exist'] = 'User does not exist!';
 
 //error text

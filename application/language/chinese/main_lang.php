@@ -47,6 +47,7 @@
 //manage_order
 	$lang['manage_orders'] = '订单管理';
 	$lang['payapi_id'] = '支付接口订单号';
+	$lang['order_id'] = '订单号';
 	$lang['realprice'] = '实际支付';
 	$lang['create_time'] = '创建时间';
 	$lang['finish_time'] = '完成时间';
@@ -242,7 +243,7 @@
 	$lang['global_settings_item_key_estimate_score'] = '估分';
 	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
 
-//form_validation
+//form validation
 	$lang['form_user_not_exist'] = '用户名不存在！';
 
 //error text
