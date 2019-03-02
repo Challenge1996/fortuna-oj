@@ -944,7 +944,13 @@ class Main extends MY_Controller {
 		$this->load->model('problems');
 		
 		$is_accepted = $this->misc->is_accepted($this->user->uid(), $pid);
-		if (! $this->user->is_admin()){
+
+		if ($this->config->item('solution_upload_priviledge') === false) {
+			$this->load->view('error', array('message' => lang('function_turned_off')));
+			return;
+		}
+
+		if ($this->config->item('solution_upload_priviledge') === 'admin' && ! $this->user->is_admin()) {
 			$this->load->view('error', array('message' => lang('error_admin_only')));
 			return;
 		}

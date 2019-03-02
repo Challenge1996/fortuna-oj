@@ -47,6 +47,8 @@ $assign_to_config['admin_email_name']		= 'FOJ Admin';
 
 $assign_to_config['estimate_score']			= true;
 
+$assign_to_config['solution_upload_priviledge'] = true;
+
 // $db is loaded in application/config/database.php
 
 $db['default']['database']					= '{{db_name}}'; // in overriding_config/local.php

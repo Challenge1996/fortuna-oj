@@ -465,5 +465,8 @@ $config['disable_new_user'] = true;
 // User need to estimate his score
 $config['estimate_score'] = true;
 
+// ALL users are allowed to upload solutions
+$config['solution_upload_priviledge'] = true;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

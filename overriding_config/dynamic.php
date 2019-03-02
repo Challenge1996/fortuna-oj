@@ -70,5 +70,13 @@ $dynamic_format = array (
 			'yes' => true,
 			'no' => false
 		)
+	),
+	'solution_upload_priviledge' => array (
+		'datatype' => 'enum',
+		'enum_value' => array (
+			'yes' => true,
+			'admin' => 'admin',
+			'no' => false
+		)
 	)
 );

@@ -242,6 +242,9 @@
 	$lang['global_settings_item_description_disable_new_user'] = 'New users will be disabled after registion until administrators authenticate them';
 	$lang['global_settings_item_key_estimate_score'] = 'Estimate score';
 	$lang['global_settings_item_description_estimate_score'] = 'Users participating contests in "OI Traditional" mode need to enter his estimated score when submitting';
+	$lang['global_settings_item_key_solution_upload_priviledge'] = 'Solution upload priviledge';
+	$lang['global_settings_item_description_solution_upload_priviledge'] = 'Allow ALL users to upload solutions';
+	$lang['global_settings_enum_admin'] = 'Admins only';
 
 //form validation
 	$lang['form_user_not_exist'] = 'User does not exist!';
