@@ -231,7 +231,7 @@
 	$lang['global_settings_item_description_allow_custom_test'] = 'Turn on Custeom Test function';
 	$lang['global_settings_item_key_allow_add_problem'] = 'Allow Adding Problems';
 	$lang['global_settings_item_description_allow_add_problem'] = 'Allow normal user to add problems';
-	$lang['global_settings_item_key_allow_download_first_wrong'] = 'Allow downloding first wrong case';
+	$lang['global_settings_item_key_allow_download_first_wrong'] = 'Allow downloading first wrong case';
 	$lang['global_settings_item_description_allow_download_first_wrong'] = 'Users will be able to download the data of their first wrong test case, except for compiling errors or during contests';
 	$lang['global_settings_item_key_allow_forum'] = 'Allow Forum';
 	$lang['global_settings_item_description_allow_forum'] = 'Allow using contest forum';
@@ -250,4 +250,4 @@
 	$lang['form_user_not_exist'] = 'User does not exist!';
 
 //error text
-	$lang['error_admin_only'] = '此功能仅管理员可用！';
+	$lang['error_admin_only'] = 'Only administrators are allowed!';
