@@ -16,11 +16,7 @@
 			foreach ($data as $row):
 				$cid = $row->cid; ?>
 				<tr <?=$row->isPinned ? 'class="pinned"' : ''?>><td><?=$cid?></td>
-				<td class="title">
-				<?=(isset($row->running) && !$row->isTemplate ?
-						"<a href=\"#contest/problems/$cid\">$row->title</a>" :
-						"<a href=\"#contest/home/$cid\">$row->title</a>")?>
-				</td>
+				<td class="title"><?="<a href=\"#contest/home/$cid\">$row->title</a>"?></td>
 				<td><span class="label label-info"><?=$row->contestMode?></span></td>
 				<td><?=$row->startTime?></td>
 				<td><?=$row->isTemplate ? 'N/A' : $row->submitTime?></td>
