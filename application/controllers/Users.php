@@ -38,19 +38,24 @@ class Users extends MY_Controller {
 		
 		$this->load->view('user/index', array('data' => $user));
 	}
-	
+
+	function check_password($password, $user){	// This is different from password_check() in MY_Controller
+		$password = md5(md5($password) . $this->config->item('password_suffix'));
+		return $this->user->password_check($user, $password) !== FALSE;
+	}
+
 	public function settings($user){
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<span class="alert alert-error">', '</span>');
-			
-		$this->form_validation->set_rules('old_password', 'Old Password', 'callback_password_check');
+		
+		$this->form_validation->set_rules('old_password', 'Old Password', "callback_check_password[$user]");
 		$this->form_validation->set_rules('show_category', 'Show Category', '');
 		$this->form_validation->set_rules('email', 'Email', 'valid_email');
 		$this->form_validation->set_rules('blog_url', 'Blog URL', 'max_length[256]|prep_url');
 		$this->form_validation->set_rules('problems_per_page', 'Problems', 'required');
 		$this->form_validation->set_rules('submission_per_page', 'Submission', 'required');
 		
-		$this->form_validation->set_message('password_check', 'Wrong Old Password!');
+		$this->form_validation->set_message('check_password', 'Wrong Old Password!');
 		
 		if ($this->form_validation->run() == FALSE){
 			$config = $this->user->load_configuration($this->user->uid());
