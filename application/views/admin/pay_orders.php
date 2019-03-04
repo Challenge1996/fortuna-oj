@@ -58,8 +58,10 @@
 			else echo "<td></td>";
 			if ($row->method == 1)
 				echo "<td><i class='iconfont iconfont-umidd17'></i></td>";
-			else 
+			elseif ($row->method == 2)
 				echo "<td><i class='iconfont iconfont-pay-wechat'></i></td>";
+			else
+				echo "<td><i class='icon-refresh'></i></td>";
 			echo "<td>$row->createTime</td>";
 			echo "<td>$row->finishTime</td><td>";
 			if ($row->status == 2){

@@ -31,6 +31,7 @@
 	$lang['pay_item'] = 'Pay Option';
 	$lang['alipay'] = 'Alipay';
 	$lang['wepay'] = 'WechatPay';
+	$lang['apply_renew'] = 'Apply for renewal';
 
 //manage_item
 	$lang['manage_items'] = 'Manage Items';

@@ -97,7 +97,7 @@ class Payment extends CI_Model{
 			'payid' => $payid,
 			'realprice' => $realprice,
 			'finishTime' => date('Y-m-d H:i:s'),
-			'status' => $this->config->item('payment_auto_finish') ? 1 : 2
+			'status' => ($this->config->item('payment_auto_finish') && $realprice > 0) ? 1 : 2
 		);
 		$this->db->where('orderid', $orderid)->update('Orders', $order);
 	}

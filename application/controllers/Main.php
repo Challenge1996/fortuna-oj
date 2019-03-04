@@ -149,7 +149,14 @@ class Main extends MY_Controller {
 			$return_url = base_url('#main/pay_check');
 
 			// $orderid = 1;
-			$orderid = $this->payment->new_order($uid, $name, $item, $istype);
+			$orderid = $this->payment->new_order($uid, $name, $item, ($price > 0) ? $istype : 0);
+
+			if ($price == 0){
+				$this->load->model('payment');
+				$this->payment->finish_order('', $orderid, 0);
+				$this->load->view('success');
+				return;
+			}
 
 			$key = md5($istype.$notify_url.$orderid.$uid.$price.$return_url.$this->config->item('pay_token').$pay_uid);
 			$this->output

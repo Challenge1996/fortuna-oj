@@ -31,6 +31,7 @@
 	$lang['pay_item'] = '购买选项';
 	$lang['alipay'] = '支付宝支付';
 	$lang['wepay'] = '微信支付';
+	$lang['apply_renew'] = '申请续期';
 
 //manage_item
 	$lang['manage_items'] = '商品管理';
