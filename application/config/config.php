@@ -469,10 +469,10 @@ $config['estimate_score'] = true;
 $config['solution_upload_priviledge'] = true;
 
 // Orders will be auto finished
-$assign_to_config['payment_auto_finish'] = true;
+$config['payment_auto_finish'] = true;
 
 // User will be notified when the account is available for less than 7 days
-$assign_to_config['expire_notify_day_num'] = 7;
+$config['expire_notify_day_num'] = 7;
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
