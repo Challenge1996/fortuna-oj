@@ -90,6 +90,7 @@
 	$lang['language_available'] = 'Available Languages';
 	$lang['account_available'] = 'User is available for: ';
 	$lang['expiration_warning'] = 'This user has less time available. Please renew in time.';
+	$lang['goto_pay'] = 'Click here to renew';
 
 //problemset
 	$lang['p_advanced'] = 'Advanced...';

@@ -20,7 +20,10 @@
 			<div class="thumbnail">
 				<?php if (time() + $expire_notify_day_num * 24 * 60 * 60 > strtotime($expiration)): ?>
 					<legend><h4 style="color:red"><?=lang('account_available').$available?></h4></legend>
-					<h5 style="color:red"><?=lang('expiration_warning')?></h5>
+					<h5 style="color:red">
+						<?=lang('expiration_warning')?>
+						<a href="javascript:void(0)" onclick="load_page('main/pay')" style="text-decoration:none; color:red"><?=lang('goto_pay')?></a>
+					</h5>
 				<?php else: ?>
 					<h4><?=lang('account_available').$available?></h4>
 				<?php endif; ?>

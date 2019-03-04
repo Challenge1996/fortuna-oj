@@ -90,6 +90,7 @@
 	$lang['language_available'] = '可用编程语言';
 	$lang['account_available'] = '账户剩余可用时间：';
 	$lang['expiration_warning'] = '此账户的可用时间较少。请及时续期！';
+	$lang['goto_pay'] = '点此去续期';
 
 //problemset
 	$lang['p_advanced'] = '高级…';
