@@ -978,7 +978,23 @@ class Admin extends MY_Controller {
 
 		$this->load->view('admin/pay_orders', array('data' => $data, 'keyword' => $keyword, 'order' => $order));
 	}
-	
+
+	public function review_order(){
+		$orderid = $this->input->post('orderid');
+		$expiration = $this->input->post('datetime');
+
+		$this->load->model('payment');
+		$this->payment->review_order($orderid, $expiration);
+		$this->user->set_expiration($this->payment->get_order($orderid)->uid, $expiration);
+		$this->load->view('success');
+	}
+
+	public function reject_order($orderid){
+		$this->load->model('payment');
+		$this->payment->reject_order($orderid);
+		$this->load->view('success');
+	}
+
 	// temp
 
 	/*public function rejudgeall()

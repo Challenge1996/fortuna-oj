@@ -77,6 +77,7 @@ class Payment extends CI_Model{
 		}
 		else
 			$orderid = date('Ymd').'0001';
+		// $orderid = '1f65er15g6s1';	// Debug only
 		$order = array(
 			'orderid' => $orderid,
 			'uid' => $uid,
@@ -96,7 +97,22 @@ class Payment extends CI_Model{
 			'payid' => $payid,
 			'realprice' => $realprice,
 			'finishTime' => date('Y-m-d H:i:s'),
+			'status' => $this->config->item('payment_auto_finish') ? 1 : 2
+		);
+		$this->db->where('orderid', $orderid)->update('Orders', $order);
+	}
+
+	function review_order($orderid, $expiration){
+		$order = array(
+			'expiration' => $expiration,
 			'status' => 1
+		);
+		$this->db->where('orderid', $orderid)->update('Orders', $order);
+	}
+
+	function reject_order($orderid){
+		$order = array(
+			'status' => -1
 		);
 		$this->db->where('orderid', $orderid)->update('Orders', $order);
 	}

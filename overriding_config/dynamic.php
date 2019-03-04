@@ -78,5 +78,12 @@ $dynamic_format = array (
 			'admin' => 'admin',
 			'no' => false
 		)
+	),
+	'payment_auto_finish' => array (
+		'datatype' => 'enum',
+		'enum_value' => array (
+			'yes' => true,
+			'no' => false
+		)
 	)
 );

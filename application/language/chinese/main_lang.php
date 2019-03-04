@@ -51,13 +51,17 @@
 	$lang['realprice'] = '实际支付';
 	$lang['create_time'] = '创建时间';
 	$lang['finish_time'] = '完成时间';
+	$lang['review_order'] = '审核订单';
+	$lang['change_expiration'] = '修改到期时间';
 
 //pay_check
 	$lang['pay_check_message'] = '正在检查订单状态……';
 	$lang['pay_check_query'] = '已查询次数：';
 	$lang['pay_success0'] = '订单购买成功！';
 	$lang['pay_success1'] = '账号已解锁并允许登录。';
-	$lang['pay_fail0'] = '订单超时！';
+	$lang['pay_review0'] = '订单等待审核';
+	$lang['pay_review1'] = '订单已支付完成，但管理员开启了订单审核。请耐心等待管理员审核并通过此订单。';
+	$lang['pay_fail0'] = '订单超时或被拒绝！';
 	$lang['pay_fail1'] = '请咨询系统管理员。';
 
 //user
@@ -245,7 +249,8 @@
 	$lang['global_settings_item_key_solution_upload_priviledge'] = '题解上传权限';
 	$lang['global_settings_item_description_solution_upload_priviledge'] = '允许所有人上传题解';
 	$lang['global_settings_enum_admin'] = '仅管理员';
-	
+	$lang['global_settings_item_key_payment_auto_finish'] = '订单自动完成';
+	$lang['global_settings_item_description_payment_auto_finish'] = '所有订单将自动转为完成状态（账号自动续期）。关闭则支付成功后的订单需要管理员手动审核';
 
 //form validation
 	$lang['form_user_not_exist'] = '用户名不存在！';

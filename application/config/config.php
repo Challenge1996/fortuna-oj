@@ -468,5 +468,8 @@ $config['estimate_score'] = true;
 // ALL users are allowed to upload solutions
 $config['solution_upload_priviledge'] = true;
 
+// Orders will be auto finished
+$assign_to_config['payment_auto_finish'] = true;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

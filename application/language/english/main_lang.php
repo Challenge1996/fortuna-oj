@@ -51,13 +51,17 @@
 	$lang['realprice'] = 'Real Price';
 	$lang['create_time'] = 'Create Time';
 	$lang['finish_time'] = 'Finish Time';
+	$lang['review_order'] = 'Review Order';
+	$lang['change_expiration'] = 'Change expiration';
 
 //pay_check
 	$lang['pay_check_message'] = 'Checking payment result...';
 	$lang['pay_check_query'] = 'Query times: ';
 	$lang['pay_success0'] = 'Payment succeed!';
 	$lang['pay_success1'] = 'Your account is unlocked and ready to use.';
-	$lang['pay_fail0'] = 'Payment is out of time!';
+	$lang['pay_review0'] = 'Order review required';
+	$lang['pay_review1'] = 'This order is paid, but waiting for administrators to be reviewed. Please wait.';
+	$lang['pay_fail0'] = 'Payment is out of time, or is rejected!';
 	$lang['pay_fail1'] = 'Please contact to administrators.';
 
 //user
@@ -245,6 +249,8 @@
 	$lang['global_settings_item_key_solution_upload_priviledge'] = 'Solution upload priviledge';
 	$lang['global_settings_item_description_solution_upload_priviledge'] = 'Allow ALL users to upload solutions';
 	$lang['global_settings_enum_admin'] = 'Admins only';
+	$lang['global_settings_item_key_payment_auto_finish'] = 'Auto finish orders';
+	$lang['global_settings_item_description_payment_auto_finish'] = 'Orders will be finished automatically. Closing this means administrators must review all paid orders by themselves.';
 
 //form validation
 	$lang['form_user_not_exist'] = 'User does not exist!';
