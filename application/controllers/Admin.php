@@ -14,7 +14,7 @@ class Admin extends MY_Controller {
 		
 		$allowed_methods = array('problemset', 'change_problem_status');
 		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist', 'edit_tags');
-		$payment_methods = array('items', 'change_item', 'delete_item', 'orders');
+		$payment_methods = array('items', 'change_item', 'delete_item', 'orders', 'review_order', 'reject_order');
 
 		if ($this->config->item('allow_add_problem'))
 			$allowed_methods[] = 'addproblem';
