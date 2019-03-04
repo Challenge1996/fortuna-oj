@@ -86,6 +86,13 @@ $dynamic_format = array (
 	'payment' => array (
 		'datatype' => 'group_begin',
 	),
+		'enable_payment' => array (
+			'datatype' => 'enum',
+			'enum_value' => array (
+				'yes' => true,
+				'no' => false
+			)
+		),
 		'payment_auto_finish' => array (
 			'datatype' => 'enum',
 			'enum_value' => array (

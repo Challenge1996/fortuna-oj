@@ -256,6 +256,8 @@
 	$lang['global_settings_item_description_estimate_score'] = 'Users participating contests in "OI Traditional" mode need to enter his estimated score when submitting';
 
 	$lang['global_settings_item_key_payment'] = 'Payment & Orders';
+	$lang['global_settings_item_key_enable_payment'] = 'Enable Payment';
+	$lang['global_settings_item_description_enable_payment'] = 'Enable Manage Item, Manage Order, Payment system, "Enable Account" on login modal, etc.';
 	$lang['global_settings_item_key_payment_auto_finish'] = 'Auto finish orders';
 	$lang['global_settings_item_description_payment_auto_finish'] = 'Orders will be finished automatically. Closing this means administrators must review all paid orders by themselves.';
 	$lang['global_settings_item_key_expire_notify_day_num'] = 'User expiring notification';

@@ -256,6 +256,8 @@
 	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
 
 	$lang['global_settings_item_key_payment'] = '订单与支付';
+	$lang['global_settings_item_key_enable_payment'] = '启用订单系统';
+	$lang['global_settings_item_description_enable_payment'] = '启用商品管理、订单管理、支付系统、登录框中的“启用账户”等功能';
 	$lang['global_settings_item_key_payment_auto_finish'] = '订单自动完成';
 	$lang['global_settings_item_description_payment_auto_finish'] = '所有订单将自动转为完成状态（账号自动续期）。关闭则支付成功后的订单需要管理员手动审核';
 	$lang['global_settings_item_key_expire_notify_day_num'] = '账户到期提醒';

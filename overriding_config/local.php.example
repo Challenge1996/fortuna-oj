@@ -28,9 +28,8 @@ $assign_to_config['show_copyright']			= false;
 $assign_to_config['miitbeian']				= '';
 
 // Payment configs
-// To enable payment, please set 'enable payment' to 'true'
+// To enable payment, please set 'enable_payment' to 'true'
 
-$assign_to_config['enable_payment']			= false;
 $assign_to_config['pay_uid']				= 'test';   // uid in paysapi
 $assign_to_config['pay_token']				= 'test';   // token in paysapi
 
@@ -65,6 +64,8 @@ $assign_to_config['solution_upload_priviledge'] = true;
 $assign_to_config['payment_auto_finish']	= true;
 
 $assign_to_config['expire_notify_day_num']	= 7;
+
+$assign_to_config['enable_payment']			= false;
 
 // $db is loaded in application/config/database.php
 

@@ -474,5 +474,8 @@ $config['payment_auto_finish'] = true;
 // User will be notified when the account is available for less than 7 days
 $config['expire_notify_day_num'] = 7;
 
+// Disable payment system
+$config['enable_payment'] = false;
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
