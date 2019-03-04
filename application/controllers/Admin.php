@@ -795,13 +795,14 @@ class Admin extends MY_Controller {
 	{
 		$this->load->model('misc');
 		$data = $this->misc->load_dynamic_config();
-		$post = $this->input->post('set');
+		$post = $this->input->post('set', TRUE);
 		if ($post)
 		{
 			$post = json_decode($post);
 			$key = $post->key;
 			$value = $post->value;
-			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value, true))
+			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value, true) ||
+				$data[$key]->format->datatype == 'input')
 				$this->misc->save_dynamic_config($data[$key]->valuefile, $key, $value);
 		} else
 			$this->load->view('admin/global_settings', array('data' => $data));

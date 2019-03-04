@@ -18,7 +18,7 @@
 		?>
 		<div class="row-fluid mb_10">
 			<div class="thumbnail">
-				<?php if (time() + 3 * 24 * 60 * 60 > strtotime($expiration)): ?>
+				<?php if (time() + $expire_notify_day_num * 24 * 60 * 60 > strtotime($expiration)): ?>
 					<legend><h4 style="color:red"><?=lang('account_available').$available?></h4></legend>
 					<h5 style="color:red"><?=lang('expiration_warning')?></h5>
 				<?php else: ?>

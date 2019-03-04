@@ -226,34 +226,46 @@
 	$lang['default_tag_group'] = '默认标签组';
 
 	$lang['global_settings'] = '全局设定';
+
+	$lang['global_settings_item_key_basic_system_config'] = '基础系统设定';
 	$lang['global_settings_item_key_language'] = '语言';
 	$lang['global_settings_item_description_language'] = '选择一种语言';
 	$lang['global_settings_enum_chinese'] = '中文';
 	$lang['global_settings_enum_english'] = '英语';
-	$lang['global_settings_item_key_allow_message'] = '允许站内信';
-	$lang['global_settings_item_description_allow_message'] = '打开站内信功能';
+	$lang['global_settings_item_key_disable_new_user'] = '新用户默认禁用';
+	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
 	$lang['global_settings_enum_yes'] = '是';
 	$lang['global_settings_enum_no'] = '否';
-	$lang['global_settings_item_key_allow_custom_test'] = '允许自定义测试';
-	$lang['global_settings_item_description_allow_custom_test'] = '打开自定义测试功能';
+
+	$lang['global_settings_item_key_problemset'] = '题目与提交';
 	$lang['global_settings_item_key_allow_add_problem'] = '允许添加题目';
 	$lang['global_settings_item_description_allow_add_problem'] = '允许普通用户添加题目';
 	$lang['global_settings_item_key_allow_download_first_wrong'] = '允许下载第一个错误点';
 	$lang['global_settings_item_description_allow_download_first_wrong'] = '允许用户下载第一个出错的测试点的数据，编译错误和比赛时除外';
-	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
-	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';
-	$lang['global_settings_item_key_allow_normal_user_public'] = '允许开放代码';
-	$lang['global_settings_item_description_allow_normal_user_public'] = '允许普通用户将其代码设为公开。“默认公开”选项意为所有在列表中可见的提交之代码都是公开的。';
-	$lang['global_settings_enum_default_public'] = '默认公开';
-	$lang['global_settings_item_key_disable_new_user'] = '新用户默认禁用';
-	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
-	$lang['global_settings_item_key_estimate_score'] = '估分';
-	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
 	$lang['global_settings_item_key_solution_upload_priviledge'] = '题解上传权限';
 	$lang['global_settings_item_description_solution_upload_priviledge'] = '允许所有人上传题解';
 	$lang['global_settings_enum_admin'] = '仅管理员';
+	$lang['global_settings_item_key_allow_normal_user_public'] = '允许开放代码';
+	$lang['global_settings_item_description_allow_normal_user_public'] = '允许普通用户将其代码设为公开。“默认公开”选项意为所有在列表中可见的提交之代码都是公开的。';
+
+	$lang['global_settings_item_key_contest'] = '比赛';
+	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
+	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';
+	$lang['global_settings_enum_default_public'] = '默认公开';
+	$lang['global_settings_item_key_estimate_score'] = '估分';
+	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
+
+	$lang['global_settings_item_key_payment'] = '订单与支付';
 	$lang['global_settings_item_key_payment_auto_finish'] = '订单自动完成';
 	$lang['global_settings_item_description_payment_auto_finish'] = '所有订单将自动转为完成状态（账号自动续期）。关闭则支付成功后的订单需要管理员手动审核';
+	$lang['global_settings_item_key_expire_notify_day_num'] = '账户到期提醒';
+	$lang['global_settings_item_description_expire_notify_day_num'] = '用户首页的到期提醒，在剩余一定时间内变为<span style="color:red;font-weight:bold">红字提醒</span>。单位为天。';
+
+	$lang['global_settings_item_key_misc'] = '杂项';
+	$lang['global_settings_item_key_allow_message'] = '允许站内信';
+	$lang['global_settings_item_description_allow_message'] = '打开站内信功能';
+	$lang['global_settings_item_key_allow_custom_test'] = '允许自定义测试';
+	$lang['global_settings_item_description_allow_custom_test'] = '打开自定义测试功能';
 
 //form validation
 	$lang['form_user_not_exist'] = '用户名不存在！';
