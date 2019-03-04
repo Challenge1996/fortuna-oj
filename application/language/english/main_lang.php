@@ -87,6 +87,8 @@
 	$lang['based_on_os'] = 'This OJ is based on %s.';
 	$lang['users_online'] = 'Online User(s): ';
 	$lang['language_available'] = 'Available Languages';
+	$lang['account_available'] = 'User is available for: ';
+	$lang['expiration_warning'] = 'This user has less time available. Please renew in time.';
 
 //problemset
 	$lang['p_advanced'] = 'Advanced...';

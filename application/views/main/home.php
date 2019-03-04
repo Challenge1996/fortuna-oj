@@ -6,9 +6,31 @@
 	</div>
 
 	<div class="container-fluid">
+		<?php if (!empty($expiration) && strtotime($expiration) - time() > 0): ?>
+		<?php
+			$available = strtotime($expiration) - time();
+			$day = (int)($available / 24 / 60 / 60);
+			$available -= $day * 24 * 60 * 60;
+			$hour = (int)($available / 60 / 60);
+			$available -= $hour * 60 * 60;
+			$minute = (int)($available / 60);
+			$available = rtrim(($day > 0 ? "$day ".lang('day').' ' : '').($hour > 0 ? "$hour ".lang('hour').' ' : '').(($minute > 0 || $day + $hour == 0) ? "$minute ".lang('minute').' ' : ''));
+		?>
 		<div class="row-fluid mb_10">
 			<div class="thumbnail">
-				<legend><h4>FAQ: 为什么我的程序在本地跑没事，交到你的OJ上就挂了(ノ=Д=)ノ┻━┻</h4></legend>
+				<?php if (time() + 3 * 24 * 60 * 60 > strtotime($expiration)): ?>
+					<legend><h4 style="color:red"><?=lang('account_available').$available?></h4></legend>
+					<h5 style="color:red"><?=lang('expiration_warning')?></h5>
+				<?php else: ?>
+					<h4><?=lang('account_available').$available?></h4>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<div class="row-fluid mb_10">
+			<div class="thumbnail">
+				<legend><h4>FAQ: 为什么我的程序在本地跑没事，交到你的 OJ 上就挂了(ノ=Д=)ノ┻━┻</h4></legend>
 				<ul class="text-left">
 					<li><b>你的数组越界了，你的数组越界了，你的数组越界了！</b>一些隐藏的数组越界可能在本地不会报错，而到了 OJ 上由于运行环境发生了变化，才发生错误。数组越界不仅可能导致运行错误，也可能导致答案错误或超时等，这是由于数组越界干扰了其他内存导致的。</li>
 					<li>不要使用 gets 等读取一行，因为这些函数使用换行符来判断行结束（当然也不要手动判断换行符）。Windows 下换行符是 \r\n，而 Linux 下换行符是 \n。假设此题的数据是在 Windows 下生成的，那么他的换行符是 \r\n，而 OJ 上的程序是在 Linux 下编译的，读取的换行符是 \n，这样就错了。</li>

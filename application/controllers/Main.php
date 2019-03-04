@@ -206,7 +206,7 @@ class Main extends MY_Controller {
 	public function home(){
 		$this->load->model('user');
 		$online = $this->user->load_online_users();
-		$this->load->view('main/home', array("online" => $online));
+		$this->load->view('main/home', array("online" => $online, "expiration" => $this->user->load_expiration($this->user->uid())));
 	}
 	
 	static function _convert_status($status){

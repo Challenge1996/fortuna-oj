@@ -87,6 +87,8 @@
 	$lang['based_on_os'] = '本 OJ 网站运行于 %s';
 	$lang['users_online'] = '在线用户人数：';
 	$lang['language_available'] = '可用编程语言';
+	$lang['account_available'] = '账户剩余可用时间：';
+	$lang['expiration_warning'] = '此账户的可用时间较少。请及时续期！';
 
 //problemset
 	$lang['p_advanced'] = '高级…';
