@@ -149,7 +149,14 @@ class Main extends MY_Controller {
 			$return_url = base_url('#main/pay_check');
 
 			// $orderid = 1;
-			$orderid = $this->payment->new_order($uid, $name, $item, $istype);
+			$orderid = $this->payment->new_order($uid, $name, $item, ($price > 0) ? $istype : 0);
+
+			if ($price == 0){
+				$this->load->model('payment');
+				$this->payment->finish_order('', $orderid, 0);
+				$this->load->view('success');
+				return;
+			}
 
 			$key = md5($istype.$notify_url.$orderid.$uid.$price.$return_url.$this->config->item('pay_token').$pay_uid);
 			$this->output
@@ -206,7 +213,11 @@ class Main extends MY_Controller {
 	public function home(){
 		$this->load->model('user');
 		$online = $this->user->load_online_users();
-		$this->load->view('main/home', array("online" => $online));
+		$this->load->view('main/home', array(
+			"online" => $online,
+			"expiration" => $this->user->load_expiration($this->user->uid()),
+			"expire_notify_day_num" => $this->config->item('expire_notify_day_num')
+		));
 	}
 	
 	static function _convert_status($status){
@@ -944,7 +955,13 @@ class Main extends MY_Controller {
 		$this->load->model('problems');
 		
 		$is_accepted = $this->misc->is_accepted($this->user->uid(), $pid);
-		if (! $this->user->is_admin()){
+
+		if ($this->config->item('solution_upload_priviledge') === false) {
+			$this->load->view('error', array('message' => lang('function_turned_off')));
+			return;
+		}
+
+		if ($this->config->item('solution_upload_priviledge') === 'admin' && ! $this->user->is_admin()) {
 			$this->load->view('error', array('message' => lang('error_admin_only')));
 			return;
 		}

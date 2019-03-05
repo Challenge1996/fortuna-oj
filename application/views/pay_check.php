@@ -17,7 +17,11 @@
 			<h4><?=lang('pay_success0')?></h4>
 			<strong><?=lang('pay_success1')?></strong>
 		</div>
-		<div id="pay_fail" style="display:none">
+		<div id="pay_review" style="display:none">
+			<h4><?=lang('pay_review0')?></h4>
+			<strong><?=lang('pay_review1')?></strong>
+		</div>
+		<div id="pay_fail" style="display:none;color:red">
 			<h4><?=lang('pay_fail0')?></h4>
 			<strong><?=lang('pay_fail1')?></strong>
 		</div>
@@ -30,7 +34,7 @@
 
 <script type="text/javascript">
 	$('#pay_check_field').modal({backdrop: 'static'});
-	var orderid = <?=$orderid?>, query_num = 0;
+	var orderid = '<?=$orderid?>', query_num = 0;
 	pay_query();
 
 	function login(){
@@ -42,12 +46,16 @@
 	function pay_query(){
 		$.ajax({
 			type:"POST",
-			url:"index.php/main/pay_status",
+			url:"main/pay_status",
 			data:{orderid:orderid},
 			success: function(data) {
 				if (data == 1){
 					$('#pay_check').hide();
 					$('#pay_success').show();
+				}
+				else if (data == 2){
+					$('#pay_check').hide();
+					$('#pay_review').show();
 				}
 				else if (data == -1 || query_num >= 60){
 					$('#pay_check').hide();

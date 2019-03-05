@@ -517,4 +517,8 @@ class User extends CI_Model{
 							WHERE uid=?",
 							array($uid));
 	}
+
+	function load_expiration($uid) {
+		return $this->db->select('expiration')->where('uid', $uid)->get('User')->row()->expiration;
+	}
 }

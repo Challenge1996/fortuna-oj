@@ -38,19 +38,24 @@ class Users extends MY_Controller {
 		
 		$this->load->view('user/index', array('data' => $user));
 	}
-	
+
+	function password_check_simple($password){	// This is different from password_check() in MY_Controller
+		$password = md5(md5($password) . $this->config->item('password_suffix'));
+		return $this->user->password_check($this->user->username(), $password) !== FALSE;
+	}
+
 	public function settings($user){
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<span class="alert alert-error">', '</span>');
-			
-		$this->form_validation->set_rules('old_password', 'Old Password', 'callback_password_check');
+		
+		$this->form_validation->set_rules('old_password', 'Old Password', "callback_password_check_simple");
 		$this->form_validation->set_rules('show_category', 'Show Category', '');
 		$this->form_validation->set_rules('email', 'Email', 'valid_email');
 		$this->form_validation->set_rules('blog_url', 'Blog URL', 'max_length[256]|prep_url');
 		$this->form_validation->set_rules('problems_per_page', 'Problems', 'required');
 		$this->form_validation->set_rules('submission_per_page', 'Submission', 'required');
 		
-		$this->form_validation->set_message('password_check', 'Wrong Old Password!');
+		$this->form_validation->set_message('password_check_simple', 'Wrong Old Password!');
 		
 		if ($this->form_validation->run() == FALSE){
 			$config = $this->user->load_configuration($this->user->uid());
@@ -65,7 +70,7 @@ class Users extends MY_Controller {
 			if (isset($raw['email'])) $config['email'] = $raw['email'];
 			if (isset($raw['school'])) $config['School'] = $raw['school'];
 			if (isset($raw['blog_url'])) $config['blogURL']=$raw['blog_url'];
-			if (isset($raw['description'])) $config['description'] = htmlspecialchars(mb_substr($raw['description'], 0, 50));
+			if (isset($raw['description'])) $config['description'] = mb_substr($raw['description'], 0, 50);
 			
 			$config['problemsPerPage'] = min(100, max(1, (int)$raw['problems_per_page']));
 			$config['submissionPerPage'] = min(100, max(1, (int)$raw['submission_per_page']));

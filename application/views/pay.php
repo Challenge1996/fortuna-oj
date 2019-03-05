@@ -23,8 +23,12 @@
 
 				<select id="pay_item" name="itemid">
 					<?php
-						foreach ($pay_item as $item)
-							echo "<option value='$item->itemid'>$item->itemDescription (￥$item->price)</option>";
+						foreach ($pay_item as $item){
+							echo "<option ";
+							if ($item->price == 0)
+								echo "class='renew' ";
+							echo "value='$item->itemid'>$item->itemDescription (￥$item->price)</option>";
+						}
 					?>
 				</select>
 
@@ -43,9 +47,10 @@
 			<span class="btn pull-left" onclick="return login()"><?=lang('login')?></span>
 
 			<?php
-				if (in_array(2, $pay_method)) echo "<button class='btn btn-primary pull-right' style='margin-left:5px' onclick='return pay_submit(2)'>".lang('wepay')."</button>";
-				if (in_array(1, $pay_method)) echo "<button class='btn btn-primary pull-right' onclick='return pay_submit(1)'>".lang('alipay')."</button>";
+				if (in_array(2, $pay_method)) echo "<button class='btn btn-primary pull-right pay_button' style='margin-left:5px; display:none' onclick='return pay_submit(2)'>".lang('wepay')."</button>";
+				if (in_array(1, $pay_method)) echo "<button class='btn btn-primary pull-right pay_button' style='display:none' onclick='return pay_submit(1)'>".lang('alipay')."</button>";
 			?>
+			<button class='btn btn-primary pull-right renew_button' style='display:none' onclick='return pay_submit(1)'><?=lang('apply_renew')?></button>
 		</div>
 	</form>
 </div>
@@ -75,6 +80,10 @@
 		$('#istype').val(istype);
 		$('#pay_form').ajaxSubmit({
 			success: function (response){
+				if (response === 'success'){
+					load_page('main/home');
+					return;
+				}
 				try {
 					$.parseJSON(response);
 					var form = $("<form method='post' action='https://pay.sxhhjc.cn/'></form>");
@@ -98,6 +107,14 @@
 
 	function change_pay_item(){
 		$('#expire_info').html(expiration[$('#pay_item').val()]);
+		if ($('#pay_item option:selected').hasClass('renew')){
+			$('.pay_button').hide();
+			$('.renew_button').show();
+		}
+		else {
+			$('.renew_button').hide();
+			$('.pay_button').show();
+		}
 	}
 
 	$('#pay_item').change(function(){

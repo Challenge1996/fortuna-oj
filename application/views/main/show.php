@@ -258,7 +258,7 @@
 					if (responseText == 'success') refresh_page();
 					else
 					if (responseText != '') $('#page_content').html(responseText);
-					else alert('Failed to upload!');
+					else alert("Failed to upload!");
 				}
 			});
 		});

@@ -14,7 +14,7 @@ class Admin extends MY_Controller {
 		
 		$allowed_methods = array('problemset', 'change_problem_status');
 		$restricted_methods = array('delete_problem', 'dataconf', 'scan', 'upload', 'change_problem_nosubmit', 'check_file_exist', 'edit_tags');
-		$payment_methods = array('items', 'change_item', 'delete_item', 'orders');
+		$payment_methods = array('items', 'change_item', 'delete_item', 'orders', 'review_order', 'reject_order');
 
 		if ($this->config->item('allow_add_problem'))
 			$allowed_methods[] = 'addproblem';
@@ -795,13 +795,14 @@ class Admin extends MY_Controller {
 	{
 		$this->load->model('misc');
 		$data = $this->misc->load_dynamic_config();
-		$post = $this->input->post('set');
+		$post = $this->input->post('set', TRUE);
 		if ($post)
 		{
 			$post = json_decode($post);
 			$key = $post->key;
 			$value = $post->value;
-			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value, true))
+			if ($data[$key]->format->datatype == 'enum' && in_array($value, $data[$key]->format->enum_value, true) ||
+				$data[$key]->format->datatype == 'input')
 				$this->misc->save_dynamic_config($data[$key]->valuefile, $key, $value);
 		} else
 			$this->load->view('admin/global_settings', array('data' => $data));
@@ -978,7 +979,23 @@ class Admin extends MY_Controller {
 
 		$this->load->view('admin/pay_orders', array('data' => $data, 'keyword' => $keyword, 'order' => $order));
 	}
-	
+
+	public function review_order(){
+		$orderid = $this->input->post('orderid');
+		$expiration = $this->input->post('datetime');
+
+		$this->load->model('payment');
+		$this->payment->review_order($orderid, $expiration);
+		$this->user->set_expiration($this->payment->get_order($orderid)->uid, $expiration);
+		$this->load->view('success');
+	}
+
+	public function reject_order($orderid){
+		$this->load->model('payment');
+		$this->payment->reject_order($orderid);
+		$this->load->view('success');
+	}
+
 	// temp
 
 	/*public function rejudgeall()

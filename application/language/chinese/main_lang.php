@@ -31,6 +31,7 @@
 	$lang['pay_item'] = '购买选项';
 	$lang['alipay'] = '支付宝支付';
 	$lang['wepay'] = '微信支付';
+	$lang['apply_renew'] = '申请续期';
 
 //manage_item
 	$lang['manage_items'] = '商品管理';
@@ -47,16 +48,21 @@
 //manage_order
 	$lang['manage_orders'] = '订单管理';
 	$lang['payapi_id'] = '支付接口订单号';
+	$lang['order_id'] = '订单号';
 	$lang['realprice'] = '实际支付';
 	$lang['create_time'] = '创建时间';
 	$lang['finish_time'] = '完成时间';
+	$lang['review_order'] = '审核订单';
+	$lang['change_expiration'] = '修改到期时间';
 
 //pay_check
 	$lang['pay_check_message'] = '正在检查订单状态……';
 	$lang['pay_check_query'] = '已查询次数：';
 	$lang['pay_success0'] = '订单购买成功！';
 	$lang['pay_success1'] = '账号已解锁并允许登录。';
-	$lang['pay_fail0'] = '订单超时！';
+	$lang['pay_review0'] = '订单等待审核';
+	$lang['pay_review1'] = '订单已支付完成，但管理员开启了订单审核。请耐心等待管理员审核并通过此订单。';
+	$lang['pay_fail0'] = '订单超时或被拒绝！';
 	$lang['pay_fail1'] = '请咨询系统管理员。';
 
 //user
@@ -82,6 +88,9 @@
 	$lang['based_on_os'] = '本 OJ 网站运行于 %s';
 	$lang['users_online'] = '在线用户人数：';
 	$lang['language_available'] = '可用编程语言';
+	$lang['account_available'] = '账户剩余可用时间：';
+	$lang['expiration_warning'] = '此账户的可用时间较少。请及时续期！';
+	$lang['goto_pay'] = '点此去续期';
 
 //problemset
 	$lang['p_advanced'] = '高级…';
@@ -218,33 +227,51 @@
 	$lang['default_tag_group'] = '默认标签组';
 
 	$lang['global_settings'] = '全局设定';
+
+	$lang['global_settings_item_key_basic_system_config'] = '基础系统设定';
 	$lang['global_settings_item_key_language'] = '语言';
 	$lang['global_settings_item_description_language'] = '选择一种语言';
 	$lang['global_settings_enum_chinese'] = '中文';
 	$lang['global_settings_enum_english'] = '英语';
-	$lang['global_settings_item_key_allow_message'] = '允许站内信';
-	$lang['global_settings_item_description_allow_message'] = '打开站内信功能';
+	$lang['global_settings_item_key_disable_new_user'] = '新用户默认禁用';
+	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
 	$lang['global_settings_enum_yes'] = '是';
 	$lang['global_settings_enum_no'] = '否';
-	$lang['global_settings_item_key_allow_custom_test'] = '允许自定义测试';
-	$lang['global_settings_item_description_allow_custom_test'] = '打开自定义测试功能';
+
+	$lang['global_settings_item_key_problemset'] = '题目与提交';
 	$lang['global_settings_item_key_allow_add_problem'] = '允许添加题目';
 	$lang['global_settings_item_description_allow_add_problem'] = '允许普通用户添加题目';
 	$lang['global_settings_item_key_allow_download_first_wrong'] = '允许下载第一个错误点';
 	$lang['global_settings_item_description_allow_download_first_wrong'] = '允许用户下载第一个出错的测试点的数据，编译错误和比赛时除外';
-	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
-	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';
+	$lang['global_settings_item_key_solution_upload_priviledge'] = '题解上传权限';
+	$lang['global_settings_item_description_solution_upload_priviledge'] = '允许所有人上传题解';
+	$lang['global_settings_enum_admin'] = '仅管理员';
 	$lang['global_settings_item_key_allow_normal_user_public'] = '允许开放代码';
 	$lang['global_settings_item_description_allow_normal_user_public'] = '允许普通用户将其代码设为公开。“默认公开”选项意为所有在列表中可见的提交之代码都是公开的。';
+
+	$lang['global_settings_item_key_contest'] = '比赛';
+	$lang['global_settings_item_key_allow_forum'] = '打开论坛';
+	$lang['global_settings_item_description_allow_forum'] = '允许访问比赛论坛';
 	$lang['global_settings_enum_default_public'] = '默认公开';
-	$lang['global_settings_item_key_disable_new_user'] = '新用户默认禁用';
-	$lang['global_settings_item_description_disable_new_user'] = '新注册的用户为禁用状态，管理员需手动激活';
 	$lang['global_settings_item_key_estimate_score'] = '估分';
 	$lang['global_settings_item_description_estimate_score'] = '参加“OI Traditional”模式比赛时，选手需要在提交时输入预估分数';
 
-//form_validation
+	$lang['global_settings_item_key_payment'] = '订单与支付';
+	$lang['global_settings_item_key_enable_payment'] = '启用订单系统';
+	$lang['global_settings_item_description_enable_payment'] = '启用商品管理、订单管理、支付系统、登录框中的“启用账户”等功能';
+	$lang['global_settings_item_key_payment_auto_finish'] = '订单自动完成';
+	$lang['global_settings_item_description_payment_auto_finish'] = '所有订单将自动转为完成状态（账号自动续期）。关闭则支付成功后的订单需要管理员手动审核';
+	$lang['global_settings_item_key_expire_notify_day_num'] = '账户到期提醒';
+	$lang['global_settings_item_description_expire_notify_day_num'] = '用户首页的到期提醒，在剩余一定时间内变为<span style="color:red;font-weight:bold">红字提醒</span>。单位为天。';
+
+	$lang['global_settings_item_key_misc'] = '杂项';
+	$lang['global_settings_item_key_allow_message'] = '允许站内信';
+	$lang['global_settings_item_description_allow_message'] = '打开站内信功能';
+	$lang['global_settings_item_key_allow_custom_test'] = '允许自定义测试';
+	$lang['global_settings_item_description_allow_custom_test'] = '打开自定义测试功能';
+
+//form validation
 	$lang['form_user_not_exist'] = '用户名不存在！';
 
 //error text
 	$lang['error_admin_only'] = '此功能仅管理员可用！';
-
