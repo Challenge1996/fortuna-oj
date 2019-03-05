@@ -631,6 +631,7 @@ CREATE TABLE `User` (
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `correct_problem`()
+	SQL SECURITY INVOKER
 BEGIN
 	DECLARE cnt INT;
 	DECLARE cntall INT;
@@ -665,6 +666,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `correct_user`()
+	SQL SECURITY INVOKER
 BEGIN
 	DECLARE cntall INT;
 	DECLARE cnt INT;
@@ -702,11 +704,12 @@ CREATE DEFINER=`root`@`%` PROCEDURE `upd_ac_count`(
 	_uid INT,
 	_pid INT,
 	_score DOUBLE,
-		_status INT
+	_status INT
 )
+	SQL SECURITY INVOKER
 BEGIN
 	DECLARE ever INT;
-		IF _status=0 THEN
+	IF _status=0 THEN
 		SELECT COUNT(*) FROM Submission
 			WHERE uid=_uid AND pid=_pid AND status=0 AND (ACCounted=1 OR cid IS NULL)
 			INTO ever;
@@ -716,8 +719,8 @@ BEGIN
 		UPDATE User SET solvedCount=solvedCount+1 WHERE uid=_uid;
 		UPDATE ProblemSet SET solvedCount=solvedCount+1 WHERE pid=_pid;
 	END IF;
-		UPDATE User SET submitCount=submitCount+1 WHERE uid=_uid;
-		UPDATE ProblemSet SET submitCount=submitCount+1, scoreSum=scoreSum+_score WHERE pid=_pid;
+	UPDATE User SET submitCount=submitCount+1 WHERE uid=_uid;
+	UPDATE ProblemSet SET submitCount=submitCount+1, scoreSum=scoreSum+_score WHERE pid=_pid;
 	UPDATE Submission SET ACCounted=1 WHERE sid=_sid;
 END ;;
 DELIMITER ;
@@ -736,12 +739,13 @@ DELIMITER ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `upd_ac_count_cid`(workspace INT)
+	SQL SECURITY INVOKER
 BEGIN
 	DECLARE _sid INT;
 	DECLARE _uid INT;
 	DECLARE _pid INT;
 	DECLARE _score DOUBLE;
-		DECLARE _status INT;
+	DECLARE _status INT;
 	DECLARE done INT DEFAULT 0;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done=1;
 	
