@@ -372,7 +372,7 @@ CREATE TABLE `Orders` (
 	`status` tinyint(4) DEFAULT '0',
 	`createTime` datetime NOT NULL,
 	`finishTime` datetime DEFAULT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
 	UNIQUE KEY `orderid_UNIQUE` (`orderid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
