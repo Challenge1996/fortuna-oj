@@ -260,7 +260,7 @@
 	$lang['global_settings_item_key_enable_payment'] = 'Enable Payment';
 	$lang['global_settings_item_description_enable_payment'] = 'Enable Manage Item, Manage Order, Payment system, "Enable Account" on login modal, etc.';
 	$lang['global_settings_item_key_payment_auto_finish'] = 'Auto finish orders';
-	$lang['global_settings_item_description_payment_auto_finish'] = 'Orders will be finished automatically. Closing this means administrators must review all paid orders by themselves.';
+	$lang['global_settings_item_description_payment_auto_finish'] = 'Orders (other than those with price of 0.00) will be finished automatically. Closing this means administrators must review all paid orders by themselves.';
 	$lang['global_settings_item_key_expire_notify_day_num'] = 'User expiring notification';
 	$lang['global_settings_item_description_expire_notify_day_num'] = 'The expiring notification on user\'s homepage will become <span style="color:red;font-weight:bold">red</span> when it will be expired within the days beneath. The unit is day.';
 
