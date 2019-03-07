@@ -47,6 +47,13 @@ class Payment extends CI_Model{
 	
 	function new_order($uid, $name, $item, $method){
 		$expiration = $this->get_expiration($item->type, $item->timeInt);
+		
+		$last_orderid = $this->db->order_by('orderid', 'DESC')
+								->select('orderid')
+								->get_where('Orders', array('uid' => $uid, 'status' => 2), 1, 0)
+								->row();
+		if (isset($last_orderid))
+			return -2;	// Last order is reviewing
 
 		$last_orderid = $this->db->order_by('orderid', 'DESC')
 								->select('orderid')

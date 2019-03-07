@@ -272,6 +272,9 @@
 
 //form validation
 	$lang['form_user_not_exist'] = '用户名不存在！';
+	
+	$lang['form_no_need_to_pay'] = '此用户无需启用或申请续期！';
+	$lang['form_order_is_reviewing'] = '此用户已有一笔待审核订单。请等待管理员审核。';
 
 //error text
 	$lang['error_admin_only'] = '此功能仅管理员可用！';

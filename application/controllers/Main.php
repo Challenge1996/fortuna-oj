@@ -134,44 +134,58 @@ class Main extends MY_Controller {
 				'pay_item' => $this->payment->get_items_list(),
 				'pay_method' => $this->config->item('pay_method')
 			));
+			return;
 		}
-		else {
-			$name = $this->input->post('username');
-			$uid = $this->user->load_uid($name);
-			$pay_uid = $this->config->item('pay_uid');
-			$istype = $this->input->post('istype');
+		
+		$name = $this->input->post('username');
+		$uid = $this->user->load_uid($name);
+		$pay_uid = $this->config->item('pay_uid');
+		$istype = $this->input->post('istype');
 
-			$itemid = $this->input->post('itemid');
-			$item = $this->payment->get_item($itemid);
-			$price = $item->price;
+		$itemid = $this->input->post('itemid');
+		$item = $this->payment->get_item($itemid);
+		$price = $item->price;
 
-			$notify_url = base_url('main/pay_notify');
-			$return_url = base_url('#main/pay_check');
+		$notify_url = base_url('main/pay_notify');
+		$return_url = base_url('#main/pay_check');
 
-			// $orderid = 1;
-			$orderid = $this->payment->new_order($uid, $name, $item, ($price > 0) ? $istype : 0);
+		// $orderid = 1;
+		$orderid = $this->payment->new_order($uid, $name, $item, ($price > 0) ? $istype : 0, $this->user->load_expiration($uid));
 
-			if ($price == 0){
-				$this->load->model('payment');
-				$this->payment->finish_order('', $orderid, 0);
-				$this->load->view('success');
-				return;
-			}
-
-			$key = md5($istype.$notify_url.$orderid.$uid.$price.$return_url.$this->config->item('pay_token').$pay_uid);
-			$this->output
-				->set_content_type('application/json')
-				->set_output(json_encode(array(
-					'uid' => $pay_uid,
-					'price' => $price,
-					'istype' => intval($istype),
-					'notify_url' => $notify_url,
-					'return_url' => $return_url,
-					'orderid' => $orderid,
-					'orderuid' => $uid,
-					'key' => $key
-				)));
+		$old_expiration = $this->user->load_expiration($uid);
+		if ($this->user->uid_check($uid) && ($old_expiration == NULL || strtotime($old_expiration) < time() || strtotime($old_expiration) > time() + $this->config->item('expire_notify_day_num') * 24 * 60 * 60))
+			$illegal = lang('form_no_need_to_pay');
+		elseif ($orderid == -2)
+			$illegal = lang('form_order_is_reviewing');
+		if (isset($illegal)){
+			$this->load->view('pay',array(
+				'pay_item' => $this->payment->get_items_list(),
+				'pay_method' => $this->config->item('pay_method'),
+				'illegal' => $illegal
+			));
+			return;
 		}
+
+		if ($price == 0){
+			$this->load->model('payment');
+			$this->payment->finish_order('', $orderid, 0);
+			$this->load->view('success');
+			return;
+		}
+
+		$key = md5($istype.$notify_url.$orderid.$uid.$price.$return_url.$this->config->item('pay_token').$pay_uid);
+		$this->output
+			->set_content_type('application/json')
+			->set_output(json_encode(array(
+				'uid' => $pay_uid,
+				'price' => $price,
+				'istype' => intval($istype),
+				'notify_url' => $notify_url,
+				'return_url' => $return_url,
+				'orderid' => $orderid,
+				'orderuid' => $uid,
+				'key' => $key
+			)));
 	}
 
 	public function pay_notify(){

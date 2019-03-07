@@ -10,6 +10,10 @@
 
 	<form action="index.php/main/pay" id="pay_form" method="post">
 		<div class="modal-body">
+			<?php if (isset($illegal)): ?>
+			<div class="alert mb_10"><?=$illegal?></div>
+			<?php endif; ?>
+			
 			<div class="form_block">
 				<span style="width:90px"><i class="icon-user"></i><?=lang('user')?></span>
 

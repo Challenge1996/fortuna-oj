@@ -272,6 +272,9 @@
 
 //form validation
 	$lang['form_user_not_exist'] = 'User does not exist!';
+	
+	$lang['form_no_need_to_pay'] = 'This user has no need to be paid!';
+	$lang['form_order_is_reviewing'] = 'This user has an order waiting for review. Please wait or ask for the administrators.';
 
 //error text
 	$lang['error_admin_only'] = 'Only administrators are allowed!';
