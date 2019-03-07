@@ -36,8 +36,8 @@
 			echo "<tr><td>$row->uid</td>";
 			echo "<td><span class='label label-info name'><a href='#users/$row->name'>$row->name</a></span></td>";
 			echo "<td>
-				<span class='school-display'>$row->school</span>
-				<input type='text' class='school-edit' style='display:none' onchange='newSchool[$row->uid]=$(this).val()' value='$row->school' />
+				<span class='school-display'>".htmlspecialchars($row->school)."</span>
+				<input type='text' class='school-edit' style='display:none' onchange='newSchool[$row->uid]=$(this).val()' value='".htmlspecialchars($row->school)."' />
 			</td>";
 			echo "<td><span style='width:55px; text-align:center' onclick=\"user_change_status($row->uid, $(this))\"";
 			if ($row->isEnabled) echo 'class="label label-success">Enabled';
